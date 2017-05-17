@@ -2,17 +2,11 @@ package huego
 
 import (
 	"testing"
+	"os"
 )
-
-var (
-	hue *Hue
-)
-
-func init() {
-	hue = New("http://192.168.1.80/")
-}
 
 func TestGetSensors(t *testing.T) {
+	hue := New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	sensors, err := hue.GetSensors()
 	if err != nil {
 		t.Error(err)
@@ -24,6 +18,7 @@ func TestGetSensors(t *testing.T) {
 }
 
 func TestGetSensor(t *testing.T) {
+	hue := New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	sensors, err := hue.GetSensors()
 	if err != nil {
 		t.Error(err)

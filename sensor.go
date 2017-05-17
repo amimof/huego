@@ -4,7 +4,6 @@ import (
 	"net/http"
 	"encoding/json"
 	"strconv"
-	"path"
 )
 
 type Sensor struct {
@@ -14,8 +13,8 @@ type Sensor struct {
 	Type 			 string 		`json:"type,omitempty"`
 	ModelId 		 string 		`json:"modelid,omitempty"`
 	ManufacturerName string 		`json:"manufacturername,omitempty"`
-	SwVersion 		 string 		`json:swversio,omitemptyn`
-	Id 				 int
+	SwVersion 		 string 		`json:"swversion,omitemptyn"`
+	Id 				 int 			`json:",omitempty"`
 }
 type SensorState struct {
 	Daylight 	string `json:"daylight,omitempty"`
@@ -33,14 +32,9 @@ type SensorConfig struct {
 func (h *Hue) GetSensors() ([]Sensor, error) {
 
 	s := map[string]Sensor{}
-	url := GetPath("/sensors/")
+	url := h.GetApiUrl("/sensors/")
 
-	req, err := http.NewRequest("GET", url, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	res, err := client.Do(req)
+	res, err := http.Get(url)
 	if err != nil {
 		return nil, err
 	}
@@ -70,14 +64,9 @@ func (h *Hue) GetSensor(i int) (*Sensor, error) {
 
 	var r *Sensor
 	id := strconv.Itoa(i)
-	url := GetPath(path.Join("/sensors/", id))
+	url := h.GetApiUrl("/sensors/", id)
 
-	req, err := http.NewRequest("GET", url, nil)
-	if err != nil {
-		return r, err
-	}
-
-	res, err := client.Do(req)
+	res, err := http.Get(url)
 	if err != nil {
 		return r, err
 	}

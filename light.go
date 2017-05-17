@@ -3,7 +3,6 @@ package huego
 import (
 	"net/http"
 	"encoding/json"
-	"path"
 	"strconv"
 	"strings"
 	"io/ioutil"
@@ -46,13 +45,15 @@ func (h *Hue) GetLights() ([]Light, error) {
 	
 	lm := map[string]Light{}
 
-	url := GetPath("/lights/")
+	//url := GetPath("/lights/")
+	url := h.GetApiUrl("/lights/")
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return nil, err
 	}
 
+	client := http.Client{}
 	res, err := client.Do(req)
 	if err != nil {
 		return nil, err
@@ -79,13 +80,14 @@ func (h *Hue) GetLight(i int) (*Light, error) {
 
 	var light *Light
 	id := strconv.Itoa(i)
-	url := GetPath(path.Join("/lights/", id))
+	url := h.GetApiUrl("/lights/", id)
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return light, err
 	}
 
+	client := http.Client{}
 	res, err := client.Do(req)
 	if err != nil {
 		return light, err
@@ -108,7 +110,7 @@ func (h *Hue) SetLight(i int, l State) ([]Response, error) {
 	var r []Response
 
 	id := strconv.Itoa(i)
-	url := GetPath(path.Join("/lights/", id, "/state"))
+	url := h.GetApiUrl("/lights/", id, "/state")
 
 	data, err := json.Marshal(&l)
 	if err != nil {
@@ -123,6 +125,7 @@ func (h *Hue) SetLight(i int, l State) ([]Response, error) {
 	}
 	req.Header.Set("Content-Type", "application/json")
 
+	client := http.Client{}
 	res, err := client.Do(req)
 	if err != nil {
 		return r, err
@@ -145,13 +148,14 @@ func (h *Hue) Search() ([]Response, error) {
 
 	var r []Response
 
-	url := GetPath("/lights/")
+	url := h.GetApiUrl("/lights/")
 
 	req, err := http.NewRequest("POST", url, nil)
 	if err != nil {
 		return r, err
 	}
 
+	client := http.Client{}
 	res, err := client.Do(req)
 	if err != nil {
 		return r, err
@@ -174,13 +178,14 @@ func (h *Hue) GetNewLights() (*NewLight, error){
 	n := map[string]Light{}
 	var result *NewLight
 
-	url := GetPath("/lights/new")
+	url := h.GetApiUrl("/lights/new")
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return result, err
 	}
 
+	client := http.Client{}
 	res, err := client.Do(req)
 	if err != nil {
 		return result, err
@@ -224,13 +229,14 @@ func (h *Hue) DeleteLight(i int) ([]Response, error) {
 	var r []Response
 
 	id := strconv.Itoa(i)
-	url := GetPath(path.Join("/lights/", id))
+	url := h.GetApiUrl("/lights/", id)
 
 	req, err := http.NewRequest("DELETE", url, nil)
 	if err != nil {
 		return r, err
 	}
 
+	client := http.Client{}
 	res, err := client.Do(req)
 	if err != nil {
 		return r, err
@@ -255,7 +261,7 @@ func (h *Hue) RenameLight(i int, n string) ([]Response, error) {
 	var l *Light = &Light{Name: n}
 
 	id := strconv.Itoa(i)
-	url := GetPath(path.Join("/lights/", id))
+	url := h.GetApiUrl("/lights/", id)
 
 	data, err := json.Marshal(&l)
 	if err != nil {
@@ -269,6 +275,7 @@ func (h *Hue) RenameLight(i int, n string) ([]Response, error) {
 		return r, err
 	}
 
+	client := http.Client{}
 	res, err := client.Do(req)
 	if err != nil {
 		return r, err 

@@ -2,17 +2,11 @@ package huego
 
 import (
 	"testing"
+	"os"
 )
-
-var (
-	hue *Hue
-)
-
-func init() {
-	hue = New("http://192.168.1.80/")
-}
 
 func TestGetLights(t *testing.T) {
+	hue := New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	lights, err := hue.GetLights()
 	if err != nil {
 		t.Fail()
@@ -23,6 +17,7 @@ func TestGetLights(t *testing.T) {
 }
 
 func TestGetLight(t *testing.T) {
+	hue := New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	lights, err := hue.GetLights()
 	if err != nil {
 		t.Log(err)
@@ -41,22 +36,12 @@ func TestGetLight(t *testing.T) {
 }
 
 func TestSetLight(t *testing.T) {
-	// state := State{
-	// 	On: true,
-	// 	Bri: 254,
-	// 	Hue: 65515,
-	// 	Sat: 254,
-	// 	Xy: []float32{0.6909, 0.308},
-	// 	Ct: 153,
-	// }
-
+	hue := New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	lights, err := hue.GetLights()
 	if err != nil {
 		t.Error(err)
 	}
-
 	t.Logf("Found %d lights, setting the first one", len(lights))
-
 	for _, light := range lights {
 		if light.State.On {
 			response, err := hue.SetLight(light.Id, *light.State)
@@ -67,13 +52,12 @@ func TestSetLight(t *testing.T) {
 				t.Logf("Response from put: Success=%v Error=%v", r.Success, r.Error)
 			}
 			break
-		}
-		
-	}
-	
+		}	
+	}	
 }
 
 func TestSearch(t *testing.T) {
+	hue := New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	search, err := hue.Search() 
 	if err != nil {
 		t.Error(err) 
@@ -85,6 +69,7 @@ func TestSearch(t *testing.T) {
 }
 
 func TestGetNewLights(t *testing.T) {
+	hue := New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	newlights, err := hue.GetNewLights()
 	if err != nil {
 		t.Error(err)
@@ -97,14 +82,12 @@ func TestGetNewLights(t *testing.T) {
 }
 
 func TestRenameLight(t *testing.T) {
-	
+	hue := New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	lights, err := hue.GetLights()
 	if err != nil {
 		t.Error(err)
 	}
-	
 	t.Logf("Found %d lights, renaming the first one", len(lights))
-
 	for _, light := range lights {
 		
 		oriName := light.Name
@@ -123,7 +106,6 @@ func TestRenameLight(t *testing.T) {
 		t.Logf("Renamed light %d back to %s", light.Id, oriName)
 		break
 	}	
-	
 }
 
 // func TestDeleteLight(t *testing.T) {

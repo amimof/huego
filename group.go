@@ -6,9 +6,11 @@ import (
 	"encoding/json"
 	//"crypto/tls"
 	//"net/url"
-	"path"
+	//"path"
 	"strconv"
-	//"fmt"
+	"fmt"
+	"io/ioutil"
+	"strings"
 )
 
 type Group struct {
@@ -19,7 +21,7 @@ type Group struct {
 	Recycle bool 		`json:"recycle,omitempty"`
 	Class 	string 		`json:"class,omitempty"`
 	Action 	*Action 	`json:"action,omitempty"`
-	Id 		int
+	Id 		int			`json:",omitempty"`
 }
 
 type Action struct {
@@ -44,14 +46,9 @@ type GroupState struct {
 func (h *Hue) GetGroups() ([]Group, error) {
 	
 	gm := map[string]Group{}
-	url := GetPath("/groups/")
+	url := h.GetApiUrl("/groups/")
 
-	req, err := http.NewRequest("GET", url, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	res, err := client.Do(req)
+	res, err := http.Get(url)
 	if err != nil {
 		return nil, err
 	}
@@ -78,14 +75,9 @@ func (h *Hue) GetGroup(i int) (*Group, error) {
 	var group *Group
 
 	id := strconv.Itoa(i)
-	url := GetPath(path.Join("/groups/", id))
+	url := h.GetApiUrl("/groups/", id)
 
-	req, err := http.NewRequest("GET", url, nil)
-	if err != nil{
-		return group, err
-	}
-
-	res, err := client.Do(req)
+	res, err := http.Get(url)
 	if err != nil {
 		return group, err
 	}
@@ -102,24 +94,141 @@ func (h *Hue) GetGroup(i int) (*Group, error) {
 
 // SetGroupState allows for controlling light state properties for all lights in a group with the id of i
 // See: https://developers.meethue.com/documentation/groups-api#25_set_group_state
-func (h *Hue) SetGroupState(i int, l Action) ([]Response, error) {
-	return nil, nil
+func (h *Hue) SetGroupState(i int, l *Action) ([]Response, error) {
+	
+	var r []Response
+
+	id := strconv.Itoa(i)
+	url := h.GetApiUrl("/groups/", id, "/action/")
+
+	data, err := json.Marshal(&l)
+	if err != nil {
+		return r, err
+	}
+
+	body := strings.NewReader(string(data))
+	
+	req, err := http.NewRequest("PUT", url, body)
+	if err != nil {
+		return r, err
+	}
+	req.Header.Set("Content-Type", "application/json")
+
+	client := http.Client{}
+	res, err := client.Do(req)
+	if err != nil {
+		return r, err
+	}
+
+	defer res.Body.Close()
+
+	err = json.NewDecoder(res.Body).Decode(&r)
+	if err != nil {
+		return r, err
+	}
+
+	return r, nil
 }
 
 // SetGroup sets the name, class and light members of a group with the id of i
 // See: https://developers.meethue.com/documentation/groups-api#24_set_group_attributes
-func (h *Hue) SetGroup(i int, l Group) ([]Response, error) {
-	return nil, nil	
+func (h *Hue) SetGroup(i int, l *Group) ([]Response, error) {
+	var r []Response
+
+	id := strconv.Itoa(i)
+	url := h.GetApiUrl("/groups/", id)
+
+	data, err := json.Marshal(&l)
+	if err != nil {
+		return r, err
+	}
+
+	body := strings.NewReader(string(data))
+	
+	req, err := http.NewRequest("PUT", url, body)
+	if err != nil {
+		return r, err
+	}
+	req.Header.Set("Content-Type", "application/json")
+
+	client := http.Client{}
+	res, err := client.Do(req)
+	if err != nil {
+		return r, err
+	}
+
+	defer res.Body.Close()
+
+	err = json.NewDecoder(res.Body).Decode(&r)
+	if err != nil {
+		return r, err
+	}
+
+	return r, nil
 }
 
 // CreateGroup creates a new group
 // See: https://developers.meethue.com/documentation/groups-api#22_create_group
-func (h *Hue) CreateGroup() ([]Response, error) {
-	return nil, nil
+func (h *Hue) CreateGroup(g *Group) ([]Response, error) {
+	
+	var r []Response
+
+	url := h.GetApiUrl("/groups/")
+
+	data, err := json.Marshal(&g)
+	if err != nil {
+		return r, err
+	}
+
+	body := strings.NewReader(string(data))
+	
+	res, err := http.Post(url, "application/json", body)
+	if err != nil {
+		return r, err
+	}
+
+	defer res.Body.Close()
+
+	err = json.NewDecoder(res.Body).Decode(&r)
+	if err != nil {
+		return r, err
+	}
+
+	return r, nil
 }
 
 // DeleteGroup deletes a group with the id of i
 // See: https://developers.meethue.com/documentation/groups-api#26_delete_group
-func (h *Hue) DeleteGroup ([]Response, error) {
-	return nil, nil
+func (h *Hue) DeleteGroup(i int) ([]Response, error) {
+	
+	var r []Response
+
+	id := strconv.Itoa(i)
+	url := h.GetApiUrl("/groups/", id)
+	
+	req, err := http.NewRequest("DELETE", url, nil)
+	if err != nil {
+		return r, err
+	}
+
+	client := http.Client{}
+	res, err := client.Do(req)
+	if err != nil {
+		return r, err
+	}
+
+	defer res.Body.Close()
+
+	b, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		return r, err
+	}
+	fmt.Printf("%s", b)
+
+	err = json.Unmarshal(b, &r)
+	if err != nil {
+		return r, err
+	}
+
+	return r, nil
 }
