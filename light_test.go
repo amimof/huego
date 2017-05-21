@@ -9,8 +9,9 @@ func TestGetLights(t *testing.T) {
 	hue := New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	lights, err := hue.GetLights()
 	if err != nil {
-		t.Fail()
+		t.Error(err)
 	}
+	t.Logf("Found %d lights", len(lights))
 	for _, light := range lights {
 		t.Log(light)
 	}
@@ -20,17 +21,14 @@ func TestGetLight(t *testing.T) {
 	hue := New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	lights, err := hue.GetLights()
 	if err != nil {
-		t.Log(err)
-		t.Fail()
-	} else {
-		for _, light := range lights {
-			l, err := hue.GetLight(light.Id)
-			if err != nil {
-				t.Log(err)
-				t.Fail()
-			} else {
-				t.Log(l)
-			}
+		t.Error(err)
+	} 
+	for _, light := range lights {
+		l, err := hue.GetLight(light.Id)
+		if err != nil {
+			t.Error(err)
+		} else {
+			t.Log(l)
 		}
 	}
 }
