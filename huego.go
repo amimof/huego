@@ -4,6 +4,7 @@ import (
 	//"github.com/amimof/loglevel-go"
 	//"net/http"
 	//"crypto/tls"
+
 	"net/url"
 	"path"
 	//"fmt"
@@ -15,7 +16,7 @@ type Hue struct {
 }
 
 type Response struct {
-	Success map[string]interface{} 	`json:"success,omitempty"`
+	Success interface{}	`json:"success,omitempty"`
 	Error 	*ResponseError			`json:"error,omitempty"`
 }
 

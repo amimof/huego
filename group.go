@@ -8,7 +8,6 @@ import (
 	//"net/url"
 	//"path"
 	"strconv"
-	"fmt"
 	"io/ioutil"
 	"strings"
 )
@@ -223,7 +222,6 @@ func (h *Hue) DeleteGroup(i int) ([]Response, error) {
 	if err != nil {
 		return r, err
 	}
-	fmt.Printf("%s", b)
 
 	err = json.Unmarshal(b, &r)
 	if err != nil {
@@ -232,3 +230,9 @@ func (h *Hue) DeleteGroup(i int) ([]Response, error) {
 
 	return r, nil
 }
+
+
+
+
+
+
