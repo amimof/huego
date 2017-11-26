@@ -22,7 +22,7 @@ func TestGetLight(t *testing.T) {
 	lights, err := hue.GetLights()
 	if err != nil {
 		t.Error(err)
-	} 
+	}
 	for _, light := range lights {
 		l, err := hue.GetLight(light.Id)
 		if err != nil {
@@ -30,6 +30,7 @@ func TestGetLight(t *testing.T) {
 		} else {
 			t.Log(l)
 		}
+		break
 	}
 }
 
@@ -49,21 +50,21 @@ func TestSetLight(t *testing.T) {
 			for _, r := range response {
 				t.Logf("Response from put: Success=%v Error=%v", r.Success, r.Error)
 			}
-			break
-		}	
-	}	
+		}
+		break
+	}
 }
 
 func TestSearch(t *testing.T) {
 	hue := New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
-	search, err := hue.Search() 
+	search, err := hue.Search()
 	if err != nil {
-		t.Error(err) 
+		t.Error(err)
 	}
 	for _, response := range search {
 		t.Logf("Response from search: Success=%v Error=%v", response.Success, response.Error)
 	}
-	
+
 }
 
 func TestGetNewLights(t *testing.T) {
@@ -71,12 +72,12 @@ func TestGetNewLights(t *testing.T) {
 	newlights, err := hue.GetNewLights()
 	if err != nil {
 		t.Error(err)
-	} 
-	t.Logf("Found %d new lights. LastScan: %s", len(*newlights.Lights), newlights.LastScan)
-	for _, light := range *newlights.Lights {
-		t.Log(light)		
 	}
-	
+	t.Logf("Found %d new lights. LastScan: %s", len(newlights.Lights), newlights.LastScan)
+	for _, light := range newlights.Lights {
+		t.Log(light)
+	}
+
 }
 
 func TestRenameLight(t *testing.T) {
@@ -87,10 +88,10 @@ func TestRenameLight(t *testing.T) {
 	}
 	t.Logf("Found %d lights, renaming the first one", len(lights))
 	for _, light := range lights {
-		
+
 		oriName := light.Name
 		newName := "Huego Test Lamp Name"
-		
+
 		_, err := hue.RenameLight(light.Id, newName)
 		if err != nil {
 			t.Error(err)
@@ -103,7 +104,7 @@ func TestRenameLight(t *testing.T) {
 		}
 		t.Logf("Renamed light %d back to %s", light.Id, oriName)
 		break
-	}	
+	}
 }
 
 // func TestDeleteLight(t *testing.T) {

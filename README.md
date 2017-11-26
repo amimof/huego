@@ -8,8 +8,8 @@ A Philips Hue client library written in Go. Still under development.
 | ------ | ------ |
 | Lights | Complete |
 | Groups | Complete |
-| Sensors | In Progress |
-| Schedules | Not Started |
+| Sensors | Complete |
+| Schedules | In Progress |
 | Scnenes | Not Started |
 | Rules | Not Started |
 | ResourceLinks | Not Started |

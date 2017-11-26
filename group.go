@@ -1,12 +1,8 @@
 package huego
 
 import (
-	//"github.com/amimof/loglevel-go"
 	"net/http"
 	"encoding/json"
-	//"crypto/tls"
-	//"net/url"
-	//"path"
 	"strconv"
 	"io/ioutil"
 	"strings"
@@ -42,60 +38,62 @@ type GroupState struct {
 
 // GetGroups will return all groups
 // See: hhttps://developers.meethue.com/documentation/groups-api#21_get_all_groups
-func (h *Hue) GetGroups() ([]Group, error) {
-	
-	gm := map[string]Group{}
-	url := h.GetApiUrl("/groups/")
+func (h *Hue) GetGroups() ([]*Group, error) {
 
-	res, err := http.Get(url)
+	var m map[string]Group
+
+	res, err := h.GetResource(h.GetApiUrl("/groups/"))
 	if err != nil {
 		return nil, err
 	}
 
 	defer res.Body.Close()
 
-	err = json.NewDecoder(res.Body).Decode(&gm)
-	groups := make([]Group, 0, len(gm))
+	err = json.NewDecoder(res.Body).Decode(&m)
+	groups := make([]*Group, 0, len(m))
 
-	for i, g := range gm {
+	for i, g := range m {
 		g.Id, err = strconv.Atoi(i)
 		if err != nil {
 			return nil, err
 		}
-		groups = append(groups, g)
+		groups = append(groups, &g)
 	}
+
 	return groups, err
+
 }
+
+
 
 // GetGroup returns a group with the id of i
 // See: https://developers.meethue.com/documentation/groups-api#23_get_group_attributes
 func (h *Hue) GetGroup(i int) (*Group, error) {
-	
-	var group *Group
 
-	id := strconv.Itoa(i)
-	url := h.GetApiUrl("/groups/", id)
+	var g *Group
 
-	res, err := http.Get(url)
+	url := h.GetApiUrl("/groups/", strconv.Itoa(i))
+	res, err := h.GetResource(url)
 	if err != nil {
-		return group, err
+		return nil, err
 	}
 
 	defer res.Body.Close()
 
-	err = json.NewDecoder(res.Body).Decode(&group)
+	err = json.NewDecoder(res.Body).Decode(&g)
 	if err != nil {
-		return group, err
+		return nil, err
 	}
 
-	return group, err
+	return g, nil
 }
+
 
 // SetGroupState allows for controlling light state properties for all lights in a group with the id of i
 // See: https://developers.meethue.com/documentation/groups-api#25_set_group_state
-func (h *Hue) SetGroupState(i int, l *Action) ([]Response, error) {
-	
-	var r []Response
+func (h *Hue) SetGroupState(i int, l *Action) ([]*Response, error) {
+
+	var r []*Response
 
 	id := strconv.Itoa(i)
 	url := h.GetApiUrl("/groups/", id, "/action/")
@@ -106,7 +104,7 @@ func (h *Hue) SetGroupState(i int, l *Action) ([]Response, error) {
 	}
 
 	body := strings.NewReader(string(data))
-	
+
 	req, err := http.NewRequest("PUT", url, body)
 	if err != nil {
 		return r, err
@@ -131,8 +129,8 @@ func (h *Hue) SetGroupState(i int, l *Action) ([]Response, error) {
 
 // SetGroup sets the name, class and light members of a group with the id of i
 // See: https://developers.meethue.com/documentation/groups-api#24_set_group_attributes
-func (h *Hue) SetGroup(i int, l *Group) ([]Response, error) {
-	var r []Response
+func (h *Hue) SetGroup(i int, l *Group) ([]*Response, error) {
+	var r []*Response
 
 	id := strconv.Itoa(i)
 	url := h.GetApiUrl("/groups/", id)
@@ -143,7 +141,7 @@ func (h *Hue) SetGroup(i int, l *Group) ([]Response, error) {
 	}
 
 	body := strings.NewReader(string(data))
-	
+
 	req, err := http.NewRequest("PUT", url, body)
 	if err != nil {
 		return r, err
@@ -168,9 +166,9 @@ func (h *Hue) SetGroup(i int, l *Group) ([]Response, error) {
 
 // CreateGroup creates a new group
 // See: https://developers.meethue.com/documentation/groups-api#22_create_group
-func (h *Hue) CreateGroup(g *Group) ([]Response, error) {
-	
-	var r []Response
+func (h *Hue) CreateGroup(g *Group) ([]*Response, error) {
+
+	var r []*Response
 
 	url := h.GetApiUrl("/groups/")
 
@@ -180,7 +178,7 @@ func (h *Hue) CreateGroup(g *Group) ([]Response, error) {
 	}
 
 	body := strings.NewReader(string(data))
-	
+
 	res, err := http.Post(url, "application/json", body)
 	if err != nil {
 		return r, err
@@ -198,13 +196,13 @@ func (h *Hue) CreateGroup(g *Group) ([]Response, error) {
 
 // DeleteGroup deletes a group with the id of i
 // See: https://developers.meethue.com/documentation/groups-api#26_delete_group
-func (h *Hue) DeleteGroup(i int) ([]Response, error) {
-	
-	var r []Response
+func (h *Hue) DeleteGroup(i int) ([]*Response, error) {
+
+	var r []*Response
 
 	id := strconv.Itoa(i)
 	url := h.GetApiUrl("/groups/", id)
-	
+
 	req, err := http.NewRequest("DELETE", url, nil)
 	if err != nil {
 		return r, err
@@ -230,9 +228,3 @@ func (h *Hue) DeleteGroup(i int) ([]Response, error) {
 
 	return r, nil
 }
-
-
-
-
-
-

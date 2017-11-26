@@ -29,6 +29,7 @@ func TestGetGroup(t *testing.T) {
 			t.Error(err)
 		}
 		t.Log(g)
+		break
 	}
 }
 
@@ -54,16 +55,10 @@ func TestSetGroup(t *testing.T) {
 	//hue := New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 }
 
-func TestCreateGroup(t *testing.T) {	
+func TestCreateGroup(t *testing.T) {
 	//hue := New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 }
 
 func TestDeleteGroup(t *testing.T) {
 	//hue := New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 }
-
-
-
-
-
-

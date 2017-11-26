@@ -9,16 +9,16 @@ import (
 )
 
 type Light struct {
-	State *State `json:"state,omitempty"`
-	Type string `json:"type,omitempty"`
-	Name string `json:"name,omitempty"`
-	ModelId string `json:"modelid,omitempty"`
+	State 			 *State `json:"state,omitempty"`
+	Type 			 string `json:"type,omitempty"`
+	Name 			 string `json:"name,omitempty"`
+	ModelId 		 string `json:"modelid,omitempty"`
 	ManufacturerName string `json:"modelid,omitempty"`
-	UniqueId string `json:"string,omitempty"`
-	SwVersion string `json:"string,omitempty"`
-	SwConfigId string `json:"string,omitempty"`
-	ProductId string `json:"productid,omitempty"`
-	Id int `json:",omitempty"`
+	UniqueId 		 string `json:"string,omitempty"`
+	SwVersion 		 string `json:"string,omitempty"`
+	SwConfigId 		 string `json:"string,omitempty"`
+	ProductId 		 string `json:"productid,omitempty"`
+	Id 				 int 	`json:",omitempty"`
 }
 
 type State struct {
@@ -35,43 +35,40 @@ type State struct {
 }
 
 type NewLight struct {
-	Lights *[]Light
+	Lights []*Light
 	LastScan string `json:"lastscan"`
 }
 
 // GetLights will return all lights
 // See: https://developers.meethue.com/documentation/lights-api#11_get_all_lights
-func (h *Hue) GetLights() ([]Light, error) {
-	
-	lm := map[string]Light{}
+func (h *Hue) GetLights() ([]*Light, error) {
 
-	//url := GetPath("/lights/")
-	url := h.GetApiUrl("/lights/")
+	m := map[string]Light{}
 
-	req, err := http.NewRequest("GET", url, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	client := http.Client{}
-	res, err := client.Do(req)
+	res, err := h.GetResource(h.GetApiUrl("/lights/"))
 	if err != nil {
 		return nil, err
 	}
 
 	defer res.Body.Close()
 
-	err = json.NewDecoder(res.Body).Decode(&lm)
-	lights := make([]Light, 0, len(lm))
+	err = json.NewDecoder(res.Body).Decode(&m)
+	if err != nil {
+		return nil, err
+	}
 
-	for i, l := range lm {
+	lights := make([]*Light, 0, len(m))
+
+	for i, l := range m {
 		l.Id, err = strconv.Atoi(i)
 		if err != nil {
 			return nil, err
 		}
-		lights = append(lights, l)
+		lights = append(lights, &l)
 	}
-	return lights, err
+
+	return lights, nil
+
 }
 
 // GetLight returns a light with the id of i
@@ -79,16 +76,8 @@ func (h *Hue) GetLights() ([]Light, error) {
 func (h *Hue) GetLight(i int) (*Light, error) {
 
 	var light *Light
-	id := strconv.Itoa(i)
-	url := h.GetApiUrl("/lights/", id)
 
-	req, err := http.NewRequest("GET", url, nil)
-	if err != nil {
-		return light, err
-	}
-
-	client := http.Client{}
-	res, err := client.Do(req)
+	res, err := h.GetResource(h.GetApiUrl("/lights/", strconv.Itoa(i)))
 	if err != nil {
 		return light, err
 	}
@@ -101,41 +90,30 @@ func (h *Hue) GetLight(i int) (*Light, error) {
 	}
 
 	return light, nil
-} 
+}
 
 // SetLight allows for controlling a light state properties.
 // See: https://developers.meethue.com/documentation/lights-api#15_set_light_attributes_rename
-func (h *Hue) SetLight(i int, l State) ([]Response, error) {
-	
-	var r []Response
+func (h *Hue) SetLight(i int, l State) ([]*Response, error) {
 
-	id := strconv.Itoa(i)
-	url := h.GetApiUrl("/lights/", id, "/state")
+	var r []*Response
 
 	data, err := json.Marshal(&l)
 	if err != nil {
 		return r, err
 	}
 
-	body := strings.NewReader(string(data))
-	
-	req, err := http.NewRequest("PUT", url, body)
+	url := h.GetApiUrl("/lights/", strconv.Itoa(i), "/state")
+	res, err := h.PutResource(url, string(data))
 	if err != nil {
-		return r, err
-	}
-	req.Header.Set("Content-Type", "application/json")
-
-	client := http.Client{}
-	res, err := client.Do(req)
-	if err != nil {
-		return r, err
+		return nil, err
 	}
 
 	defer res.Body.Close()
 
 	err = json.NewDecoder(res.Body).Decode(&r)
 	if err != nil {
-		return r, err
+		return nil, err
 	}
 
 	return r, nil
@@ -144,9 +122,9 @@ func (h *Hue) SetLight(i int, l State) ([]Response, error) {
 
 // Search starts a search for new lights
 // See: https://developers.meethue.com/documentation/lights-api#13_search_for_new_lights
-func (h *Hue) Search() ([]Response, error) {
+func (h *Hue) Search() ([]*Response, error) {
 
-	var r []Response
+	var r []*Response
 
 	url := h.GetApiUrl("/lights/")
 
@@ -199,7 +177,7 @@ func (h *Hue) GetNewLights() (*NewLight, error){
 	}
 
 	err = json.Unmarshal(body, &n)
-	newlights := make([]Light, 0, len(n))
+	lights := make([]*Light, 0, len(n))
 
 	for i, l := range n {
 		if i != "lastscan" {
@@ -207,7 +185,7 @@ func (h *Hue) GetNewLights() (*NewLight, error){
 			if err != nil {
 				return result, err
 			}
-			newlights = append(newlights, l)
+			lights = append(lights, &l)
 		}
 	}
 
@@ -216,7 +194,7 @@ func (h *Hue) GetNewLights() (*NewLight, error){
 		return result, err
 	}
 
-	resu := &NewLight{ &newlights, result.LastScan}
+	resu := &NewLight{lights, result.LastScan}
 
 	return resu, nil
 
@@ -224,9 +202,9 @@ func (h *Hue) GetNewLights() (*NewLight, error){
 
 // DeleteLight deletes a light
 // See: https://developers.meethue.com/documentation/lights-api#17_delete_lights
-func (h *Hue) DeleteLight(i int) ([]Response, error) {
+func (h *Hue) DeleteLight(i int) ([]*Response, error) {
 
-	var r []Response
+	var r []*Response
 
 	id := strconv.Itoa(i)
 	url := h.GetApiUrl("/lights/", id)
@@ -255,9 +233,9 @@ func (h *Hue) DeleteLight(i int) ([]Response, error) {
 
 // RenameLight sets the name attribute on a light
 // See: https://developers.meethue.com/documentation/lights-api#15_set_light_attributes_rename
-func (h *Hue) RenameLight(i int, n string) ([]Response, error) {
+func (h *Hue) RenameLight(i int, n string) ([]*Response, error) {
 
-	var r []Response
+	var r []*Response
 	var l *Light = &Light{Name: n}
 
 	id := strconv.Itoa(i)
@@ -268,7 +246,7 @@ func (h *Hue) RenameLight(i int, n string) ([]Response, error) {
 		return r, err
 	}
 
-	body := strings.NewReader(string(data))	
+	body := strings.NewReader(string(data))
 
 	req, err := http.NewRequest("PUT", url, body)
 	if err != nil {
@@ -278,7 +256,7 @@ func (h *Hue) RenameLight(i int, n string) ([]Response, error) {
 	client := http.Client{}
 	res, err := client.Do(req)
 	if err != nil {
-		return r, err 
+		return r, err
 	}
 
 	defer res.Body.Close()
@@ -290,5 +268,3 @@ func (h *Hue) RenameLight(i int, n string) ([]Response, error) {
 
 	return r, nil
 }
-
-

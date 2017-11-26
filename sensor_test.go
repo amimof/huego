@@ -31,5 +31,43 @@ func TestGetSensor(t *testing.T) {
 			t.Error(err)
 		}
 		t.Logf("Got sensor name=%s", s.Name)
+		break
 	}
+}
+
+func TestCreateSensor(t *testing.T) {
+	hue := New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	newSensor := &Sensor{Name: "TestSensor"}
+	response, err := hue.CreateSensor(newSensor)
+	if err != nil {
+		t.Error(err)
+	}
+	for _, r := range response {
+		t.Logf("Response from put: Success=%v Error=%v", r.Success, r.Error)
+	}
+}
+
+func TestFindSensors(t *testing.T) {
+	hue := New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	result, err := hue.FindSensors()
+	if err != nil {
+		t.Error(err)
+	}
+	for _, r := range result {
+		t.Logf("Response from search: Success=%v Error=%v", r.Success, r.Error)
+	}
+}
+
+
+func TestGetNewSensors(t *testing.T) {
+	hue := New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	newSensors, err := hue.GetNewSensors()
+	if err != nil {
+		t.Error(err)
+	}
+	t.Logf("Found %d new sensors. LastScan: %s", len(newSensors.Sensors), newSensors.LastScan)
+	for _, sensor := range newSensors.Sensors {
+		t.Log(sensor)
+	}
+
 }
