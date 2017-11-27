@@ -55,9 +55,9 @@ func TestSetLight(t *testing.T) {
 	}
 }
 
-func TestSearch(t *testing.T) {
+func TestFindLights(t *testing.T) {
 	hue := New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
-	search, err := hue.Search()
+	search, err := hue.FindLights()
 	if err != nil {
 		t.Error(err)
 	}

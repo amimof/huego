@@ -13,6 +13,7 @@ import (
 	"strings"
 	//"fmt"
 	"io"
+	"io/ioutil"
 )
 
 type Hue struct {
@@ -45,7 +46,7 @@ func (h *Hue) GetApiUrl(str ...string) string {
 
 
 // GET a resource from the url
-func (h *Hue) GetResource(url string) (*http.Response, error) {
+func (h *Hue) GetResource(url string) ([]byte, error) {
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -58,13 +59,20 @@ func (h *Hue) GetResource(url string) (*http.Response, error) {
 		return nil, err
 	}
 
-	return res, nil
+	defer res.Body.Close()
+
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	return body, nil
 }
 
 // PUT a resource to a url
-func (h *Hue) PutResource(url, data string) (*http.Response, error) {
+func (h *Hue) PutResource(url string, data []byte) ([]byte, error) {
 
-	body := strings.NewReader(data)
+	body := strings.NewReader(string(data))
 
 	req, err := http.NewRequest("PUT", url, body)
 	if err != nil {
@@ -79,14 +87,21 @@ func (h *Hue) PutResource(url, data string) (*http.Response, error) {
 		return nil, err
 	}
 
-	return res, nil
+	defer res.Body.Close()
+
+	result, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
 
 }
 
 // PUT a resource to a url
-func (h *Hue) PostResource(url, data string) (*http.Response, error) {
+func (h *Hue) PostResource(url string, data []byte) ([]byte, error) {
 
-	body := strings.NewReader(data)
+	body := strings.NewReader(string(data))
 
 	req, err := http.NewRequest("POST", url, body)
 	if err != nil {
@@ -101,12 +116,19 @@ func (h *Hue) PostResource(url, data string) (*http.Response, error) {
 		return nil, err
 	}
 
-	return res, nil
+	defer res.Body.Close()
+
+	result, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
 
 }
 
 // DELETE a resource to a url
-func (h *Hue) DeleteResource(url string) (*http.Response, error) {
+func (h *Hue) DeleteResource(url string) ([]byte, error) {
 
 	req, err := http.NewRequest("DELETE", url, nil)
 	if err != nil {
@@ -121,7 +143,14 @@ func (h *Hue) DeleteResource(url string) (*http.Response, error) {
 		return nil, err
 	}
 
-	return res, nil
+	defer res.Body.Close()
+
+	result, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
 
 }
 

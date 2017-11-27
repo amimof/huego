@@ -1,11 +1,8 @@
 package huego
 
 import (
-	"net/http"
 	"encoding/json"
 	"strconv"
-	"io/ioutil"
-	"strings"
 )
 
 type Group struct {
@@ -47,9 +44,7 @@ func (h *Hue) GetGroups() ([]*Group, error) {
 		return nil, err
 	}
 
-	defer res.Body.Close()
-
-	err = json.NewDecoder(res.Body).Decode(&m)
+	err = json.Unmarshal(res, &m)
 	groups := make([]*Group, 0, len(m))
 
 	for i, g := range m {
@@ -78,9 +73,7 @@ func (h *Hue) GetGroup(i int) (*Group, error) {
 		return nil, err
 	}
 
-	defer res.Body.Close()
-
-	err = json.NewDecoder(res.Body).Decode(&g)
+	err = json.Unmarshal(res, &g)
 	if err != nil {
 		return nil, err
 	}
@@ -103,23 +96,12 @@ func (h *Hue) SetGroupState(i int, l *Action) ([]*Response, error) {
 		return r, err
 	}
 
-	body := strings.NewReader(string(data))
-
-	req, err := http.NewRequest("PUT", url, body)
+	res, err := h.PutResource(url, data)
 	if err != nil {
-		return r, err
-	}
-	req.Header.Set("Content-Type", "application/json")
-
-	client := http.Client{}
-	res, err := client.Do(req)
-	if err != nil {
-		return r, err
+		return nil, err
 	}
 
-	defer res.Body.Close()
-
-	err = json.NewDecoder(res.Body).Decode(&r)
+	err = json.Unmarshal(res, &r)
 	if err != nil {
 		return r, err
 	}
@@ -140,23 +122,12 @@ func (h *Hue) SetGroup(i int, l *Group) ([]*Response, error) {
 		return r, err
 	}
 
-	body := strings.NewReader(string(data))
-
-	req, err := http.NewRequest("PUT", url, body)
+	res, err := h.PutResource(url, data)
 	if err != nil {
-		return r, err
-	}
-	req.Header.Set("Content-Type", "application/json")
-
-	client := http.Client{}
-	res, err := client.Do(req)
-	if err != nil {
-		return r, err
+		return nil, err
 	}
 
-	defer res.Body.Close()
-
-	err = json.NewDecoder(res.Body).Decode(&r)
+	err = json.Unmarshal(res, &r)
 	if err != nil {
 		return r, err
 	}
@@ -174,19 +145,15 @@ func (h *Hue) CreateGroup(g *Group) ([]*Response, error) {
 
 	data, err := json.Marshal(&g)
 	if err != nil {
-		return r, err
+		return nil, err
 	}
 
-	body := strings.NewReader(string(data))
-
-	res, err := http.Post(url, "application/json", body)
+	res, err := h.PostResource(url, data)
 	if err != nil {
-		return r, err
+		return nil, err
 	}
 
-	defer res.Body.Close()
-
-	err = json.NewDecoder(res.Body).Decode(&r)
+	err = json.Unmarshal(res, &r)
 	if err != nil {
 		return r, err
 	}
@@ -203,25 +170,12 @@ func (h *Hue) DeleteGroup(i int) ([]*Response, error) {
 	id := strconv.Itoa(i)
 	url := h.GetApiUrl("/groups/", id)
 
-	req, err := http.NewRequest("DELETE", url, nil)
+	res, err := h.DeleteResource(url)
 	if err != nil {
-		return r, err
+		return nil, err
 	}
 
-	client := http.Client{}
-	res, err := client.Do(req)
-	if err != nil {
-		return r, err
-	}
-
-	defer res.Body.Close()
-
-	b, err := ioutil.ReadAll(res.Body)
-	if err != nil {
-		return r, err
-	}
-
-	err = json.Unmarshal(b, &r)
+	err = json.Unmarshal(res, &r)
 	if err != nil {
 		return r, err
 	}

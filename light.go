@@ -1,11 +1,8 @@
 package huego
 
 import (
-	"net/http"
 	"encoding/json"
 	"strconv"
-	"strings"
-	"io/ioutil"
 )
 
 type Light struct {
@@ -50,9 +47,7 @@ func (h *Hue) GetLights() ([]*Light, error) {
 		return nil, err
 	}
 
-	defer res.Body.Close()
-
-	err = json.NewDecoder(res.Body).Decode(&m)
+	err = json.Unmarshal(res, &m)
 	if err != nil {
 		return nil, err
 	}
@@ -82,9 +77,7 @@ func (h *Hue) GetLight(i int) (*Light, error) {
 		return light, err
 	}
 
-	defer res.Body.Close()
-
-	err = json.NewDecoder(res.Body).Decode(&light)
+	err = json.Unmarshal(res, &light)
 	if err != nil {
 		return light, err
 	}
@@ -104,14 +97,12 @@ func (h *Hue) SetLight(i int, l State) ([]*Response, error) {
 	}
 
 	url := h.GetApiUrl("/lights/", strconv.Itoa(i), "/state")
-	res, err := h.PutResource(url, string(data))
+	res, err := h.PutResource(url, data)
 	if err != nil {
 		return nil, err
 	}
 
-	defer res.Body.Close()
-
-	err = json.NewDecoder(res.Body).Decode(&r)
+	err = json.Unmarshal(res, &r)
 	if err != nil {
 		return nil, err
 	}
@@ -122,26 +113,18 @@ func (h *Hue) SetLight(i int, l State) ([]*Response, error) {
 
 // Search starts a search for new lights
 // See: https://developers.meethue.com/documentation/lights-api#13_search_for_new_lights
-func (h *Hue) Search() ([]*Response, error) {
+func (h *Hue) FindLights() ([]*Response, error) {
 
 	var r []*Response
 
 	url := h.GetApiUrl("/lights/")
 
-	req, err := http.NewRequest("POST", url, nil)
+	res, err := h.PostResource(url, nil)
 	if err != nil {
-		return r, err
+		return nil, err
 	}
 
-	client := http.Client{}
-	res, err := client.Do(req)
-	if err != nil {
-		return r, err
-	}
-
-	defer res.Body.Close()
-
-	err = json.NewDecoder(res.Body).Decode(&r)
+	err = json.Unmarshal(res, &r)
 	if err != nil {
 		return r, err
 	}
@@ -158,25 +141,12 @@ func (h *Hue) GetNewLights() (*NewLight, error){
 
 	url := h.GetApiUrl("/lights/new")
 
-	req, err := http.NewRequest("GET", url, nil)
+	res, err := h.GetResource(url)
 	if err != nil {
 		return result, err
 	}
 
-	client := http.Client{}
-	res, err := client.Do(req)
-	if err != nil {
-		return result, err
-	}
-
-	defer res.Body.Close()
-
-	body, err := ioutil.ReadAll(res.Body)
-	if err != nil {
-		return result, err
-	}
-
-	err = json.Unmarshal(body, &n)
+	err = json.Unmarshal(res, &n)
 	lights := make([]*Light, 0, len(n))
 
 	for i, l := range n {
@@ -189,7 +159,7 @@ func (h *Hue) GetNewLights() (*NewLight, error){
 		}
 	}
 
-	err = json.Unmarshal(body, &result)
+	err = json.Unmarshal(res, &result)
 	if err != nil {
 		return result, err
 	}
@@ -209,20 +179,12 @@ func (h *Hue) DeleteLight(i int) ([]*Response, error) {
 	id := strconv.Itoa(i)
 	url := h.GetApiUrl("/lights/", id)
 
-	req, err := http.NewRequest("DELETE", url, nil)
+	res, err := h.DeleteResource(url)
 	if err != nil {
-		return r, err
+		return nil, err
 	}
 
-	client := http.Client{}
-	res, err := client.Do(req)
-	if err != nil {
-		return r, err
-	}
-
-	defer res.Body.Close()
-
-	err = json.NewDecoder(res.Body).Decode(&r)
+	err = json.Unmarshal(res, &r)
 	if err != nil {
 		return r, err
 	}
@@ -246,22 +208,12 @@ func (h *Hue) RenameLight(i int, n string) ([]*Response, error) {
 		return r, err
 	}
 
-	body := strings.NewReader(string(data))
-
-	req, err := http.NewRequest("PUT", url, body)
+	res, err := h.PutResource(url, data)
 	if err != nil {
-		return r, err
+		return nil, err
 	}
 
-	client := http.Client{}
-	res, err := client.Do(req)
-	if err != nil {
-		return r, err
-	}
-
-	defer res.Body.Close()
-
-	err = json.NewDecoder(res.Body).Decode(&r)
+	err = json.Unmarshal(res, &r)
 	if err != nil {
 		return r, err
 	}

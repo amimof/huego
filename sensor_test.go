@@ -69,5 +69,36 @@ func TestGetNewSensors(t *testing.T) {
 	for _, sensor := range newSensors.Sensors {
 		t.Log(sensor)
 	}
-
 }
+
+
+func TestUpdateSensor(t *testing.T) {
+	hue := New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	sensors, err := hue.GetSensors()
+	if err != nil {
+		t.Error(err)
+	}
+	t.Logf("Found %d sensors, setting the first one", len(sensors))
+	for _, sensor := range sensors {
+		response, err := hue.UpdateSensor(sensor.Id, sensor)
+		if err != nil {
+			t.Error(err)
+		}
+		for _, r := range response {
+			t.Logf("Response from put: Success=%v Error=%v", r.Success, r.Error)
+		}
+		break
+	}
+}
+
+// func TestDeleteSensor(t *testing.T) {
+// 	res, err := hue.DeleteSensor(1)
+// 	if err != nil {
+// 		t.Log(err)
+// 		t.Fail()
+// 	} else {
+// 		for _, r := range res {
+// 			t.Log(r.Success, r.Error)
+// 		}
+// 	}
+// }

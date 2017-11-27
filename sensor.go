@@ -1,10 +1,8 @@
 package huego
 
 import (
-	"net/http"
 	"encoding/json"
 	"strconv"
-	"io/ioutil"
 )
 
 type Sensor struct {
@@ -39,14 +37,12 @@ func (h *Hue) GetSensors() ([]Sensor, error) {
 	s := map[string]Sensor{}
 	url := h.GetApiUrl("/sensors/")
 
-	res, err := http.Get(url)
+	res, err := h.GetResource(url)
 	if err != nil {
 		return nil, err
 	}
 
-	defer res.Body.Close()
-
-	err = json.NewDecoder(res.Body).Decode(&s)
+	err = json.Unmarshal(res, &s)
 	if err != nil {
 		return nil, err
 	}
@@ -71,14 +67,12 @@ func (h *Hue) GetSensor(i int) (*Sensor, error) {
 	id := strconv.Itoa(i)
 	url := h.GetApiUrl("/sensors/", id)
 
-	res, err := http.Get(url)
+	res, err := h.GetResource(url)
 	if err != nil {
 		return r, err
 	}
 
-	defer res.Body.Close()
-
-	err = json.NewDecoder(res.Body).Decode(&r)
+	err = json.Unmarshal(res, &r)
 	if err != nil {
 		return r, err
 	}
@@ -98,14 +92,12 @@ func (h *Hue) CreateSensor(s *Sensor) ([]*Response, error) {
 	}
 
 	url := h.GetApiUrl("/sensors/")
-	res, err := h.PostResource(url, string(data))
+	res, err := h.PostResource(url, data)
 	if err != nil {
 		return nil, err
 	}
 
-	defer res.Body.Close()
-
-	err = json.NewDecoder(res.Body).Decode(&r)
+	err = json.Unmarshal(res, &r)
 	if err != nil {
 		return nil, err
 	}
@@ -120,11 +112,9 @@ func (h *Hue) FindSensors() ([]*Response, error) {
 
 	url := h.GetApiUrl("/sensors/")
 
-	res, err := h.PostResource(url, "")
+	res, err := h.PostResource(url, nil)
 
-	defer res.Body.Close()
-
-	err = json.NewDecoder(res.Body).Decode(&r)
+	err = json.Unmarshal(res, &r)
 	if err != nil {
 		return r, err
 	}
@@ -145,14 +135,7 @@ func (h *Hue) GetNewSensors() (*NewSensor, error){
 		return nil, err
 	}
 
-	defer res.Body.Close()
-
-	body, err := ioutil.ReadAll(res.Body)
-	if err != nil {
-		return nil, err
-	}
-
-	err = json.Unmarshal(body, &n)
+	err = json.Unmarshal(res, &n)
 	sensors := make([]*Sensor, 0, len(n))
 
 	for i, l := range n {
@@ -165,7 +148,7 @@ func (h *Hue) GetNewSensors() (*NewSensor, error){
 		}
 	}
 
-	err = json.Unmarshal(body, &result)
+	err = json.Unmarshal(res, &result)
 	if err != nil {
 		return nil, err
 	}
@@ -177,7 +160,7 @@ func (h *Hue) GetNewSensors() (*NewSensor, error){
 }
 
 // Update a sensor
-func (h *Hue) UpdateSensor(i int, sensor *Sensor) ([]*Response, error) {
+func (h *Hue) UpdateSensor(i int, sensor Sensor) ([]*Response, error) {
 	var r []*Response
 
 	data, err := json.Marshal(&sensor)
@@ -186,14 +169,12 @@ func (h *Hue) UpdateSensor(i int, sensor *Sensor) ([]*Response, error) {
 	}
 
 	url := h.GetApiUrl("/sensors/", strconv.Itoa(i))
-	res, err := h.PutResource(url, string(data))
+	res, err := h.PutResource(url, data)
 	if err != nil {
 		return nil, err
 	}
 
-	defer res.Body.Close()
-
-	err = json.NewDecoder(res.Body).Decode(&r)
+	err = json.Unmarshal(res, &r)
 	if err != nil {
 		return nil, err
 	}
@@ -205,16 +186,14 @@ func (h *Hue) DeleteSensor(i int) ([]*Response, error) {
 	var r []*Response
 
 	id := strconv.Itoa(i)
-	url := h.GetApiUrl("/lights/", id)
+	url := h.GetApiUrl("/sensors/", id)
 
 	res, err := h.DeleteResource(url)
 	if err != nil {
 		return nil, err
 	}
 
-	defer res.Body.Close()
-
-	err = json.NewDecoder(res.Body).Decode(&r)
+	err = json.Unmarshal(res, &r)
 	if err != nil {
 		return r, err
 	}
@@ -231,14 +210,12 @@ func (h *Hue) UpdateSensorConfig(i int, config *SensorConfig) ([]*Response, erro
 	}
 
 	url := h.GetApiUrl("/sensors/", strconv.Itoa(i), "/config")
-	res, err := h.PutResource(url, string(data))
+	res, err := h.PutResource(url, data)
 	if err != nil {
 		return nil, err
 	}
 
-	defer res.Body.Close()
-
-	err = json.NewDecoder(res.Body).Decode(&r)
+	err = json.Unmarshal(res, &r)
 	if err != nil {
 		return nil, err
 	}
