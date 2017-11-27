@@ -80,41 +80,31 @@ func TestGetNewLights(t *testing.T) {
 
 }
 
-func TestRenameLight(t *testing.T) {
+func TestUpdateLight(t *testing.T) {
 	hue := New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	lights, err := hue.GetLights()
 	if err != nil {
 		t.Error(err)
 	}
-	t.Logf("Found %d lights, renaming the first one", len(lights))
+	t.Logf("Found %d lights, updating the first one", len(lights))
 	for _, light := range lights {
-
-		oriName := light.Name
-		newName := "Huego Test Lamp Name"
-
-		_, err := hue.RenameLight(light.Id, newName)
+		_, err := hue.UpdateLight(light.Id, light)
 		if err != nil {
 			t.Error(err)
 		}
-		t.Logf("Renamed light %d to %s", light.Id, newName)
-
-		_, err = hue.RenameLight(light.Id, oriName)
-		if err != nil {
-			t.Error(err)
-		}
-		t.Logf("Renamed light %d back to %s", light.Id, oriName)
 		break
 	}
 }
 
-// func TestDeleteLight(t *testing.T) {
-// 	res, err := hue.DeleteLight(3)
-// 	if err != nil {
-// 		t.Log(err)
-// 		t.Fail()
-// 	} else {
-// 		for _, r := range res {
-// 			t.Log(r.Success, r.Error)
-// 		}
-// 	}
-// }
+func TestDeleteLight(t *testing.T) {
+	hue := New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	res, err := hue.DeleteLight(3)
+	if err != nil {
+		t.Log(err)
+		t.Fail()
+	} else {
+		for _, r := range res {
+			t.Log(r.Success, r.Error)
+		}
+	}
+}

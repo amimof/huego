@@ -57,14 +57,34 @@ func TestCreateSchedule(t *testing.T) {
 	}
 }
 
-// func TestDeleteSchedule(t *testing.T) {
-// 	res, err := hue.DeleteSchedule(1)
-// 	if err != nil {
-// 		t.Log(err)
-// 		t.Fail()
-// 	} else {
-// 		for _, r := range res {
-// 			t.Log(r.Success, r.Error)
-// 		}
-// 	}
-// }
+func TestUpdateSchedule(t *testing.T) {
+	hue := New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	schedules, err := hue.GetSensors()
+	if err != nil {
+		t.Error(err)
+	}
+	t.Logf("Found %d schedules, setting the first one", len(schedules))
+	for _, schedule := range schedules {
+		response, err := hue.UpdateSensor(schedule.Id, schedule)
+		if err != nil {
+			t.Error(err)
+		}
+		for _, r := range response {
+			t.Logf("Response from put: Success=%v Error=%v", r.Success, r.Error)
+		}
+		break
+	}
+}
+
+func TestDeleteSchedule(t *testing.T) {
+	hue := New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	res, err := hue.DeleteSchedule(1)
+	if err != nil {
+		t.Log(err)
+		t.Fail()
+	} else {
+		for _, r := range res {
+			t.Log(r.Success, r.Error)
+		}
+	}
+}

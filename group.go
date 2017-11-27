@@ -109,9 +109,8 @@ func (h *Hue) SetGroupState(i int, l *Action) ([]*Response, error) {
 	return r, nil
 }
 
-// SetGroup sets the name, class and light members of a group with the id of i
-// See: https://developers.meethue.com/documentation/groups-api#24_set_group_attributes
-func (h *Hue) SetGroup(i int, l *Group) ([]*Response, error) {
+// Update a group
+func (h *Hue) UpdateGroup(i int, l *Group) ([]*Response, error) {
 	var r []*Response
 
 	id := strconv.Itoa(i)

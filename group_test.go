@@ -51,8 +51,20 @@ func TestSetGroupState(t *testing.T) {
 	}
 }
 
-func TestSetGroup(t *testing.T) {
-	//hue := New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+func TestUpdateGroup(t *testing.T) {
+	hue := New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	groups, err := hue.GetGroups()
+	if err != nil {
+		t.Error(err)
+	}
+	t.Logf("Found %d groups, updating the first one", len(groups))
+	for _, group := range groups {
+		_, err := hue.UpdateGroup(group.Id, group)
+		if err != nil {
+			t.Error(err)
+		}
+		break
+	}
 }
 
 func TestCreateGroup(t *testing.T) {

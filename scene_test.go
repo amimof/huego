@@ -67,14 +67,15 @@ func TestUpdateScene(t *testing.T) {
 	}
 }
 
-// func TestDeleteScene(t *testing.T) {
-// 	res, err := hue.DeleteScene(1)
-// 	if err != nil {
-// 		t.Log(err)
-// 		t.Fail()
-// 	} else {
-// 		for _, r := range res {
-// 			t.Log(r.Success, r.Error)
-// 		}
-// 	}
-// }
+func TestDeleteScene(t *testing.T) {
+	hue := New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	res, err := hue.DeleteScene(1)
+	if err != nil {
+		t.Log(err)
+		t.Fail()
+	} else {
+		for _, r := range res {
+			t.Log(r.Success, r.Error)
+		}
+	}
+}

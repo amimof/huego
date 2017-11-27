@@ -91,14 +91,15 @@ func TestUpdateSensor(t *testing.T) {
 	}
 }
 
-// func TestDeleteSensor(t *testing.T) {
-// 	res, err := hue.DeleteSensor(1)
-// 	if err != nil {
-// 		t.Log(err)
-// 		t.Fail()
-// 	} else {
-// 		for _, r := range res {
-// 			t.Log(r.Success, r.Error)
-// 		}
-// 	}
-// }
+func TestDeleteSensor(t *testing.T) {
+	hue := New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	res, err := hue.DeleteSensor(1)
+	if err != nil {
+		t.Log(err)
+		t.Fail()
+	} else {
+		for _, r := range res {
+			t.Log(r.Success, r.Error)
+		}
+	}
+}

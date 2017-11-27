@@ -193,17 +193,15 @@ func (h *Hue) DeleteLight(i int) ([]*Response, error) {
 
 }
 
-// RenameLight sets the name attribute on a light
-// See: https://developers.meethue.com/documentation/lights-api#15_set_light_attributes_rename
-func (h *Hue) RenameLight(i int, n string) ([]*Response, error) {
+// Update a light
+func (h *Hue) UpdateLight(i int, light *Light) ([]*Response, error) {
 
 	var r []*Response
-	var l *Light = &Light{Name: n}
 
 	id := strconv.Itoa(i)
 	url := h.GetApiUrl("/lights/", id)
 
-	data, err := json.Marshal(&l)
+	data, err := json.Marshal(&light)
 	if err != nil {
 		return r, err
 	}
