@@ -80,7 +80,7 @@ func (h *Hue) GetRule(i int) (*Rule, error) {
 // Create a rule
 func (h *Hue) CreateRule(s *Rule) ([]*Response, error) {
 
-  var r []*Response
+  var a []*ApiResponse
 
   data, err := json.Marshal(&s)
   if err != nil {
@@ -93,22 +93,28 @@ func (h *Hue) CreateRule(s *Rule) ([]*Response, error) {
     return nil, err
   }
 
-  err = json.Unmarshal(res, &r)
+  err = json.Unmarshal(res, &a)
   if err != nil {
     return nil, err
   }
 
-  return r, nil
+  resp, err := handleResponse(a)
+  if err != nil {
+    return nil, err
+  }
+
+  return resp, nil
 
 }
 
 // Update a rule
 func (h *Hue) UpdateRule(i int, rule *Rule) ([]*Response, error) {
-	var r []*Response
+  
+  var a []*ApiResponse
 
 	data, err := json.Marshal(&rule)
 	if err != nil {
-		return r, err
+		return nil, err
 	}
 
 	url := h.GetApiUrl("/rules/", strconv.Itoa(i))
@@ -117,17 +123,23 @@ func (h *Hue) UpdateRule(i int, rule *Rule) ([]*Response, error) {
 		return nil, err
 	}
 
-	err = json.Unmarshal(res, &r)
+	err = json.Unmarshal(res, &a)
 	if err != nil {
 		return nil, err
-	}
+  }
+  
+  resp, err := handleResponse(a)
+  if err != nil {
+    return nil, err
+  }
 
-	return r, nil
+	return resp, nil
 }
 
 // Delete a rule
 func (h *Hue) DeleteRule(i int) ([]*Response, error) {
-	var r []*Response
+  
+  var a []*ApiResponse
 
 	id := strconv.Itoa(i)
 	url := h.GetApiUrl("/rules/", id)
@@ -137,10 +149,15 @@ func (h *Hue) DeleteRule(i int) ([]*Response, error) {
 		return nil, err
 	}
 
-	err = json.Unmarshal(res, &r)
+	err = json.Unmarshal(res, &a)
 	if err != nil {
-		return r, err
-	}
+		return nil, err
+  }
+  
+  resp, err := handleResponse(a)
+  if err != nil {
+    return nil, err
+  }
 
-	return r, nil
+	return resp, nil
 }

@@ -2,7 +2,6 @@ package huego
 
 import(
   "encoding/json"
-  "strconv"
 )
 
 type Config struct {
@@ -126,10 +125,18 @@ func (h *Hue) GetConfig() (*Config, error) {
 // Create a user
 func (h *Hue) CreateUser(n string) ([]*Response, error) {
 
-  var r []*Response
+  var a []*ApiResponse
 
-  url := h.GetApiUrl("/config/whitelist/")
-  data, err := json.Marshal([]byte{`{"devicetype": "fixit"}`})
+  body := struct {
+    DeviceType string `json:"devicetype,omitempty"`
+    GenerateClientKey bool `json:"generateclientkey,omitempty"`
+  }{
+    n,
+    true,
+  }
+
+  url := h.GetApiUrl("/")
+  data, err := json.Marshal(&body)
   if err != nil {
     return nil, err
   }
@@ -139,25 +146,30 @@ func (h *Hue) CreateUser(n string) ([]*Response, error) {
     return nil, err
   }
 
-  err = json.Unmarshal(res, &r)
+  err = json.Unmarshal(res, &a)
   if err != nil {
     return nil, err
   }
 
-  return r, nil
+  resp, err := handleResponse(a)
+  if err != nil {
+    return nil, err
+  }
+
+  return resp, nil
 
 }
 
 // Update configuration
-func (h *Hue) UpdateConfig(i int, c *Config) ([]*Response, error) {
-	var r []*Response
+func (h *Hue) UpdateConfig(c *Config) ([]*Response, error) {
 
-	id := strconv.Itoa(i)
+	var a []*ApiResponse
+
 	url := h.GetApiUrl("/config/")
 
 	data, err := json.Marshal(&c)
 	if err != nil {
-		return r, err
+		return nil, err
 	}
 
 	res, err := h.PutResource(url, data)
@@ -165,18 +177,23 @@ func (h *Hue) UpdateConfig(i int, c *Config) ([]*Response, error) {
 		return nil, err
 	}
 
-	err = json.Unmarshal(res, &r)
+	err = json.Unmarshal(res, &a)
 	if err != nil {
-		return r, err
+		return nil, err
 	}
 
-	return r, nil
+  resp, err := handleResponse(a)
+  if err != nil {
+    return nil, err
+  }
+
+	return resp, nil
 }
 
 // Delete a user from configuration
-func (h *Hue) DeeteUser(n string) ([]*Response, error) {
+func (h *Hue) DeleteUser(n string) ([]*Response, error) {
 
-  var r []*Response
+  var a []*ApiResponse
 
   url := h.GetApiUrl("/config/whitelist/", n)
 
@@ -185,12 +202,17 @@ func (h *Hue) DeeteUser(n string) ([]*Response, error) {
     return nil, err
   }
 
-  err = json.Unmarshal(res, &r)
+  err = json.Unmarshal(res, &a)
   if err != nil {
     return nil, err
   }
 
-  return r, nil
+  resp, err := handleResponse(a)
+  if err != nil {
+    return nil, err
+  }
+
+  return resp, nil
 
 }
 

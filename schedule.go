@@ -74,7 +74,7 @@ func (h *Hue) GetSchedule(i int) (*Schedule, error) {
 // Create a schedule
 func (h *Hue) CreateSchedule(s *Schedule) ([]*Response, error) {
 
-  var r []*Response
+  var a []*ApiResponse
 
   data, err := json.Marshal(&s)
   if err != nil {
@@ -87,22 +87,28 @@ func (h *Hue) CreateSchedule(s *Schedule) ([]*Response, error) {
     return nil, err
   }
 
-  err = json.Unmarshal(res, &r)
+  err = json.Unmarshal(res, &a)
   if err != nil {
     return nil, err
   }
 
-  return r, nil
+  resp, err := handleResponse(a)
+  if err != nil {
+    return nil, err
+  }
+
+  return resp, nil
 
 }
 
 // Update a schedule
 func (h *Hue) UpdateSchedule(i int, schedule *Schedule) ([]*Response, error) {
-	var r []*Response
+  
+  var a []*ApiResponse
 
 	data, err := json.Marshal(&schedule)
 	if err != nil {
-		return r, err
+		return nil, err
 	}
 
 	url := h.GetApiUrl("/schedules/", strconv.Itoa(i))
@@ -111,17 +117,23 @@ func (h *Hue) UpdateSchedule(i int, schedule *Schedule) ([]*Response, error) {
 		return nil, err
 	}
 
-	err = json.Unmarshal(res, &r)
+	err = json.Unmarshal(res, &a)
 	if err != nil {
 		return nil, err
-	}
+  }
+  
+  resp, err := handleResponse(a)
+  if err != nil {
+    return nil, err
+  }
 
-	return r, nil
+	return resp, nil
 }
 
 // Delete a schedule
 func (h *Hue) DeleteSchedule(i int) ([]*Response, error) {
-	var r []*Response
+  
+  var a []*ApiResponse
 
 	id := strconv.Itoa(i)
 	url := h.GetApiUrl("/schedules/", id)
@@ -131,10 +143,15 @@ func (h *Hue) DeleteSchedule(i int) ([]*Response, error) {
 		return nil, err
 	}
 
-	err = json.Unmarshal(res, &r)
+	err = json.Unmarshal(res, &a)
 	if err != nil {
-		return r, err
-	}
+		return nil, err
+  }
+  
+  resp, err := handleResponse(a)
+  if err != nil {
+    return nil, err
+  }
 
-	return r, nil
+	return resp, nil
 }

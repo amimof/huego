@@ -1,12 +1,13 @@
-package huego
+package huego_test
 
 import (
 	"testing"
 	"os"
+	"github.com/amimof/huego"
 )
 
 func TestGetSensors(t *testing.T) {
-	hue := New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	sensors, err := hue.GetSensors()
 	if err != nil {
 		t.Error(err)
@@ -18,7 +19,7 @@ func TestGetSensors(t *testing.T) {
 }
 
 func TestGetSensor(t *testing.T) {
-	hue := New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	sensors, err := hue.GetSensors()
 	if err != nil {
 		t.Error(err)
@@ -36,31 +37,31 @@ func TestGetSensor(t *testing.T) {
 }
 
 func TestCreateSensor(t *testing.T) {
-	hue := New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
-	newSensor := &Sensor{Name: "TestSensor"}
+	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	newSensor := &huego.Sensor{Name: "TestSensor"}
 	response, err := hue.CreateSensor(newSensor)
 	if err != nil {
 		t.Error(err)
 	}
 	for _, r := range response {
-		t.Logf("Response from put: Success=%v Error=%v", r.Success, r.Error)
+		t.Logf("Address: %s Value: %s Interface: %s", r.Address, r.Value, r.Interface)
 	}
 }
 
 func TestFindSensors(t *testing.T) {
-	hue := New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	result, err := hue.FindSensors()
 	if err != nil {
 		t.Error(err)
 	}
 	for _, r := range result {
-		t.Logf("Response from search: Success=%v Error=%v", r.Success, r.Error)
+		t.Logf("Address: %s Value: %s Interface: %s", r.Address, r.Value, r.Interface)
 	}
 }
 
 
 func TestGetNewSensors(t *testing.T) {
-	hue := New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	newSensors, err := hue.GetNewSensors()
 	if err != nil {
 		t.Error(err)
@@ -73,7 +74,7 @@ func TestGetNewSensors(t *testing.T) {
 
 
 func TestUpdateSensor(t *testing.T) {
-	hue := New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	sensors, err := hue.GetSensors()
 	if err != nil {
 		t.Error(err)
@@ -85,21 +86,21 @@ func TestUpdateSensor(t *testing.T) {
 			t.Error(err)
 		}
 		for _, r := range response {
-			t.Logf("Response from put: Success=%v Error=%v", r.Success, r.Error)
+			t.Logf("Address: %s Value: %s Interface: %s", r.Address, r.Value, r.Interface)
 		}
 		break
 	}
 }
 
 func TestDeleteSensor(t *testing.T) {
-	hue := New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	res, err := hue.DeleteSensor(1)
 	if err != nil {
 		t.Log(err)
 		t.Fail()
 	} else {
 		for _, r := range res {
-			t.Log(r.Success, r.Error)
+			t.Logf("Address: %s Value: %s Interface: %s", r.Address, r.Value, r.Interface)
 		}
 	}
 }

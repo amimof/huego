@@ -1,12 +1,13 @@
-package huego
+package huego_test
 
 import (
 	"testing"
 	"os"
+	"github.com/amimof/huego"
 )
 
 func TestGetRules(t *testing.T) {
-	hue := New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	rules, err := hue.GetRules()
 	if err != nil {
 		t.Error(err)
@@ -19,7 +20,7 @@ func TestGetRules(t *testing.T) {
 
 
 func TestGetRule(t *testing.T) {
-	hue := New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	rules, err := hue.GetRules()
 	if err != nil {
 		t.Error(err)
@@ -36,22 +37,22 @@ func TestGetRule(t *testing.T) {
 }
 
 func TestCreateRule(t *testing.T) {
-	hue := New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
-	conditions := []*Condition{
-		&Condition{
+	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	conditions := []*huego.Condition{
+	&huego.Condition{
 			Address: "/sensors/2/state/buttonevent",
 			Operator: "eq",
 			Value: "16",
 		},
 	}
-	actions := []*RuleAction{
-		&RuleAction{
+	actions := []*huego.RuleAction{
+	&huego.RuleAction{
 			Address: "/groups/0/action",
 			Method: "PUT",
-			Body: &Action{On: true},
+			Body: &huego.Action{On: true},
 		},
 	}
-	rule := &Rule{
+	rule := &huego.Rule{
 		Name: "Huego Test Rule",
 		Conditions: conditions,
 		Actions: actions,
@@ -61,12 +62,12 @@ func TestCreateRule(t *testing.T) {
 		t.Error(err)
 	}
 	for _, r := range response {
-		t.Logf("Response from put: Success=%v Error=%v", r.Success, r.Error)
+		t.Logf("Address: %s Value: %s Interface: %s", r.Address, r.Value, r.Interface)
 	}
 }
 
 func TestUpdateRule(t *testing.T) {
-	hue := New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	rules, err := hue.GetSensors()
 	if err != nil {
 		t.Error(err)
@@ -78,21 +79,21 @@ func TestUpdateRule(t *testing.T) {
 			t.Error(err)
 		}
 		for _, r := range response {
-			t.Logf("Response from put: Success=%v Error=%v", r.Success, r.Error)
+			t.Logf("Address: %s Value: %s Interface: %s", r.Address, r.Value, r.Interface)
 		}
 		break
 	}
 }
 
 func TestDeleteRule(t *testing.T) {
-	hue := New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	res, err := hue.DeleteRule(1)
 	if err != nil {
 		t.Log(err)
 		t.Fail()
 	} else {
 		for _, r := range res {
-			t.Log(r.Success, r.Error)
+			t.Logf("Address: %s Value: %s Interface: %s", r.Address, r.Value, r.Interface)
 		}
 	}
 }

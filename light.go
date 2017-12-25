@@ -36,6 +36,12 @@ type NewLight struct {
 	LastScan string `json:"lastscan"`
 }
 
+type Reply struct {
+	Type string
+	Address string
+	Value string
+}
+
 // GetLights will return all lights
 // See: https://developers.meethue.com/documentation/lights-api#11_get_all_lights
 func (h *Hue) GetLights() ([]*Light, error) {
@@ -89,11 +95,11 @@ func (h *Hue) GetLight(i int) (*Light, error) {
 // See: https://developers.meethue.com/documentation/lights-api#15_set_light_attributes_rename
 func (h *Hue) SetLight(i int, l State) ([]*Response, error) {
 
-	var r []*Response
+	var a []*ApiResponse
 
 	data, err := json.Marshal(&l)
 	if err != nil {
-		return r, err
+		return nil, err
 	}
 
 	url := h.GetApiUrl("/lights/", strconv.Itoa(i), "/state")
@@ -102,12 +108,17 @@ func (h *Hue) SetLight(i int, l State) ([]*Response, error) {
 		return nil, err
 	}
 
-	err = json.Unmarshal(res, &r)
+	err = json.Unmarshal(res, &a)
 	if err != nil {
 		return nil, err
 	}
 
-	return r, nil
+	resp, err := handleResponse(a)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, nil
 
 }
 
@@ -115,7 +126,7 @@ func (h *Hue) SetLight(i int, l State) ([]*Response, error) {
 // See: https://developers.meethue.com/documentation/lights-api#13_search_for_new_lights
 func (h *Hue) FindLights() ([]*Response, error) {
 
-	var r []*Response
+	var a []*ApiResponse
 
 	url := h.GetApiUrl("/lights/")
 
@@ -124,12 +135,17 @@ func (h *Hue) FindLights() ([]*Response, error) {
 		return nil, err
 	}
 
-	err = json.Unmarshal(res, &r)
+	err = json.Unmarshal(res, &a)
 	if err != nil {
-		return r, err
+		return nil, err
 	}
 
-	return r, nil
+	resp, err := handleResponse(a)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, nil
 
 }
 
@@ -174,7 +190,7 @@ func (h *Hue) GetNewLights() (*NewLight, error){
 // See: https://developers.meethue.com/documentation/lights-api#17_delete_lights
 func (h *Hue) DeleteLight(i int) ([]*Response, error) {
 
-	var r []*Response
+	var a []*ApiResponse
 
 	id := strconv.Itoa(i)
 	url := h.GetApiUrl("/lights/", id)
@@ -184,26 +200,31 @@ func (h *Hue) DeleteLight(i int) ([]*Response, error) {
 		return nil, err
 	}
 
-	err = json.Unmarshal(res, &r)
+	err = json.Unmarshal(res, &a)
 	if err != nil {
-		return r, err
+		return nil, err
 	}
 
-	return r, nil
+	resp, err := handleResponse(a)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, nil
 
 }
 
 // Update a light
 func (h *Hue) UpdateLight(i int, light *Light) ([]*Response, error) {
 
-	var r []*Response
+	var a []*ApiResponse
 
 	id := strconv.Itoa(i)
 	url := h.GetApiUrl("/lights/", id)
 
 	data, err := json.Marshal(&light)
 	if err != nil {
-		return r, err
+		return nil, err
 	}
 
 	res, err := h.PutResource(url, data)
@@ -211,10 +232,15 @@ func (h *Hue) UpdateLight(i int, light *Light) ([]*Response, error) {
 		return nil, err
 	}
 
-	err = json.Unmarshal(res, &r)
+	err = json.Unmarshal(res, &a)
 	if err != nil {
-		return r, err
+		return nil, err
 	}
 
-	return r, nil
+	resp, err := handleResponse(a)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, nil
 }

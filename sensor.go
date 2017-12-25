@@ -84,7 +84,7 @@ func (h *Hue) GetSensor(i int) (*Sensor, error) {
 // Creates a sensor
 func (h *Hue) CreateSensor(s *Sensor) ([]*Response, error) {
 
-	var r []*Response
+	var a []*ApiResponse
 
 	data, err := json.Marshal(&s)
 	if err != nil {
@@ -97,29 +97,42 @@ func (h *Hue) CreateSensor(s *Sensor) ([]*Response, error) {
 		return nil, err
 	}
 
-	err = json.Unmarshal(res, &r)
+	err = json.Unmarshal(res, &a)
 	if err != nil {
 		return nil, err
 	}
 
-	return r, nil
+	resp, err := handleResponse(a)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, nil
 
 }
 
 func (h *Hue) FindSensors() ([]*Response, error) {
 
-	var r []*Response
+	var a []*ApiResponse
 
 	url := h.GetApiUrl("/sensors/")
 
 	res, err := h.PostResource(url, nil)
-
-	err = json.Unmarshal(res, &r)
 	if err != nil {
-		return r, err
+		return nil, err
 	}
 
-	return r, nil
+	err = json.Unmarshal(res, &a)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := handleResponse(a)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, nil
 
 }
 
@@ -161,11 +174,12 @@ func (h *Hue) GetNewSensors() (*NewSensor, error){
 
 // Update a sensor
 func (h *Hue) UpdateSensor(i int, sensor Sensor) ([]*Response, error) {
-	var r []*Response
+	
+	var a []*ApiResponse
 
 	data, err := json.Marshal(&sensor)
 	if err != nil {
-		return r, err
+		return nil, err
 	}
 
 	url := h.GetApiUrl("/sensors/", strconv.Itoa(i))
@@ -174,16 +188,22 @@ func (h *Hue) UpdateSensor(i int, sensor Sensor) ([]*Response, error) {
 		return nil, err
 	}
 
-	err = json.Unmarshal(res, &r)
+	err = json.Unmarshal(res, &a)
 	if err != nil {
 		return nil, err
 	}
 
-	return r, nil
+	resp, err := handleResponse(a)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, nil
 }
 
 func (h *Hue) DeleteSensor(i int) ([]*Response, error) {
-	var r []*Response
+	
+	var a []*ApiResponse
 
 	id := strconv.Itoa(i)
 	url := h.GetApiUrl("/sensors/", id)
@@ -193,20 +213,25 @@ func (h *Hue) DeleteSensor(i int) ([]*Response, error) {
 		return nil, err
 	}
 
-	err = json.Unmarshal(res, &r)
+	err = json.Unmarshal(res, &a)
 	if err != nil {
-		return r, err
+		return nil, err
 	}
 
-	return r, nil
+	resp, err := handleResponse(a)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, nil
 }
 
 func (h *Hue) UpdateSensorConfig(i int, config *SensorConfig) ([]*Response, error) {
-	var r []*Response
+	var a []*ApiResponse
 
 	data, err := json.Marshal(&config)
 	if err != nil {
-		return r, err
+		return nil, err
 	}
 
 	url := h.GetApiUrl("/sensors/", strconv.Itoa(i), "/config")
@@ -215,10 +240,15 @@ func (h *Hue) UpdateSensorConfig(i int, config *SensorConfig) ([]*Response, erro
 		return nil, err
 	}
 
-	err = json.Unmarshal(res, &r)
+	err = json.Unmarshal(res, &a)
 	if err != nil {
 		return nil, err
 	}
 
-	return r, nil
+	resp, err := handleResponse(a)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, nil
 }

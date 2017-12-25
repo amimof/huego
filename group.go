@@ -86,14 +86,14 @@ func (h *Hue) GetGroup(i int) (*Group, error) {
 // See: https://developers.meethue.com/documentation/groups-api#25_set_group_state
 func (h *Hue) SetGroupState(i int, l *Action) ([]*Response, error) {
 
-	var r []*Response
+	var a []*ApiResponse
 
 	id := strconv.Itoa(i)
 	url := h.GetApiUrl("/groups/", id, "/action/")
 
 	data, err := json.Marshal(&l)
 	if err != nil {
-		return r, err
+		return nil, err
 	}
 
 	res, err := h.PutResource(url, data)
@@ -101,24 +101,30 @@ func (h *Hue) SetGroupState(i int, l *Action) ([]*Response, error) {
 		return nil, err
 	}
 
-	err = json.Unmarshal(res, &r)
+	err = json.Unmarshal(res, &a)
 	if err != nil {
-		return r, err
+		return nil, err
 	}
 
-	return r, nil
+	resp, err := handleResponse(a)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, nil
 }
 
 // Update a group
 func (h *Hue) UpdateGroup(i int, l *Group) ([]*Response, error) {
-	var r []*Response
+	
+	var a []*ApiResponse
 
 	id := strconv.Itoa(i)
 	url := h.GetApiUrl("/groups/", id)
 
 	data, err := json.Marshal(&l)
 	if err != nil {
-		return r, err
+		return nil, err
 	}
 
 	res, err := h.PutResource(url, data)
@@ -126,19 +132,24 @@ func (h *Hue) UpdateGroup(i int, l *Group) ([]*Response, error) {
 		return nil, err
 	}
 
-	err = json.Unmarshal(res, &r)
+	err = json.Unmarshal(res, &a)
 	if err != nil {
-		return r, err
+		return nil, err
 	}
 
-	return r, nil
+	resp, err := handleResponse(a)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, nil
 }
 
 // CreateGroup creates a new group
 // See: https://developers.meethue.com/documentation/groups-api#22_create_group
 func (h *Hue) CreateGroup(g *Group) ([]*Response, error) {
 
-	var r []*Response
+	var a []*ApiResponse
 
 	url := h.GetApiUrl("/groups/")
 
@@ -152,19 +163,24 @@ func (h *Hue) CreateGroup(g *Group) ([]*Response, error) {
 		return nil, err
 	}
 
-	err = json.Unmarshal(res, &r)
+	err = json.Unmarshal(res, &a)
 	if err != nil {
-		return r, err
+		return nil, err
 	}
 
-	return r, nil
+	resp, err := handleResponse(a)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, nil
 }
 
 // DeleteGroup deletes a group with the id of i
 // See: https://developers.meethue.com/documentation/groups-api#26_delete_group
 func (h *Hue) DeleteGroup(i int) ([]*Response, error) {
 
-	var r []*Response
+	var a []*ApiResponse
 
 	id := strconv.Itoa(i)
 	url := h.GetApiUrl("/groups/", id)
@@ -174,10 +190,15 @@ func (h *Hue) DeleteGroup(i int) ([]*Response, error) {
 		return nil, err
 	}
 
-	err = json.Unmarshal(res, &r)
+	err = json.Unmarshal(res, &a)
 	if err != nil {
-		return r, err
+		return nil, err
 	}
 
-	return r, nil
+	resp, err := handleResponse(a)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, nil
 }

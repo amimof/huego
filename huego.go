@@ -1,17 +1,11 @@
 package huego
 
 import (
-	//"github.com/amimof/loglevel-go"
 	"net/http"
-	//"crypto/tls"
 	"encoding/json"
-
 	"net/url"
-
 	"path"
-	//"strconv"
 	"strings"
-	//"fmt"
 	"io"
 	"io/ioutil"
 )
@@ -21,15 +15,45 @@ type Hue struct {
 	User string
 }
 
-type Response struct {
-	Success interface{}	`json:"success,omitempty"`
-	Error 	*ResponseError			`json:"error,omitempty"`
+type ApiResponse struct {
+	Success map[string]interface{} `json:"success,omitempty"`
+	Error 	*ApiError `json:"error,omitempty"`
 }
 
-type ResponseError struct {
+type ApiError struct {
 	Type 		int 	`json:"type,omitempty"`
 	Address 	string  `json:"address,omitempty"`
 	Description string  `json:"description,omitempty"`
+}
+
+type Response struct {
+	Address string
+	Value string
+	Interface map[string]interface{}
+}
+
+
+func (r *ApiError) Error() string {
+	return r.Description
+}
+
+func handleResponse(a []*ApiResponse) ([]*Response, error) {
+	var resp []*Response
+	for _, r := range a {	
+		if r.Error != nil {
+			return nil, r.Error
+		}
+		if r.Success != nil {
+			for k, v := range r.Success {
+				resp = append(resp, &Response{
+					Address: k,
+					Value: v.(string),
+					Interface: r.Success,
+				})
+			}
+		}
+	}
+	return resp, nil
 }
 
 func (h *Hue) GetApiUrl(str ...string) string {

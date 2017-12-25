@@ -1,12 +1,13 @@
-package huego
+package huego_test
 
 import (
 	"testing"
 	"os"
+	"github.com/amimof/huego"
 )
 
 func TestGetGroups(t *testing.T) {
-	hue := New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	groups, err := hue.GetGroups()
 	if err != nil {
 		t.Error(err)
@@ -18,7 +19,7 @@ func TestGetGroups(t *testing.T) {
 }
 
 func TestGetGroup(t *testing.T) {
-	hue := New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	groups, err := hue.GetGroups()
 	if err != nil {
 		t.Error(err)
@@ -34,7 +35,7 @@ func TestGetGroup(t *testing.T) {
 }
 
 func TestSetGroupState(t *testing.T) {
-	hue := New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	groups, err := hue.GetGroups()
 	if err != nil {
 		t.Error(err)
@@ -46,13 +47,13 @@ func TestSetGroupState(t *testing.T) {
 			t.Error(err)
 		}
 		for _, r := range response {
-			t.Logf("Response from put: Success=%v Error=%v", r.Success, r.Error)
+			t.Logf("Address: %s Value: %s Interface: %s", r.Address, r.Value, r.Interface)
 		}
 	}
 }
 
 func TestUpdateGroup(t *testing.T) {
-	hue := New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	groups, err := hue.GetGroups()
 	if err != nil {
 		t.Error(err)
@@ -68,9 +69,9 @@ func TestUpdateGroup(t *testing.T) {
 }
 
 func TestCreateGroup(t *testing.T) {
-	//hue := New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	//hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 }
 
 func TestDeleteGroup(t *testing.T) {
-	//hue := New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	//hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 }

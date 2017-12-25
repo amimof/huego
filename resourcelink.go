@@ -66,7 +66,7 @@ func (h *Hue) GetResourcelink(i int) (*Resourcelink, error) {
 // Create a resourcelink
 func (h *Hue) CreateResourcelink(s *Resourcelink) ([]*Response, error) {
 
-  var r []*Response
+  var a []*ApiResponse
 
   data, err := json.Marshal(&s)
   if err != nil {
@@ -79,22 +79,27 @@ func (h *Hue) CreateResourcelink(s *Resourcelink) ([]*Response, error) {
     return nil, err
   }
 
-  err = json.Unmarshal(res, &r)
+  err = json.Unmarshal(res, &a)
   if err != nil {
     return nil, err
   }
 
-  return r, nil
+  resp, err := handleResponse(a)
+  if err != nil {
+    return nil, err
+  }
+
+  return resp, nil
 
 }
 
 // Update a resourcelink
 func (h *Hue) UpdateResourcelink(i int, resourcelink *Resourcelink) ([]*Response, error) {
-	var r []*Response
+	var a []*ApiResponse
 
 	data, err := json.Marshal(&resourcelink)
 	if err != nil {
-		return r, err
+		return nil, err
 	}
 
 	url := h.GetApiUrl("/resourcelinks/", strconv.Itoa(i))
@@ -103,17 +108,23 @@ func (h *Hue) UpdateResourcelink(i int, resourcelink *Resourcelink) ([]*Response
 		return nil, err
 	}
 
-	err = json.Unmarshal(res, &r)
+	err = json.Unmarshal(res, &a)
 	if err != nil {
 		return nil, err
-	}
+  }
+  
+  resp, err := handleResponse(a)
+  if err != nil {
+    return nil, err
+  }
 
-	return r, nil
+	return resp, nil
 }
 
 // Delete a resourcelink
 func (h *Hue) DeleteResourcelink(i int) ([]*Response, error) {
-	var r []*Response
+  
+  var a []*ApiResponse
 
 	id := strconv.Itoa(i)
 	url := h.GetApiUrl("/resourcelinks/", id)
@@ -123,10 +134,15 @@ func (h *Hue) DeleteResourcelink(i int) ([]*Response, error) {
 		return nil, err
 	}
 
-	err = json.Unmarshal(res, &r)
+	err = json.Unmarshal(res, &a)
 	if err != nil {
-		return r, err
-	}
+		return nil, err
+  }
+  
+  resp, err := handleResponse(a)
+  if err != nil {
+    return nil, err
+  }
 
-	return r, nil
+	return resp, nil
 }

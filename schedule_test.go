@@ -1,12 +1,13 @@
-package huego
+package huego_test
 
 import (
 	"testing"
 	"os"
+	"github.com/amimof/huego"
 )
 
 func TestGetSchedules(t *testing.T) {
-	hue := New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	schedules, err := hue.GetSchedules()
 	if err != nil {
 		t.Error(err)
@@ -19,7 +20,7 @@ func TestGetSchedules(t *testing.T) {
 
 
 func TestGetSchedule(t *testing.T) {
-	hue := New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	schedules, err := hue.GetSchedules()
 	if err != nil {
 		t.Error(err)
@@ -36,13 +37,13 @@ func TestGetSchedule(t *testing.T) {
 }
 
 func TestCreateSchedule(t *testing.T) {
-	hue := New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
-	command := &Command{
+	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	command := &huego.Command{
 		Address: "/api/"+os.Getenv("HUE_USERNAME")+"/lights/0",
-		Body: &State{On: false},
+		Body: &huego.State{On: false},
 		Method: "PUT",
 	}
-	schedule := &Schedule{
+	schedule := &huego.Schedule{
 		Name: "TestSchedule",
 		Description: "Huego test schedule",
 		Command: command,
@@ -53,12 +54,12 @@ func TestCreateSchedule(t *testing.T) {
 		t.Error(err)
 	}
 	for _, r := range response {
-		t.Logf("Response from put: Success=%v Error=%v", r.Success, r.Error)
+		t.Logf("Address: %s Value: %s Interface: %s", r.Address, r.Value, r.Interface)
 	}
 }
 
 func TestUpdateSchedule(t *testing.T) {
-	hue := New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	schedules, err := hue.GetSensors()
 	if err != nil {
 		t.Error(err)
@@ -70,21 +71,21 @@ func TestUpdateSchedule(t *testing.T) {
 			t.Error(err)
 		}
 		for _, r := range response {
-			t.Logf("Response from put: Success=%v Error=%v", r.Success, r.Error)
+			t.Logf("Address: %s Value: %s Interface: %s", r.Address, r.Value, r.Interface)
 		}
 		break
 	}
 }
 
 func TestDeleteSchedule(t *testing.T) {
-	hue := New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	res, err := hue.DeleteSchedule(1)
 	if err != nil {
 		t.Log(err)
 		t.Fail()
 	} else {
 		for _, r := range res {
-			t.Log(r.Success, r.Error)
+			t.Logf("Address: %s Value: %s Interface: %s", r.Address, r.Value, r.Interface)
 		}
 	}
 }

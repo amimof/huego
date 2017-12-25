@@ -1,12 +1,13 @@
-package huego
+package huego_test
 
 import (
 	"testing"
 	"os"
+	"github.com/amimof/huego"
 )
 
 func TestGetResourcelinks(t *testing.T) {
-	hue := New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	resourcelinks, err := hue.GetResourcelinks()
 	if err != nil {
 		t.Error(err)
@@ -19,7 +20,7 @@ func TestGetResourcelinks(t *testing.T) {
 
 
 func TestGetResourcelink(t *testing.T) {
-	hue := New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	resourcelinks, err := hue.GetResourcelinks()
 	if err != nil {
 		t.Error(err)
@@ -36,8 +37,8 @@ func TestGetResourcelink(t *testing.T) {
 }
 
 func TestCreateResourcelink(t *testing.T) {
-	hue := New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
-	resourcelink := &Resourcelink{
+	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	resourcelink := &huego.Resourcelink{
 		Name: "Huego Test Resourcelink",
     Description: "Amir's wakeup experience",
     Type: "Link",
@@ -50,12 +51,12 @@ func TestCreateResourcelink(t *testing.T) {
 		t.Error(err)
 	}
 	for _, r := range response {
-		t.Logf("Response from put: Success=%v Error=%v", r.Success, r.Error)
+		t.Logf("Address: %s Value: %s Interface: %s", r.Address, r.Value, r.Interface)
 	}
 }
 
 func TestUpdateResourcelink(t *testing.T) {
-	hue := New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	resourcelinks, err := hue.GetSensors()
 	if err != nil {
 		t.Error(err)
@@ -67,21 +68,21 @@ func TestUpdateResourcelink(t *testing.T) {
 			t.Error(err)
 		}
 		for _, r := range response {
-			t.Logf("Response from put: Success=%v Error=%v", r.Success, r.Error)
+			t.Logf("Address: %s Value: %s Interface: %s", r.Address, r.Value, r.Interface)
 		}
 		break
 	}
 }
 
 func TestDeleteResourcelink(t *testing.T) {
-	hue := New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	res, err := hue.DeleteResourcelink(1)
 	if err != nil {
 		t.Log(err)
 		t.Fail()
 	} else {
 		for _, r := range res {
-			t.Log(r.Success, r.Error)
+			t.Logf("Address: %s Value: %s Interface: %s", r.Address, r.Value, r.Interface)
 		}
 	}
 }

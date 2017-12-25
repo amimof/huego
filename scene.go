@@ -66,14 +66,15 @@ func (h *Hue) GetScene(i int) (*Scene, error) {
 
 // Update a scene
 func (h *Hue) UpdateScene(i int, s *Scene) ([]*Response, error) {
-	var r []*Response
+	
+	var a []*ApiResponse
 
 	id := strconv.Itoa(i)
 	url := h.GetApiUrl("/scenes/", id)
 
 	data, err := json.Marshal(&s)
 	if err != nil {
-		return r, err
+		return nil, err
 	}
 
 	res, err := h.PutResource(url, data)
@@ -81,12 +82,17 @@ func (h *Hue) UpdateScene(i int, s *Scene) ([]*Response, error) {
 		return nil, err
 	}
 
-	err = json.Unmarshal(res, &r)
+	err = json.Unmarshal(res, &a)
 	if err != nil {
-		return r, err
+		return nil, err
 	}
 
-	return r, nil
+	resp, err := handleResponse(a)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, nil
 }
 
 // CreateScene creates a new scene

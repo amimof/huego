@@ -1,12 +1,13 @@
-package huego
+package huego_test
 
 import (
 	"testing"
 	"os"
+	"github.com/amimof/huego"
 )
 
 func TestGetLights(t *testing.T) {
-	hue := New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	lights, err := hue.GetLights()
 	if err != nil {
 		t.Error(err)
@@ -18,7 +19,7 @@ func TestGetLights(t *testing.T) {
 }
 
 func TestGetLight(t *testing.T) {
-	hue := New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	lights, err := hue.GetLights()
 	if err != nil {
 		t.Error(err)
@@ -35,7 +36,7 @@ func TestGetLight(t *testing.T) {
 }
 
 func TestSetLight(t *testing.T) {
-	hue := New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	lights, err := hue.GetLights()
 	if err != nil {
 		t.Error(err)
@@ -48,7 +49,7 @@ func TestSetLight(t *testing.T) {
 				t.Error(err)
 			}
 			for _, r := range response {
-				t.Logf("Response from put: Success=%v Error=%v", r.Success, r.Error)
+				t.Logf("Address: %s Value: %s Interface: %s", r.Address, r.Value, r.Interface)
 			}
 		}
 		break
@@ -56,19 +57,19 @@ func TestSetLight(t *testing.T) {
 }
 
 func TestFindLights(t *testing.T) {
-	hue := New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	search, err := hue.FindLights()
 	if err != nil {
 		t.Error(err)
 	}
-	for _, response := range search {
-		t.Logf("Response from search: Success=%v Error=%v", response.Success, response.Error)
+	for _, r := range search {
+		t.Logf("Address: %s Value: %s Interface: %s", r.Address, r.Value, r.Interface)
 	}
 
 }
 
 func TestGetNewLights(t *testing.T) {
-	hue := New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	newlights, err := hue.GetNewLights()
 	if err != nil {
 		t.Error(err)
@@ -81,7 +82,7 @@ func TestGetNewLights(t *testing.T) {
 }
 
 func TestUpdateLight(t *testing.T) {
-	hue := New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	lights, err := hue.GetLights()
 	if err != nil {
 		t.Error(err)
@@ -97,14 +98,14 @@ func TestUpdateLight(t *testing.T) {
 }
 
 func TestDeleteLight(t *testing.T) {
-	hue := New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	res, err := hue.DeleteLight(3)
 	if err != nil {
 		t.Log(err)
 		t.Fail()
 	} else {
 		for _, r := range res {
-			t.Log(r.Success, r.Error)
+			t.Logf("Address: %s Value: %s Interface: %s", r.Address, r.Value, r.Interface)
 		}
 	}
 }
