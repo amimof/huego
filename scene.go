@@ -65,7 +65,7 @@ func (h *Hue) GetScene(i int) (*Scene, error) {
 
 
 // Update a scene
-func (h *Hue) UpdateScene(i int, s *Scene) ([]*Response, error) {
+func (h *Hue) UpdateScene(i int, s *Scene) (*Response, error) {
 	
 	var a []*ApiResponse
 
@@ -97,9 +97,9 @@ func (h *Hue) UpdateScene(i int, s *Scene) ([]*Response, error) {
 
 // CreateScene creates a new scene
 // See: https://developers.meethue.com/documentation/scenes-api#22_create_scene
-func (h *Hue) CreateScene(s *Scene) ([]*Response, error) {
+func (h *Hue) CreateScene(s *Scene) (*Response, error) {
 
-	var r []*Response
+	var a []*ApiResponse
 
 	url := h.GetApiUrl("/scenes/")
 
@@ -113,19 +113,24 @@ func (h *Hue) CreateScene(s *Scene) ([]*Response, error) {
 		return nil, err
 	}
 
-	err = json.Unmarshal(res, &r)
+	err = json.Unmarshal(res, &a)
 	if err != nil {
-		return r, err
+		return nil, err
 	}
 
-	return r, nil
+	resp, err := handleResponse(a)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, nil
 }
 
 // DeleteScene deletes a scene with the id of i
 // See: https://developers.meethue.com/documentation/scenes-api#26_delete_scene
-func (h *Hue) DeleteScene(i int) ([]*Response, error) {
+func (h *Hue) DeleteScene(i int) (*Response, error) {
 
-	var r []*Response
+	var a []*ApiResponse
 
 	id := strconv.Itoa(i)
 	url := h.GetApiUrl("/scenes/", id)
@@ -135,10 +140,15 @@ func (h *Hue) DeleteScene(i int) ([]*Response, error) {
 		return nil, err
 	}
 
-	err = json.Unmarshal(res, &r)
+	err = json.Unmarshal(res, &a)
 	if err != nil {
-		return r, err
+		return nil, err
 	}
 
-	return r, nil
+	resp, err := handleResponse(a)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, nil
 }

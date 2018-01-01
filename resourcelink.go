@@ -9,7 +9,7 @@ type Resourcelink struct {
   Name	string `json:"name,omitempty"`
   Description string `json:"description,omitempty"`
   Type string `json:"type,omitempty"`
-  Class int `json:"class,omitempty"`
+  ClassId uint16 `json:"classid,omitempty"`
   Owner string `json:"owner,omitempty"`
   Links []string `json:"links,omitempty"`
   Id int `json:",omitempty"`
@@ -20,7 +20,7 @@ func (h *Hue) GetResourcelinks() ([]*Resourcelink, error) {
 
   var r map[string]Resourcelink
 
-  res, err := h.GetResource("/resourcelinks/")
+  res, err := h.GetResource(h.GetApiUrl("/resourcelinks/"))
   if err != nil {
     return nil, err
   }
@@ -64,7 +64,7 @@ func (h *Hue) GetResourcelink(i int) (*Resourcelink, error) {
 }
 
 // Create a resourcelink
-func (h *Hue) CreateResourcelink(s *Resourcelink) ([]*Response, error) {
+func (h *Hue) CreateResourcelink(s *Resourcelink) (*Response, error) {
 
   var a []*ApiResponse
 
@@ -94,7 +94,7 @@ func (h *Hue) CreateResourcelink(s *Resourcelink) ([]*Response, error) {
 }
 
 // Update a resourcelink
-func (h *Hue) UpdateResourcelink(i int, resourcelink *Resourcelink) ([]*Response, error) {
+func (h *Hue) UpdateResourcelink(i int, resourcelink *Resourcelink) (*Response, error) {
 	var a []*ApiResponse
 
 	data, err := json.Marshal(&resourcelink)
@@ -122,7 +122,7 @@ func (h *Hue) UpdateResourcelink(i int, resourcelink *Resourcelink) ([]*Response
 }
 
 // Delete a resourcelink
-func (h *Hue) DeleteResourcelink(i int) ([]*Response, error) {
+func (h *Hue) DeleteResourcelink(i int) (*Response, error) {
   
   var a []*ApiResponse
 

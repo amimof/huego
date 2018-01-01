@@ -8,12 +8,13 @@ type Config struct {
   Name string `json:"name,omitempty"`
   SwUpdate *SwUpdate `json:"swupdate,omitempty"`
   SwUpdate2 *SwUpdate2 `json:"swupdate2,omitempty"`
-  Whitelist []*Whitelist `json:"whitelist,omitempty"`
+  WhitelistMap map[string]*Whitelist `json:"whitelist"`
+  Whitelist []*Whitelist `json:"-"`
   PortalState *PortalState `json:"portalstate,omitempty"`
   ApiVersion string `json:"apiversion,omitempty"`
   SwVersion string `json:"swversion,omitempty"`
   ProxyAddress string `json:"proxyaddress,omitempty"`
-  ProxyPort int `json:"proxyport,omitempty"`
+  ProxyPort uint16 `json:"proxyport,omitempty"`
   LinkButton bool `json:"linkbutton,omitempty"`
   IpAddress string `json:"ipaddress,omitempty"`
   Mac string `json:"mac,omitempty"`
@@ -24,7 +25,7 @@ type Config struct {
   UTC string `json:"UTC,omitempty"`
   LocalTime string `json:"localtime,omitempty"`
   TimeZone string `json:"timezone,omitempty"`
-  ZigbeeChannel string `json:"zigbeechannel,omitempty"`
+  ZigbeeChannel uint8 `json:"zigbeechannel,omitempty"`
   ModelId string `json:"modelid,omitempty"`
   BridgeId string `json:"bridgeid,omitempty"`
   FactoryNew bool `json:"factorynew,omitempty"`
@@ -36,7 +37,7 @@ type Config struct {
 type SwUpdate struct {
   CheckForUpdate bool `json:"checkforupdate,omitempty"`
   DeviceTypes *DeviceTypes `json:"devicetypes,omitempty"`
-  UpdateState int `json:"updatestate,omitempty"`
+  UpdateState uint8 `json:"updatestate,omitempty"`
   Notify bool `json:"notify,omitempty"`
   Url string `json:"url,omitempty"`
   Text string `json:"text,omitempty"`
@@ -54,8 +55,8 @@ type SwUpdate2 struct {
   State string `json:"state,omitempty"`
   Install bool `json:"install,omitempty"`
   AutoInstall *AutoInstall `json:"autoinstall,omitempty"`
-  LastChange string `json:"lastchange,omitempty"`
-  LastInstall string `json:"lastinstall,omitempty"`
+  LastChange string `json:"lastchange,omitempty"` // Should be of type Time
+  LastInstall string `json:"lastinstall,omitempty"` // SHould be of type Time
 }
 
 type Bridge struct {
@@ -81,9 +82,10 @@ type Backup struct {
 }
 
 type Whitelist struct {
-  Name string `json:"name,omitempty"`
-  CreateDate string `json:"create date,omitempty"`
-  LastUseDate string `json:"last use date,omitempty"`
+  Name string `json:"name"`
+  Username string
+  CreateDate string `json:"create date"`
+  LastUseDate string `json:"last use date"`
 }
 
 type PortalState struct {
@@ -103,8 +105,10 @@ type Datastore struct {
   Rules []*Rule `json:"rules,omitempty"`
 }
 
+
 // Get configuration
 func (h *Hue) GetConfig() (*Config, error) {
+  
   var config *Config
 
   url := h.GetApiUrl("/config/")
@@ -118,12 +122,20 @@ func (h *Hue) GetConfig() (*Config, error) {
     return nil, err
   }
 
+  wl := make([]*Whitelist, 0, len(config.WhitelistMap))
+  for k, v := range config.WhitelistMap {
+    v.Username = k
+    wl = append(wl, v)
+  }
+
+  config.Whitelist = wl
+
   return config, nil
 
 }
 
 // Create a user
-func (h *Hue) CreateUser(n string) ([]*Response, error) {
+func (h *Hue) CreateUser(n string) (*Response, error) {
 
   var a []*ApiResponse
 
@@ -160,8 +172,17 @@ func (h *Hue) CreateUser(n string) ([]*Response, error) {
 
 }
 
+// Returns Whitelist 
+func (h *Hue) GetUsers() ([]*Whitelist, error) {
+  c, err := h.GetConfig()
+  if err != nil {
+    return nil, err
+  }
+  return c.Whitelist, nil
+}
+
 // Update configuration
-func (h *Hue) UpdateConfig(c *Config) ([]*Response, error) {
+func (h *Hue) UpdateConfig(c *Config) (*Response, error) {
 
 	var a []*ApiResponse
 
@@ -191,7 +212,7 @@ func (h *Hue) UpdateConfig(c *Config) ([]*Response, error) {
 }
 
 // Delete a user from configuration
-func (h *Hue) DeleteUser(n string) ([]*Response, error) {
+func (h *Hue) DeleteUser(n string) (*Response, error) {
 
   var a []*ApiResponse
 

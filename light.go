@@ -3,48 +3,50 @@ package huego
 import (
 	"encoding/json"
 	"strconv"
+	"time"
+	"fmt"
 )
 
 type Light struct {
-	State 			 *State `json:"state,omitempty"`
-	Type 			 string `json:"type,omitempty"`
-	Name 			 string `json:"name,omitempty"`
-	ModelId 		 string `json:"modelid,omitempty"`
-	ManufacturerName string `json:"modelid,omitempty"`
-	UniqueId 		 string `json:"string,omitempty"`
-	SwVersion 		 string `json:"string,omitempty"`
-	SwConfigId 		 string `json:"string,omitempty"`
-	ProductId 		 string `json:"productid,omitempty"`
-	Id 				 int 	`json:",omitempty"`
+	State *State `json:"state,omitempty"`
+	Type string `json:"type,omitempty"`
+	Name string `json:"name,omitempty"`
+	ModelId string `json:"modelid,omitempty"`
+	ManufacturerName string `json:"manufacturername,omitempty"`
+	UniqueId string `json:"uniqueid,omitempty"`
+	SwVersion string `json:"swversion,omitempty"`
+	SwConfigId string `json:"swconfigid,omitempty"`
+	ProductId string `json:"productid,omitempty"`
+	Id int `json:"-"`
 }
 
 type State struct {
-	On 			bool 		`json:"on"`
-	Bri 		int 		`json:"bri"`
-	Hue 		int 		`json:"hue"`
-	Sat 		int 		`json:"sat"`
-	Effect 		string 		`json:"effect"`
-	Xy 			[]float32 	`json:"xy"`
-	Ct 			int 		`json:"ct"`
-	Alert 		string 		`json:"alert"`
-	ColorMode 	string 		`json:"colormode"`
-	Reachable 	bool 		`json:"reachable"`
+	On bool	`json:"on"`
+	Bri uint8	`json:"bri,omitempty"`
+	Hue uint16	`json:"hue,omitempty"`
+	Sat uint8 `json:"sat,omitempty"`
+	Xy []float32 `json:"xy,omitempty"`
+	Ct uint16 `json:"ct,omitempty"`
+	Alert	string `json:"alert,omitempty"`
+	Effect string `json:"effect,omitempty"`
+	TransitionTime uint16 `json:"transitiontime,omitempty"`
+	BriInc int `json:"bri_inc,omitempty"`
+	SatInc int `json:"sat_inc,omitempty"`
+	HueInc int `json:"hue_inc,omitempty"`
+	CtInc int `json:"ct_inc,omitempty"`
+	XyInc int `json:"xy_inc,omitempty"`
+	ColorMode	string `json:"colormode,omitempty"`
+	Reachable	bool `json:"reachable,omitempty"`
 }
 
 type NewLight struct {
-	Lights []*Light
-	LastScan string `json:"lastscan"`
-}
-
-type Reply struct {
-	Type string
-	Address string
-	Value string
+	Lights []string
+	LastScan time.Time `json:"lastscan"`
 }
 
 // GetLights will return all lights
 // See: https://developers.meethue.com/documentation/lights-api#11_get_all_lights
-func (h *Hue) GetLights() ([]*Light, error) {
+func (h *Hue) GetLights() ([]Light, error) {
 
 	m := map[string]Light{}
 
@@ -58,14 +60,14 @@ func (h *Hue) GetLights() ([]*Light, error) {
 		return nil, err
 	}
 
-	lights := make([]*Light, 0, len(m))
+	lights := make([]Light, 0, len(m))
 
 	for i, l := range m {
 		l.Id, err = strconv.Atoi(i)
 		if err != nil {
 			return nil, err
 		}
-		lights = append(lights, &l)
+		lights = append(lights, l)
 	}
 
 	return lights, nil
@@ -93,9 +95,12 @@ func (h *Hue) GetLight(i int) (*Light, error) {
 
 // SetLight allows for controlling a light state properties.
 // See: https://developers.meethue.com/documentation/lights-api#15_set_light_attributes_rename
-func (h *Hue) SetLight(i int, l State) ([]*Response, error) {
+func (h *Hue) SetLight(i int, l *State) (*Response, error) {
 
 	var a []*ApiResponse
+
+	l.Reachable = false
+	l.ColorMode = ""
 
 	data, err := json.Marshal(&l)
 	if err != nil {
@@ -112,7 +117,7 @@ func (h *Hue) SetLight(i int, l State) ([]*Response, error) {
 	if err != nil {
 		return nil, err
 	}
-
+	
 	resp, err := handleResponse(a)
 	if err != nil {
 		return nil, err
@@ -124,7 +129,7 @@ func (h *Hue) SetLight(i int, l State) ([]*Response, error) {
 
 // Search starts a search for new lights
 // See: https://developers.meethue.com/documentation/lights-api#13_search_for_new_lights
-func (h *Hue) FindLights() ([]*Response, error) {
+func (h *Hue) FindLights() (*Response, error) {
 
 	var a []*ApiResponse
 
@@ -152,43 +157,40 @@ func (h *Hue) FindLights() ([]*Response, error) {
 // See: https://developers.meethue.com/documentation/lights-api#12_get_new_lights
 func (h *Hue) GetNewLights() (*NewLight, error){
 
-	n := map[string]Light{}
-	var result *NewLight
-
+	var n map[string]interface{}
+	
 	url := h.GetApiUrl("/lights/new")
 
 	res, err := h.GetResource(url)
 	if err != nil {
-		return result, err
+		return nil, err
 	}
 
-	err = json.Unmarshal(res, &n)
-	lights := make([]*Light, 0, len(n))
+	_ = json.Unmarshal(res, &n)
 
-	for i, l := range n {
-		if i != "lastscan" {
-			l.Id, err = strconv.Atoi(i)
-			if err != nil {
-				return result, err
-			}
-			lights = append(lights, &l)
+	lights := make([]string, 0, len(n))
+	var lastscan time.Time
+
+	for k, _ := range n {
+		if k == "lastscan" {
+			lastscan = n[k].(time.Time)
+		} else {
+			lights = append(lights, n[k].(string))
 		}
 	}
 
-	err = json.Unmarshal(res, &result)
-	if err != nil {
-		return result, err
+	result := &NewLight{
+		Lights: lights, 
+		LastScan: lastscan,
 	}
 
-	resu := &NewLight{lights, result.LastScan}
-
-	return resu, nil
+	return result, nil
 
 }
 
 // DeleteLight deletes a light
 // See: https://developers.meethue.com/documentation/lights-api#17_delete_lights
-func (h *Hue) DeleteLight(i int) ([]*Response, error) {
+func (h *Hue) DeleteLight(i int) (*Response, error) {
 
 	var a []*ApiResponse
 
@@ -199,6 +201,8 @@ func (h *Hue) DeleteLight(i int) ([]*Response, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	fmt.Println(string(res))
 
 	err = json.Unmarshal(res, &a)
 	if err != nil {
@@ -215,7 +219,7 @@ func (h *Hue) DeleteLight(i int) ([]*Response, error) {
 }
 
 // Update a light
-func (h *Hue) UpdateLight(i int, light *Light) ([]*Response, error) {
+func (h *Hue) UpdateLight(i int, light Light) (*Response, error) {
 
 	var a []*ApiResponse
 

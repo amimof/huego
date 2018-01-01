@@ -3,24 +3,25 @@ package huego
 import(
   "encoding/json"
   "strconv"
+  "fmt"
 )
 
 type Schedule struct {
-  Name	string `json:"name,omitempty"`
-  Description	string `json:"description,omitempty"`
-  Command	*Command  `json:"command,omitempty"`
-  Time	string	`json:"time,omitempty"` // This should be of time Date
-  LocalTime	string	`json:"localtime,omitempty"`
+  Name	string `json:"name"`
+  Description	string `json:"description"`
+  Command	*Command  `json:"command"`
+  Time	string	`json:"time,omitempty"`
+  LocalTime	string	`json:"localtime"`
   StartTime	string	`json:"starttime,omitempty"`
   Status	string `json:"status,omitempty"`
-  AutoDelete  bool	`json:"autodelete,omitempty"`
-  Id  int `json:,omitempty`
+  AutoDelete  bool	`json:"autodelete"`
+  Id  int `json:"-"`
 }
 
 type Command struct {
-  Address string `json:"address,omitempty"`
-  Method string `json:"method,omitempty"`
-  Body interface{} `json:"body,omitempty"`
+  Address string `json:"address"`
+  Method string `json:"method"`
+  Body interface{} `json:"body"`
 }
 
 // Get all schedules
@@ -28,7 +29,7 @@ func (h *Hue) GetSchedules() ([]*Schedule, error) {
 
   var r map[string]Schedule
 
-  res, err := h.GetResource("/schedules/")
+  res, err := h.GetResource(h.GetApiUrl("/schedules/"))
   if err != nil {
     return nil, err
   }
@@ -72,7 +73,7 @@ func (h *Hue) GetSchedule(i int) (*Schedule, error) {
 }
 
 // Create a schedule
-func (h *Hue) CreateSchedule(s *Schedule) ([]*Response, error) {
+func (h *Hue) CreateSchedule(s *Schedule) (*Response, error) {
 
   var a []*ApiResponse
 
@@ -86,6 +87,8 @@ func (h *Hue) CreateSchedule(s *Schedule) ([]*Response, error) {
   if err != nil {
     return nil, err
   }
+
+  fmt.Println(string(res))
 
   err = json.Unmarshal(res, &a)
   if err != nil {
@@ -102,7 +105,7 @@ func (h *Hue) CreateSchedule(s *Schedule) ([]*Response, error) {
 }
 
 // Update a schedule
-func (h *Hue) UpdateSchedule(i int, schedule *Schedule) ([]*Response, error) {
+func (h *Hue) UpdateSchedule(i int, schedule *Schedule) (*Response, error) {
   
   var a []*ApiResponse
 
@@ -115,7 +118,9 @@ func (h *Hue) UpdateSchedule(i int, schedule *Schedule) ([]*Response, error) {
 	res, err := h.PutResource(url, data)
 	if err != nil {
 		return nil, err
-	}
+  }
+
+  fmt.Println(string(res))
 
 	err = json.Unmarshal(res, &a)
 	if err != nil {
@@ -131,7 +136,7 @@ func (h *Hue) UpdateSchedule(i int, schedule *Schedule) ([]*Response, error) {
 }
 
 // Delete a schedule
-func (h *Hue) DeleteSchedule(i int) ([]*Response, error) {
+func (h *Hue) DeleteSchedule(i int) (*Response, error) {
   
   var a []*ApiResponse
 
@@ -143,9 +148,11 @@ func (h *Hue) DeleteSchedule(i int) ([]*Response, error) {
 		return nil, err
 	}
 
-	err = json.Unmarshal(res, &a)
-	if err != nil {
-		return nil, err
+  fmt.Println(string(res))
+
+  err = json.Unmarshal(res, &a)
+  if err != nil {
+    return nil, err
   }
   
   resp, err := handleResponse(a)

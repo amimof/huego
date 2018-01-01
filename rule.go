@@ -34,7 +34,7 @@ func (h *Hue) GetRules() ([]*Rule, error) {
 
   var r map[string]Rule
 
-  res, err := h.GetResource("/rules/")
+  res, err := h.GetResource(h.GetApiUrl("/rules/"))
   if err != nil {
     return nil, err
   }
@@ -78,7 +78,7 @@ func (h *Hue) GetRule(i int) (*Rule, error) {
 }
 
 // Create a rule
-func (h *Hue) CreateRule(s *Rule) ([]*Response, error) {
+func (h *Hue) CreateRule(s *Rule) (*Response, error) {
 
   var a []*ApiResponse
 
@@ -108,7 +108,7 @@ func (h *Hue) CreateRule(s *Rule) ([]*Response, error) {
 }
 
 // Update a rule
-func (h *Hue) UpdateRule(i int, rule *Rule) ([]*Response, error) {
+func (h *Hue) UpdateRule(i int, rule *Rule) (*Response, error) {
   
   var a []*ApiResponse
 
@@ -137,7 +137,7 @@ func (h *Hue) UpdateRule(i int, rule *Rule) ([]*Response, error) {
 }
 
 // Delete a rule
-func (h *Hue) DeleteRule(i int) ([]*Response, error) {
+func (h *Hue) DeleteRule(i int) (*Response, error) {
   
   var a []*ApiResponse
 

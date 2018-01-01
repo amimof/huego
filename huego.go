@@ -8,6 +8,7 @@ import (
 	"strings"
 	"io"
 	"io/ioutil"
+	"fmt"
 )
 
 type Hue struct {
@@ -17,44 +18,72 @@ type Hue struct {
 
 type ApiResponse struct {
 	Success map[string]interface{} `json:"success,omitempty"`
-	Error 	*ApiError `json:"error,omitempty"`
+	Error *ApiError `json:"error,omitempty"`
 }
 
 type ApiError struct {
-	Type 		int 	`json:"type,omitempty"`
-	Address 	string  `json:"address,omitempty"`
-	Description string  `json:"description,omitempty"`
+	Type int
+	Address string
+	Description string
 }
 
 type Response struct {
-	Address string
-	Value string
-	Interface map[string]interface{}
+	Success map[string]interface{}
 }
 
+func (a *ApiError) UnmarshalJSON(data []byte) error {
+	var aux map[string]interface{}
+	err := json.Unmarshal(data, &aux)
+	if err != nil {
+		return err
+	}
+	a.Type = int(aux["type"].(float64))
+	a.Address = aux["address"].(string)
+	a.Description = aux["description"].(string)
+	return nil
+}
 
 func (r *ApiError) Error() string {
-	return r.Description
+	return fmt.Sprintf("ERROR %d [%s]: \"%s\"", r.Type, r.Address, r.Description)
 }
 
-func handleResponse(a []*ApiResponse) ([]*Response, error) {
-	var resp []*Response
-	for _, r := range a {	
+// func handleResponse(a []*ApiResponse) (*Response, error) {
+// 	var resp []*Response
+// 	for _, r := range a {	
+// 		if r.Error != nil {
+// 			return nil, r.Error
+// 		}
+// 		if r.Success != nil {
+// 			for k, _ := range r.Success {
+// 				j, _ := json.Marshal(&r.Success)
+// 				resp = append(resp, &Response{
+// 					Address: k,
+// 					Value: r.Success[k],
+// 					Interface: r.Success[k],
+// 					Json: j,
+// 				})
+// 			}
+// 		}
+// 	}
+// 	return resp, nil
+// }
+
+func handleResponse(a []*ApiResponse) (*Response, error) {
+	success := map[string]interface{}{}
+	for _, r := range a {
+		if r.Success != nil {
+			for k, v := range r.Success {
+				success[k] = v
+			}
+		}
 		if r.Error != nil {
 			return nil, r.Error
 		}
-		if r.Success != nil {
-			for k, v := range r.Success {
-				resp = append(resp, &Response{
-					Address: k,
-					Value: v.(string),
-					Interface: r.Success,
-				})
-			}
-		}
 	}
+	resp := &Response{Success: success}
 	return resp, nil
 }
+
 
 func (h *Hue) GetApiUrl(str ...string) string {
 	u, err := url.Parse(h.Host)

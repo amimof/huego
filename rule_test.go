@@ -49,7 +49,7 @@ func TestCreateRule(t *testing.T) {
 	&huego.RuleAction{
 			Address: "/groups/0/action",
 			Method: "PUT",
-			Body: &huego.Action{On: true},
+			Body: &huego.State{On: true},
 		},
 	}
 	rule := &huego.Rule{

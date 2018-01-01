@@ -82,7 +82,7 @@ func (h *Hue) GetSensor(i int) (*Sensor, error) {
 }
 
 // Creates a sensor
-func (h *Hue) CreateSensor(s *Sensor) ([]*Response, error) {
+func (h *Hue) CreateSensor(s *Sensor) (*Response, error) {
 
 	var a []*ApiResponse
 
@@ -111,7 +111,7 @@ func (h *Hue) CreateSensor(s *Sensor) ([]*Response, error) {
 
 }
 
-func (h *Hue) FindSensors() ([]*Response, error) {
+func (h *Hue) FindSensors() (*Response, error) {
 
 	var a []*ApiResponse
 
@@ -173,7 +173,7 @@ func (h *Hue) GetNewSensors() (*NewSensor, error){
 }
 
 // Update a sensor
-func (h *Hue) UpdateSensor(i int, sensor Sensor) ([]*Response, error) {
+func (h *Hue) UpdateSensor(i int, sensor Sensor) (*Response, error) {
 	
 	var a []*ApiResponse
 
@@ -201,7 +201,7 @@ func (h *Hue) UpdateSensor(i int, sensor Sensor) ([]*Response, error) {
 	return resp, nil
 }
 
-func (h *Hue) DeleteSensor(i int) ([]*Response, error) {
+func (h *Hue) DeleteSensor(i int) (*Response, error) {
 	
 	var a []*ApiResponse
 
@@ -226,7 +226,7 @@ func (h *Hue) DeleteSensor(i int) ([]*Response, error) {
 	return resp, nil
 }
 
-func (h *Hue) UpdateSensorConfig(i int, config *SensorConfig) ([]*Response, error) {
+func (h *Hue) UpdateSensorConfig(i int, config *SensorConfig) (*Response, error) {
 	var a []*ApiResponse
 
 	data, err := json.Marshal(&config)

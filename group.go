@@ -6,26 +6,14 @@ import (
 )
 
 type Group struct {
-	Name 	string 		`json:"name,omitempty"`
-	Lights 	[]string 	`json:"lights,omitempty"`
-	Type 	string 		`json:"type,omitempty"`
-	State 	*GroupState `json:"state,omitempty"`
-	Recycle bool 		`json:"recycle,omitempty"`
-	Class 	string 		`json:"class,omitempty"`
-	Action 	*Action 	`json:"action,omitempty"`
-	Id 		int			`json:",omitempty"`
-}
-
-type Action struct {
-	On 			bool 		`json:"on,omitempty"`
-	Bri 		int 		`json:"bri,omitempty"`
-	Hue 		int 		`json:"hue,omitempty"`
-	Sat 		int 		`json:"sat,omitempty"`
-	Effect 		string 		`json:"effect,omitempty"`
-	Xy 			[]float32 	`json:"xy,omitempty"`
-	Ct 			int 		`json:"ct,omitempty"`
-	Alert 		string 		`json:"alert,omitempty"`
-	ColorMode 	string 		`json:"colormode,omitempty"`
+	Name string `json:"name,omitempty"`
+	Lights []string `json:"lights,omitempty"`
+	Type string `json:"type,omitempty"`
+	State	*GroupState `json:"state,omitempty"`
+	Recycle bool `json:"recycle,omitempty"`
+	Class	string `json:"class,omitempty"`
+	Action *State `json:"action,omitempty"`
+	Id int `json:"-"`
 }
 
 type GroupState struct {
@@ -35,7 +23,7 @@ type GroupState struct {
 
 // GetGroups will return all groups
 // See: hhttps://developers.meethue.com/documentation/groups-api#21_get_all_groups
-func (h *Hue) GetGroups() ([]*Group, error) {
+func (h *Hue) GetGroups() ([]Group, error) {
 
 	var m map[string]Group
 
@@ -45,21 +33,19 @@ func (h *Hue) GetGroups() ([]*Group, error) {
 	}
 
 	err = json.Unmarshal(res, &m)
-	groups := make([]*Group, 0, len(m))
+	groups := make([]Group, 0, len(m))
 
 	for i, g := range m {
 		g.Id, err = strconv.Atoi(i)
 		if err != nil {
 			return nil, err
 		}
-		groups = append(groups, &g)
+		groups = append(groups, g)
 	}
 
 	return groups, err
 
 }
-
-
 
 // GetGroup returns a group with the id of i
 // See: https://developers.meethue.com/documentation/groups-api#23_get_group_attributes
@@ -84,7 +70,7 @@ func (h *Hue) GetGroup(i int) (*Group, error) {
 
 // SetGroupState allows for controlling light state properties for all lights in a group with the id of i
 // See: https://developers.meethue.com/documentation/groups-api#25_set_group_state
-func (h *Hue) SetGroupState(i int, l *Action) ([]*Response, error) {
+func (h *Hue) SetGroupState(i int, l *State) (*Response, error) {
 
 	var a []*ApiResponse
 
@@ -115,7 +101,7 @@ func (h *Hue) SetGroupState(i int, l *Action) ([]*Response, error) {
 }
 
 // Update a group
-func (h *Hue) UpdateGroup(i int, l *Group) ([]*Response, error) {
+func (h *Hue) UpdateGroup(i int, l *Group) (*Response, error) {
 	
 	var a []*ApiResponse
 
@@ -147,7 +133,7 @@ func (h *Hue) UpdateGroup(i int, l *Group) ([]*Response, error) {
 
 // CreateGroup creates a new group
 // See: https://developers.meethue.com/documentation/groups-api#22_create_group
-func (h *Hue) CreateGroup(g *Group) ([]*Response, error) {
+func (h *Hue) CreateGroup(g *Group) (*Response, error) {
 
 	var a []*ApiResponse
 
@@ -178,7 +164,7 @@ func (h *Hue) CreateGroup(g *Group) ([]*Response, error) {
 
 // DeleteGroup deletes a group with the id of i
 // See: https://developers.meethue.com/documentation/groups-api#26_delete_group
-func (h *Hue) DeleteGroup(i int) ([]*Response, error) {
+func (h *Hue) DeleteGroup(i int) error {
 
 	var a []*ApiResponse
 
@@ -187,18 +173,15 @@ func (h *Hue) DeleteGroup(i int) ([]*Response, error) {
 
 	res, err := h.DeleteResource(url)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	err = json.Unmarshal(res, &a)
+	_ = json.Unmarshal(res, &a)
+
+	_, err = handleResponse(a)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	resp, err := handleResponse(a)
-	if err != nil {
-		return nil, err
-	}
-
-	return resp, nil
+	return  nil
 }
