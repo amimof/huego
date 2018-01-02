@@ -137,7 +137,7 @@ func (h *Hue) UpdateRule(i int, rule *Rule) (*Response, error) {
 }
 
 // Delete a rule
-func (h *Hue) DeleteRule(i int) (*Response, error) {
+func (h *Hue) DeleteRule(i int) error {
   
   var a []*ApiResponse
 
@@ -146,18 +146,15 @@ func (h *Hue) DeleteRule(i int) (*Response, error) {
 
 	res, err := h.DeleteResource(url)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	err = json.Unmarshal(res, &a)
-	if err != nil {
-		return nil, err
-  }
+	_ = json.Unmarshal(res, &a)
   
-  resp, err := handleResponse(a)
+  _, err = handleResponse(a)
   if err != nil {
-    return nil, err
+    return err
   }
 
-	return resp, nil
+  return nil
 }

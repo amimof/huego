@@ -13,8 +13,19 @@ func TestGetScenes(t *testing.T) {
 		t.Error(err)
 	}
 	t.Logf("Found %d scenes", len(scenes))
-	for _, scene := range scenes {
-		t.Logf("Scene id=%d name=%s", scene.Id, scene.Name)
+	for i, scene := range scenes {
+		t.Logf("%d", i)
+		t.Logf("  Name: %s", scene.Name)
+		t.Logf("  Lights: %s", scene.Lights)
+		t.Logf("  Owner: %s", scene.Owner)
+		t.Logf("  Recycle: %s", scene.Recycle)
+		t.Logf("  Locked: %s", scene.Locked)
+		t.Logf("  AppData: %s", scene.AppData)
+		t.Logf("  Picture: %s", scene.Picture)
+		t.Logf("  LastUpdated: %s", scene.LastUpdated)
+		t.Logf("  Version: %s", scene.Version)
+		t.Logf("  StoreSceneState: %s", scene.StoreSceneState)
+		t.Logf("  Id: %s", scene.Id)
 	}
 }
 
@@ -38,45 +49,46 @@ func TestGetScene(t *testing.T) {
 
 func TestCreateScene(t *testing.T) {
 	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
-	newScene := &huego.Scene{Name: "TestScene"}
-	response, err := hue.CreateScene(newScene)
+	resp, err := hue.CreateScene(&huego.Scene{
+		Name: "New Scene",
+		Lights: []string{},
+		Recycle: true,
+	})
 	if err != nil {
 		t.Error(err)
-	}
-	for _, r := range response {
-		t.Logf("Address: %s Value: %s Interface: %s", r.Address, r.Value, r.Interface)
+	} else {
+		t.Logf("Group created")
+		for k, v := range resp.Success {
+			t.Logf("%v: %s", k, v)
+		}
 	}
 }
 
 
 func TestUpdateScene(t *testing.T) {
 	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
-	scenes, err := hue.GetScenes()
+	id := 3
+	resp, err := hue.UpdateScene(id, &huego.Scene{
+		Name: "New Scene",
+		Lights: []string{},
+	})
 	if err != nil {
 		t.Error(err)
-	}
-	t.Logf("Found %d scenes, setting the first one", len(scenes))
-	for _, scene := range scenes {
-		response, err := hue.UpdateScene(scene.Id, scene)
-		if err != nil {
-			t.Error(err)
+	} else {
+		t.Logf("Scene %d updated", id)
+		for k, v := range resp.Success {
+			t.Logf("%v: %s", k, v)
 		}
-		for _, r := range response {
-			t.Logf("Address: %s Value: %s Interface: %s", r.Address, r.Value, r.Interface)
-		}
-		break
 	}
 }
 
 func TestDeleteScene(t *testing.T) {
 	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
-	res, err := hue.DeleteScene(1)
+	id := 3
+	err := hue.DeleteScene(3)
 	if err != nil {
-		t.Log(err)
-		t.Fail()
+		t.Error(err)
 	} else {
-		for _, r := range res {
-			t.Logf("Address: %s Value: %s Interface: %s", r.Address, r.Value, r.Interface)
-		}
+		t.Logf("Scene %d deleted", id)
 	}
 }

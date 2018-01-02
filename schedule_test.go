@@ -30,11 +30,6 @@ func TestGetSchedules(t *testing.T) {
 	}
 }
 
-
-
-
-
-
 func TestGetSchedule(t *testing.T) {
 	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	schedules, err := hue.GetSchedules()
@@ -56,12 +51,6 @@ func TestGetSchedule(t *testing.T) {
 	}
 }
 
-
-
-
-
-
-
 func TestCreateSchedule(t *testing.T) {
 	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	command := &huego.Command{
@@ -79,46 +68,41 @@ func TestCreateSchedule(t *testing.T) {
 		Command: command,
 		LocalTime: "2019-09-22T13:37:00",
 	}
-	response, err := hue.CreateSchedule(schedule)
+	resp, err := hue.CreateSchedule(schedule)
 	if err != nil {
 		t.Error(err)
-	}
-	for _, r := range response {
-		t.Logf("Address: %s", r.Address)
-		t.Logf("Value: %s ", r.Value)
-		t.Logf("Interface: %s", r.Interface)
-		t.Logf("Json: %s", r.Json)
+	} else {
+		t.Logf("Schedule created")
+		for k, v := range resp.Success {
+			t.Logf("%v: %s", k, v)
+		}
 	}
 }
 
 func TestUpdateSchedule(t *testing.T) {
 	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
-	schedules, err := hue.GetSchedules()
+	id := 3
+	resp, err := hue.UpdateSchedule(id, &huego.Schedule{
+		Name: "New Scehdule",
+		Description: "Updated parameter",
+	})
 	if err != nil {
 		t.Error(err)
-	}
-	t.Logf("Found %d schedules, setting the first one", len(schedules))
-	for _, schedule := range schedules {
-		response, err := hue.UpdateSchedule(schedule.Id, schedule)
-		if err != nil {
-			t.Error(err)
+	} else {
+		t.Logf("Schedule %d updated", id)
+		for k, v := range resp.Success {
+			t.Logf("%v: %s", k, v)
 		}
-		for i, r := range response {
-			t.Logf("Param %d:", i)
-			t.Logf("  Address: %s", r.Address)
-			t.Logf("  Value: %s", r.Value)
-			t.Logf("  Interface: %s", r.Interface)
-			t.Logf("  Json: %s", r.Json)
-		}
-		break
 	}
 }
 
 func TestDeleteSchedule(t *testing.T) {
 	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
-	id, err := hue.DeleteSchedule(2)
+	id := 3
+	err := hue.DeleteSchedule(id)
 	if err != nil {
 		t.Error(err)
-	} 
-	t.Logf("Deleted Schedule: %d", id)
+	} else {
+		t.Logf("Schedule %d deleted", id)
+	}
 }

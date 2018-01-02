@@ -212,7 +212,7 @@ func (h *Hue) UpdateConfig(c *Config) (*Response, error) {
 }
 
 // Delete a user from configuration
-func (h *Hue) DeleteUser(n string) (*Response, error) {
+func (h *Hue) DeleteUser(n string) error {
 
   var a []*ApiResponse
 
@@ -220,20 +220,17 @@ func (h *Hue) DeleteUser(n string) (*Response, error) {
 
   res, err := h.DeleteResource(url)
   if err != nil {
-    return nil, err
+    return err
   }
 
-  err = json.Unmarshal(res, &a)
+  _ = json.Unmarshal(res, &a)
+
+  _, err = handleResponse(a)
   if err != nil {
-    return nil, err
+    return err
   }
 
-  resp, err := handleResponse(a)
-  if err != nil {
-    return nil, err
-  }
-
-  return resp, nil
+  return nil
 
 }
 

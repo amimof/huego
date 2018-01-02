@@ -91,15 +91,11 @@ func TestGetUsers(t *testing.T) {
 
 func TestDeleteUser(t *testing.T) {
 	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
-	response, err := hue.DeleteUser("Ot82OcV7FWBl1kHXOWCTY5znQXk9WpNkNDZIGYQX")
+	uid := "Ot82OcV7FWBl1kHXOWCTY5znQXk9WpNkNDZIGYQX"
+	err := hue.DeleteUser(uid)
 	if err != nil {
 		t.Error(err)
-	}
-	for i, r := range response {
-		t.Logf("Param %d", i)
-		t.Logf("  Address: %s", r.Address)			
-		t.Logf("  Value: %s", r.Value)
-		t.Logf("  Interface: %s", r.Interface)
-		t.Logf("  Json: %s", r.Json)
+	} else {
+		t.Logf("Delete user %s", uid)
 	}
 }

@@ -58,46 +58,41 @@ func TestCreateResourcelink(t *testing.T) {
     Owner: "78H56B12BAABCDEF",
     Links: []string{"/schedules/2", "/schedules/3", "/scenes/ABCD"},
 	}
-	response, err := hue.CreateResourcelink(resourcelink)
+	resp, err := hue.CreateResourcelink(resourcelink)
 	if err != nil {
 		t.Error(err)
-	}
-	for _, r := range response {
-		t.Logf("Address: %s", r.Address)
-		t.Logf("Value: %s", r.Value)
-		t.Logf("Interface: %s", r.Interface)
-		t.Logf("Json: %s", r.Json)
+	} else {
+		t.Logf("Resourcelink created")
+		for k, v := range resp.Success {
+			t.Logf("%v: %s", k, v)
+		}
 	}
 }
 
 func TestUpdateResourcelink(t *testing.T) {
 	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
-	resourcelinks, err := hue.GetSensors()
+	id := 3
+	resp, err := hue.UpdateResourcelink(id, &huego.Resourcelink{
+		Name: "New Resourcelink",
+		Description: "Updated Attribute",
+	})
 	if err != nil {
 		t.Error(err)
-	}
-	t.Logf("Found %d resourcelinks, setting the first one", len(resourcelinks))
-	for _, resourcelink := range resourcelinks {
-		response, err := hue.UpdateSensor(resourcelink.Id, resourcelink)
-		if err != nil {
-			t.Error(err)
+	} else {
+		t.Logf("Resourcelink %d updated", id)
+		for k, v := range resp.Success {
+			t.Logf("%v: %s", k, v)
 		}
-		for _, r := range response {
-			t.Logf("Address: %s Value: %s Interface: %s", r.Address, r.Value, r.Interface)
-		}
-		break
 	}
 }
 
 func TestDeleteResourcelink(t *testing.T) {
 	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
-	res, err := hue.DeleteResourcelink(1)
+	id := 3
+	err := hue.DeleteResourcelink(1)
 	if err != nil {
-		t.Log(err)
-		t.Fail()
+		t.Error(err)
 	} else {
-		for _, r := range res {
-			t.Logf("Address: %s Value: %s Interface: %s", r.Address, r.Value, r.Interface)
-		}
+		t.Logf("Resourcelink %d deleted", id)
 	}
 }

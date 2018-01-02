@@ -6,17 +6,17 @@ import (
 )
 
 type Scene struct {
-	Name 	string 		`json:"name,omitempty"`
-	Scenes 	[]string 	`json:"scenes,omitempty"`
-	Owner 	string 		`json:"owner,omitempty"`
-	Recycle 	bool `json:"recycle,omitempty"`
-	Locked bool 		`json:"locked,omitempty"`
-	AppData 	interface{} 		`json:"appdata,omitempty"`
-	Picture 	string 	`json:"picture,omitempty"`
+	Name string `json:"name,omitempty"`
+	Lights []string `json:"lights,omitempty"`
+	Owner string `json:"owner,omitempty"`
+	Recycle bool `json:"recycle,omitempty"`
+	Locked bool `json:"locked,omitempty"`
+	AppData interface{} `json:"appdata,omitempty"`
+	Picture	string `json:"picture,omitempty"`
   LastUpdated string `json:"lastupdated,omitempty"`
   Version int `json:"version,omitempty"`
   StoreSceneState bool `json:"storescenestate,omitempty"`
-  Id 		int			`json:",omitempty"`
+  Id int `json:",omitempty"`
 }
 
 // Get all scenes
@@ -128,7 +128,7 @@ func (h *Hue) CreateScene(s *Scene) (*Response, error) {
 
 // DeleteScene deletes a scene with the id of i
 // See: https://developers.meethue.com/documentation/scenes-api#26_delete_scene
-func (h *Hue) DeleteScene(i int) (*Response, error) {
+func (h *Hue) DeleteScene(i int) error {
 
 	var a []*ApiResponse
 
@@ -137,18 +137,15 @@ func (h *Hue) DeleteScene(i int) (*Response, error) {
 
 	res, err := h.DeleteResource(url)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	err = json.Unmarshal(res, &a)
+	_ = json.Unmarshal(res, &a)
+
+	_, err = handleResponse(a)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	resp, err := handleResponse(a)
-	if err != nil {
-		return nil, err
-	}
-
-	return resp, nil
+	return nil
 }

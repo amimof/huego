@@ -70,36 +70,30 @@ func TestGetLight(t *testing.T) {
 
 func TestSetLight(t *testing.T) {
 	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
-	lights, err := hue.GetLights()
+	id := 3
+	resp, err := hue.SetLight(id, &huego.State{
+		On: true,
+		Bri: 254,
+	})
 	if err != nil {
 		t.Error(err)
-	}
-	t.Logf("Found %d lights, setting the first one", len(lights))
-	for _, light := range lights {
-		light.State.On = true
-		light.State.Bri = 254
-		response, err := hue.SetLight(light.Id, light.State)
-		if err != nil {
-			t.Error(err)
+	} else {
+		t.Logf("Light %d state updated", id)
+		for k, v := range resp.Success {
+			t.Logf("%v: %s", k, v)
 		}
-		for k, r := range response {
-			t.Logf("%d", k)
-			t.Logf("  Address: %s", r.Address)
-			t.Logf("  Value: %s", r.Value)
-			t.Logf("  Interface: %s", r.Interface)
-		}
-		break
 	}
 }
 
 func TestFindLights(t *testing.T) {
 	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
-	search, err := hue.FindLights()
+	resp, err := hue.FindLights()
 	if err != nil {
 		t.Error(err)
-	}
-	for _, r := range search {
-		t.Logf("Address: %s Value: %s Interface: %s", r.Address, r.Value, r.Interface)
+	} else {
+		for k, v := range resp.Success {
+			t.Logf("%v: %s", k, v)
+		}
 	}
 
 }
@@ -120,29 +114,27 @@ func TestGetNewLights(t *testing.T) {
 
 func TestUpdateLight(t *testing.T) {
 	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
-	lights, err := hue.GetLights()
+	id := 2
+	resp, err := hue.UpdateLight(id, &huego.Light{
+		Name: "New Light",
+	})
 	if err != nil {
 		t.Error(err)
-	}
-	t.Logf("Found %d lights, updating the first one", len(lights))
-	for _, light := range lights {
-		_, err := hue.UpdateLight(light.Id, light)
-		if err != nil {
-			t.Error(err)
+	} else {
+		t.Logf("Light %d updated", id)
+		for k, v := range resp.Success {
+			t.Logf("%v: %s", k, v)
 		}
-		break
 	}
 }
 
 func TestDeleteLight(t *testing.T) {
 	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
-	res, err := hue.DeleteLight(3)
+	id := 3
+	err := hue.DeleteLight(id)
 	if err != nil {
-		t.Log(err)
-		t.Fail()
+		t.Error(err)
 	} else {
-		for _, r := range res {
-			t.Logf("Address: %s Value: %s Interface: %s", r.Address, r.Value, r.Interface)
-		}
+		t.Logf("Light %d deleted")
 	}
 }

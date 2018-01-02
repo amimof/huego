@@ -3,7 +3,6 @@ package huego
 import(
   "encoding/json"
   "strconv"
-  "fmt"
 )
 
 type Schedule struct {
@@ -88,8 +87,6 @@ func (h *Hue) CreateSchedule(s *Schedule) (*Response, error) {
     return nil, err
   }
 
-  fmt.Println(string(res))
-
   err = json.Unmarshal(res, &a)
   if err != nil {
     return nil, err
@@ -120,8 +117,6 @@ func (h *Hue) UpdateSchedule(i int, schedule *Schedule) (*Response, error) {
 		return nil, err
   }
 
-  fmt.Println(string(res))
-
 	err = json.Unmarshal(res, &a)
 	if err != nil {
 		return nil, err
@@ -136,7 +131,7 @@ func (h *Hue) UpdateSchedule(i int, schedule *Schedule) (*Response, error) {
 }
 
 // Delete a schedule
-func (h *Hue) DeleteSchedule(i int) (*Response, error) {
+func (h *Hue) DeleteSchedule(i int) error {
   
   var a []*ApiResponse
 
@@ -145,20 +140,15 @@ func (h *Hue) DeleteSchedule(i int) (*Response, error) {
 
 	res, err := h.DeleteResource(url)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-  fmt.Println(string(res))
-
-  err = json.Unmarshal(res, &a)
-  if err != nil {
-    return nil, err
-  }
+  _ = json.Unmarshal(res, &a)
   
-  resp, err := handleResponse(a)
+  _, err = handleResponse(a)
   if err != nil {
-    return nil, err
+    return err
   }
 
-	return resp, nil
+	return nil
 }

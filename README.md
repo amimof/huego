@@ -15,5 +15,9 @@ This project is still under development. You can view the status of each *module
 | Scenes | Complete | Complete |
 | Rules | Complete | Complete |
 | Resourcelinks | Complete | Complete |
-| Configuration | Compelte  | Not Started |
+| Configuration | Complete  | Complete |
 | Capabilities | Not Started | Not Started |
+
+## Goal
+
+The goal of this project is to provide an easy to use, stable and extensive library that is up to spec with the official [Philips Hue API](https://www.developers.meethue.com/philips-hue-api). It should be possible to interact with *all* API endpoints that is available on a Philips Hue bridge through the package(s) in this repository.

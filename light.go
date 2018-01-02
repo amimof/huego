@@ -190,7 +190,7 @@ func (h *Hue) GetNewLights() (*NewLight, error){
 
 // DeleteLight deletes a light
 // See: https://developers.meethue.com/documentation/lights-api#17_delete_lights
-func (h *Hue) DeleteLight(i int) (*Response, error) {
+func (h *Hue) DeleteLight(i int) error {
 
 	var a []*ApiResponse
 
@@ -199,27 +199,24 @@ func (h *Hue) DeleteLight(i int) (*Response, error) {
 
 	res, err := h.DeleteResource(url)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	fmt.Println(string(res))
 
-	err = json.Unmarshal(res, &a)
+	_ = json.Unmarshal(res, &a)
+
+	_, err = handleResponse(a)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	resp, err := handleResponse(a)
-	if err != nil {
-		return nil, err
-	}
-
-	return resp, nil
+	return nil
 
 }
 
 // Update a light
-func (h *Hue) UpdateLight(i int, light Light) (*Response, error) {
+func (h *Hue) UpdateLight(i int, light *Light) (*Response, error) {
 
 	var a []*ApiResponse
 

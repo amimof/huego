@@ -173,7 +173,7 @@ func (h *Hue) GetNewSensors() (*NewSensor, error){
 }
 
 // Update a sensor
-func (h *Hue) UpdateSensor(i int, sensor Sensor) (*Response, error) {
+func (h *Hue) UpdateSensor(i int, sensor *Sensor) (*Response, error) {
 	
 	var a []*ApiResponse
 
@@ -201,7 +201,7 @@ func (h *Hue) UpdateSensor(i int, sensor Sensor) (*Response, error) {
 	return resp, nil
 }
 
-func (h *Hue) DeleteSensor(i int) (*Response, error) {
+func (h *Hue) DeleteSensor(i int) error {
 	
 	var a []*ApiResponse
 
@@ -210,20 +210,17 @@ func (h *Hue) DeleteSensor(i int) (*Response, error) {
 
 	res, err := h.DeleteResource(url)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	err = json.Unmarshal(res, &a)
+	_ = json.Unmarshal(res, &a)
+
+	_, err = handleResponse(a)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	resp, err := handleResponse(a)
-	if err != nil {
-		return nil, err
-	}
-
-	return resp, nil
+	return nil
 }
 
 func (h *Hue) UpdateSensorConfig(i int, config *SensorConfig) (*Response, error) {
