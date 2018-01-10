@@ -5,6 +5,7 @@ import(
   "strconv"
 )
 
+// https://developers.meethue.com/documentation/resourcelinks-api
 type Resourcelink struct {
   Name	string `json:"name,omitempty"`
   Description string `json:"description,omitempty"`
@@ -15,12 +16,17 @@ type Resourcelink struct {
   Id int `json:",omitempty"`
 }
 
-// Get all resourcelinks
-func (h *Hue) GetResourcelinks() ([]*Resourcelink, error) {
+// Returns all resourcelinks known to the bridge
+func (b *Bridge) GetResourcelinks() ([]*Resourcelink, error) {
 
   var r map[string]Resourcelink
 
-  res, err := h.GetResource(h.GetApiUrl("/resourcelinks/"))
+  url, err := b.getApiPath("/resourcelinks/")
+  if err != nil {
+    return nil, err
+  }
+
+  res, err := b.getResource(url)
   if err != nil {
     return nil, err
   }
@@ -44,12 +50,15 @@ func (h *Hue) GetResourcelinks() ([]*Resourcelink, error) {
 
 }
 
-// Get one resourcelink
-func (h *Hue) GetResourcelink(i int) (*Resourcelink, error) {
+// Returns one resourcelink by its id defined by i
+func (b *Bridge) GetResourcelink(i int) (*Resourcelink, error) {
 
 	var resourcelink *Resourcelink
 
-	res, err := h.GetResource(h.GetApiUrl("/resourcelinks/", strconv.Itoa(i)))
+  url, err := b.getApiPath("/resourcelinks/", strconv.Itoa(i))
+
+
+	res, err := b.getResource(url)
 	if err != nil {
 		return nil, err
 	}
@@ -63,8 +72,8 @@ func (h *Hue) GetResourcelink(i int) (*Resourcelink, error) {
 
 }
 
-// Create a resourcelink
-func (h *Hue) CreateResourcelink(s *Resourcelink) (*Response, error) {
+// Creates one new resourcelink on the bridge
+func (b *Bridge) CreateResourcelink(s *Resourcelink) (*Response, error) {
 
   var a []*ApiResponse
 
@@ -73,8 +82,12 @@ func (h *Hue) CreateResourcelink(s *Resourcelink) (*Response, error) {
     return nil, err
   }
 
-  url := h.GetApiUrl("/resourcelinks/")
-  res, err := h.PostResource(url, data)
+  url, err := b.getApiPath("/resourcelinks/")
+  if err != nil {
+    return nil, err
+  }  
+
+  res, err := b.postResource(url, data)
   if err != nil {
     return nil, err
   }
@@ -93,8 +106,8 @@ func (h *Hue) CreateResourcelink(s *Resourcelink) (*Response, error) {
 
 }
 
-// Update a resourcelink
-func (h *Hue) UpdateResourcelink(i int, resourcelink *Resourcelink) (*Response, error) {
+// Updates one resourcelink with attributes defined by resourcelink
+func (b *Bridge) UpdateResourcelink(i int, resourcelink *Resourcelink) (*Response, error) {
 	var a []*ApiResponse
 
 	data, err := json.Marshal(&resourcelink)
@@ -102,8 +115,12 @@ func (h *Hue) UpdateResourcelink(i int, resourcelink *Resourcelink) (*Response, 
 		return nil, err
 	}
 
-	url := h.GetApiUrl("/resourcelinks/", strconv.Itoa(i))
-	res, err := h.PutResource(url, data)
+  url, err := b.getApiPath("/resourcelinks/", strconv.Itoa(i))
+  if err != nil {
+    return nil, err
+  }
+
+	res, err := b.putResource(url, data)
 	if err != nil {
 		return nil, err
 	}
@@ -121,15 +138,18 @@ func (h *Hue) UpdateResourcelink(i int, resourcelink *Resourcelink) (*Response, 
 	return resp, nil
 }
 
-// Delete a resourcelink
-func (h *Hue) DeleteResourcelink(i int) error {
+// Deletes one resourcelink with the id of i
+func (b *Bridge) DeleteResourcelink(i int) error {
   
   var a []*ApiResponse
 
 	id := strconv.Itoa(i)
-	url := h.GetApiUrl("/resourcelinks/", id)
+  url, err := b.getApiPath("/resourcelinks/", id)
+  if err != nil {
+    return err
+  }
 
-	res, err := h.DeleteResource(url)
+	res, err := b.deleteResource(url)
 	if err != nil {
 		return err
 	}

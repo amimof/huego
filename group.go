@@ -5,6 +5,7 @@ import (
 	"strconv"
 )
 
+// https://developers.meethue.com/documentation/groups-api
 type Group struct {
 	Name string `json:"name,omitempty"`
 	Lights []string `json:"lights,omitempty"`
@@ -21,13 +22,17 @@ type GroupState struct {
 	AnyOn bool `json:"any_on,omitempty"`
 }
 
-// GetGroups will return all groups
-// See: hhttps://developers.meethue.com/documentation/groups-api#21_get_all_groups
-func (h *Hue) GetGroups() ([]Group, error) {
+// Returns all groups known to the bridge
+func (b *Bridge) GetGroups() ([]Group, error) {
 
 	var m map[string]Group
 
-	res, err := h.GetResource(h.GetApiUrl("/groups/"))
+	url, err := b.getApiPath("/groups/")
+	if err != nil {
+		return nil, err
+	}
+
+	res, err := b.getResource(url)
 	if err != nil {
 		return nil, err
 	}
@@ -47,14 +52,17 @@ func (h *Hue) GetGroups() ([]Group, error) {
 
 }
 
-// GetGroup returns a group with the id of i
-// See: https://developers.meethue.com/documentation/groups-api#23_get_group_attributes
-func (h *Hue) GetGroup(i int) (*Group, error) {
+// Returns one group known to the bridge by its id
+func (b *Bridge) GetGroup(i int) (*Group, error) {
 
 	var g *Group
 
-	url := h.GetApiUrl("/groups/", strconv.Itoa(i))
-	res, err := h.GetResource(url)
+	url, err := b.getApiPath("/groups/", strconv.Itoa(i))
+	if err != nil {
+		return nil, err
+	}
+
+	res, err := b.getResource(url)
 	if err != nil {
 		return nil, err
 	}
@@ -68,21 +76,23 @@ func (h *Hue) GetGroup(i int) (*Group, error) {
 }
 
 
-// SetGroupState allows for controlling light state properties for all lights in a group with the id of i
-// See: https://developers.meethue.com/documentation/groups-api#25_set_group_state
-func (h *Hue) SetGroupState(i int, l *State) (*Response, error) {
+// Allows for setting the state of one group, controlling the state of all lights in that group.
+func (b *Bridge) SetGroupState(i int, l *State) (*Response, error) {
 
 	var a []*ApiResponse
 
 	id := strconv.Itoa(i)
-	url := h.GetApiUrl("/groups/", id, "/action/")
+	url, err := b.getApiPath("/groups/", id, "/action/")
+	if err != nil {
+		return nil, err
+	}
 
 	data, err := json.Marshal(&l)
 	if err != nil {
 		return nil, err
 	}
 
-	res, err := h.PutResource(url, data)
+	res, err := b.putResource(url, data)
 	if err != nil {
 		return nil, err
 	}
@@ -100,20 +110,23 @@ func (h *Hue) SetGroupState(i int, l *State) (*Response, error) {
 	return resp, nil
 }
 
-// Update a group
-func (h *Hue) UpdateGroup(i int, l *Group) (*Response, error) {
+// Updates one group known to the bridge 
+func (b *Bridge) UpdateGroup(i int, l *Group) (*Response, error) {
 	
 	var a []*ApiResponse
 
 	id := strconv.Itoa(i)
-	url := h.GetApiUrl("/groups/", id)
+	url, err := b.getApiPath("/groups/", id)
+	if err != nil {
+		return nil, err
+	}
 
 	data, err := json.Marshal(&l)
 	if err != nil {
 		return nil, err
 	}
 
-	res, err := h.PutResource(url, data)
+	res, err := b.putResource(url, data)
 	if err != nil {
 		return nil, err
 	}
@@ -131,20 +144,22 @@ func (h *Hue) UpdateGroup(i int, l *Group) (*Response, error) {
 	return resp, nil
 }
 
-// CreateGroup creates a new group
-// See: https://developers.meethue.com/documentation/groups-api#22_create_group
-func (h *Hue) CreateGroup(g *Group) (*Response, error) {
+// Creates one new group with attributes defined by g
+func (b *Bridge) CreateGroup(g *Group) (*Response, error) {
 
 	var a []*ApiResponse
 
-	url := h.GetApiUrl("/groups/")
+	url, err := b.getApiPath("/groups/")
+	if err != nil {
+		return nil, err
+	}
 
 	data, err := json.Marshal(&g)
 	if err != nil {
 		return nil, err
 	}
 
-	res, err := h.PostResource(url, data)
+	res, err := b.postResource(url, data)
 	if err != nil {
 		return nil, err
 	}
@@ -162,16 +177,18 @@ func (h *Hue) CreateGroup(g *Group) (*Response, error) {
 	return resp, nil
 }
 
-// DeleteGroup deletes a group with the id of i
-// See: https://developers.meethue.com/documentation/groups-api#26_delete_group
-func (h *Hue) DeleteGroup(i int) error {
+// Deletes one group with the id of i
+func (b *Bridge) DeleteGroup(i int) error {
 
 	var a []*ApiResponse
 
 	id := strconv.Itoa(i)
-	url := h.GetApiUrl("/groups/", id)
+	url, err := b.getApiPath("/groups/", id)
+	if err != nil {
+		return err
+	}
 
-	res, err := h.DeleteResource(url)
+	res, err := b.deleteResource(url)
 	if err != nil {
 		return err
 	}

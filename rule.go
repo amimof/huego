@@ -5,6 +5,7 @@ import(
   "strconv"
 )
 
+// https://developers.meethue.com/documentation/rules-api
 type Rule struct {
   Name	string `json:"name,omitempty"`
   LastTriggered string `json:"lasttriggered,omitempty"`
@@ -29,12 +30,17 @@ type RuleAction struct {
   Body interface{} `json:"body,omitempty"`
 }
 
-// Get all rules
-func (h *Hue) GetRules() ([]*Rule, error) {
+// Returns all rules known to the bridge
+func (b *Bridge) GetRules() ([]*Rule, error) {
 
   var r map[string]Rule
 
-  res, err := h.GetResource(h.GetApiUrl("/rules/"))
+  url, err := b.getApiPath("/rules/")
+  if err != nil {
+    return nil, err
+  }
+
+  res, err := b.getResource(url)
   if err != nil {
     return nil, err
   }
@@ -58,12 +64,17 @@ func (h *Hue) GetRules() ([]*Rule, error) {
 
 }
 
-// Get one rule
-func (h *Hue) GetRule(i int) (*Rule, error) {
+// Returns one rule by its id of i
+func (b *Bridge) GetRule(i int) (*Rule, error) {
 
 	var rule *Rule
 
-	res, err := h.GetResource(h.GetApiUrl("/rules/", strconv.Itoa(i)))
+  url, err := b.getApiPath("/rules/", strconv.Itoa(i))
+  if err != nil {
+    return nil, err
+  }
+
+	res, err := b.getResource(url)
 	if err != nil {
 		return nil, err
 	}
@@ -77,8 +88,8 @@ func (h *Hue) GetRule(i int) (*Rule, error) {
 
 }
 
-// Create a rule
-func (h *Hue) CreateRule(s *Rule) (*Response, error) {
+// Creates one rule with attribues defined in s
+func (b *Bridge) CreateRule(s *Rule) (*Response, error) {
 
   var a []*ApiResponse
 
@@ -87,8 +98,12 @@ func (h *Hue) CreateRule(s *Rule) (*Response, error) {
     return nil, err
   }
 
-  url := h.GetApiUrl("/rules/")
-  res, err := h.PostResource(url, data)
+  url, err := b.getApiPath("/rules/")
+  if err != nil {
+    return nil, err
+  }
+  
+  res, err := b.postResource(url, data)
   if err != nil {
     return nil, err
   }
@@ -107,8 +122,8 @@ func (h *Hue) CreateRule(s *Rule) (*Response, error) {
 
 }
 
-// Update a rule
-func (h *Hue) UpdateRule(i int, rule *Rule) (*Response, error) {
+// Updates one rule by its id of i and rule configuration of rule
+func (b *Bridge) UpdateRule(i int, rule *Rule) (*Response, error) {
   
   var a []*ApiResponse
 
@@ -117,8 +132,12 @@ func (h *Hue) UpdateRule(i int, rule *Rule) (*Response, error) {
 		return nil, err
 	}
 
-	url := h.GetApiUrl("/rules/", strconv.Itoa(i))
-	res, err := h.PutResource(url, data)
+  url, err := b.getApiPath("/rules/", strconv.Itoa(i))
+  if err != nil {
+    return nil, err
+  }
+
+	res, err := b.putResource(url, data)
 	if err != nil {
 		return nil, err
 	}
@@ -136,15 +155,18 @@ func (h *Hue) UpdateRule(i int, rule *Rule) (*Response, error) {
 	return resp, nil
 }
 
-// Delete a rule
-func (h *Hue) DeleteRule(i int) error {
+// Deletes one rule from the bridge
+func (b *Bridge) DeleteRule(i int) error {
   
   var a []*ApiResponse
 
 	id := strconv.Itoa(i)
-	url := h.GetApiUrl("/rules/", id)
+  url, err := b.getApiPath("/rules/", id)
+  if err != nil {
+    return err
+  }
 
-	res, err := h.DeleteResource(url)
+	res, err := b.deleteResource(url)
 	if err != nil {
 		return err
 	}

@@ -6,11 +6,11 @@ import(
 
 type Config struct {
   Name string `json:"name,omitempty"`
-  SwUpdate *SwUpdate `json:"swupdate,omitempty"`
-  SwUpdate2 *SwUpdate2 `json:"swupdate2,omitempty"`
-  WhitelistMap map[string]*Whitelist `json:"whitelist"`
-  Whitelist []*Whitelist `json:"-"`
-  PortalState *PortalState `json:"portalstate,omitempty"`
+  SwUpdate *SwUpdate `json:"swupdate"`
+  SwUpdate2 *SwUpdate2 `json:"swupdate2"`
+  WhitelistMap map[string]Whitelist `json:"whitelist"`
+  Whitelist []Whitelist `json:"-"`
+  PortalState *PortalState `json:"portalstate"`
   ApiVersion string `json:"apiversion,omitempty"`
   SwVersion string `json:"swversion,omitempty"`
   ProxyAddress string `json:"proxyaddress,omitempty"`
@@ -36,7 +36,7 @@ type Config struct {
 
 type SwUpdate struct {
   CheckForUpdate bool `json:"checkforupdate,omitempty"`
-  DeviceTypes *DeviceTypes `json:"devicetypes,omitempty"`
+  DeviceTypes *DeviceTypes `json:"devicetypes"`
   UpdateState uint8 `json:"updatestate,omitempty"`
   Notify bool `json:"notify,omitempty"`
   Url string `json:"url,omitempty"`
@@ -45,21 +45,21 @@ type SwUpdate struct {
 
 type DeviceTypes struct {
   Bridge bool `json:"bridge,omitempty"`
-  Lights []*Light `json:"lights,omitempty"`
-  Sensors []*Sensor `json:"sensors,omitempty"`
+  Lights []Light `json:"lights,omitempty"`
+  Sensors []Sensor `json:"sensors,omitempty"`
 }
 
 type SwUpdate2 struct {
-  Bridge *Bridge `json:"bridge,omitempty"`
+  Bridge *BridgeConfig `json:"bridge"`
   CheckForUpdate bool `json:"checkforupdate,omitempty"`
   State string `json:"state,omitempty"`
   Install bool `json:"install,omitempty"`
-  AutoInstall *AutoInstall `json:"autoinstall,omitempty"`
-  LastChange string `json:"lastchange,omitempty"` // Should be of type Time
-  LastInstall string `json:"lastinstall,omitempty"` // SHould be of type Time
+  AutoInstall *AutoInstall `json:"autoinstall"`
+  LastChange string `json:"lastchange,omitempty"`
+  LastInstall string `json:"lastinstall,omitempty"`
 }
 
-type Bridge struct {
+type BridgeConfig struct {
   State string `json:"state,omitempty"`
   LastInstall string `json:"lastinstall,omitempty"`
 }
@@ -96,23 +96,23 @@ type PortalState struct {
 }
 
 type Datastore struct {
-  Lights []*Light `json:"lights,omitempty"`
-  Groups []*Group `json:"groups,omitempty"`
-  Config *Config `json:"config,omitempty"`
-  Schedules []*Schedule `json:"schedules,omitempty"`
-  Scenes []*Scene `json:"scenes,omitempty"`
-  Sensors []*Sensor `json:"sensors,omitempty"`
-  Rules []*Rule `json:"rules,omitempty"`
+  Lights []Light `json:"lights"`
+  Groups []Group `json:"groups"`
+  Config *Config `json:"config"`
+  Schedules []Schedule `json:"schedules"`
+  Scenes []Scene `json:"scenes"`
+  Sensors []Sensor `json:"sensors"`
+  Rules []Rule `json:"rules"`
 }
 
 
-// Get configuration
-func (h *Hue) GetConfig() (*Config, error) {
+// Returns the bridge configuration
+func (b *Bridge) GetConfig() (*Config, error) {
   
   var config *Config
 
-  url := h.GetApiUrl("/config/")
-  res, err := h.GetResource(url)
+  url, err := b.getApiPath("/config/")
+  res, err := b.getResource(url)
   if err != nil {
     return nil, err
   }
@@ -122,7 +122,7 @@ func (h *Hue) GetConfig() (*Config, error) {
     return nil, err
   }
 
-  wl := make([]*Whitelist, 0, len(config.WhitelistMap))
+  wl := make([]Whitelist, 0, len(config.WhitelistMap))
   for k, v := range config.WhitelistMap {
     v.Username = k
     wl = append(wl, v)
@@ -134,8 +134,8 @@ func (h *Hue) GetConfig() (*Config, error) {
 
 }
 
-// Create a user
-func (h *Hue) CreateUser(n string) (*Response, error) {
+// Creates a user by adding n to the list of whitelists in the bridge
+func (b *Bridge) CreateUser(n string) (*Response, error) {
 
   var a []*ApiResponse
 
@@ -147,13 +147,17 @@ func (h *Hue) CreateUser(n string) (*Response, error) {
     true,
   }
 
-  url := h.GetApiUrl("/")
+  url, err := b.getApiPath("/")
+  if err != nil {
+    return nil, err
+  }
+
   data, err := json.Marshal(&body)
   if err != nil {
     return nil, err
   }
 
-  res, err := h.PostResource(url, data)
+  res, err := b.postResource(url, data)
   if err != nil {
     return nil, err
   }
@@ -172,28 +176,31 @@ func (h *Hue) CreateUser(n string) (*Response, error) {
 
 }
 
-// Returns Whitelist 
-func (h *Hue) GetUsers() ([]*Whitelist, error) {
-  c, err := h.GetConfig()
+// Returns a list of whitelists from the bridge
+func (b *Bridge) GetUsers() ([]Whitelist, error) {
+  c, err := b.GetConfig()
   if err != nil {
     return nil, err
   }
   return c.Whitelist, nil
 }
 
-// Update configuration
-func (h *Hue) UpdateConfig(c *Config) (*Response, error) {
+// Updates the bridge configuration with c
+func (b *Bridge) UpdateConfig(c *Config) (*Response, error) {
 
 	var a []*ApiResponse
 
-	url := h.GetApiUrl("/config/")
+  url, err := b.getApiPath("/config/")
+  if err != nil {
+    return nil, err
+  }
 
 	data, err := json.Marshal(&c)
 	if err != nil {
 		return nil, err
 	}
 
-	res, err := h.PutResource(url, data)
+	res, err := b.putResource(url, data)
 	if err != nil {
 		return nil, err
 	}
@@ -211,14 +218,17 @@ func (h *Hue) UpdateConfig(c *Config) (*Response, error) {
 	return resp, nil
 }
 
-// Delete a user from configuration
-func (h *Hue) DeleteUser(n string) error {
+// Removes a whitelist item from whitelists on the bridge
+func (b *Bridge) DeleteUser(n string) error {
 
   var a []*ApiResponse
 
-  url := h.GetApiUrl("/config/whitelist/", n)
+  url, err := b.getApiPath("/config/whitelist/", n)
+  if err != nil {
+    return err
+  }
 
-  res, err := h.DeleteResource(url)
+  res, err := b.deleteResource(url)
   if err != nil {
     return err
   }
@@ -235,12 +245,16 @@ func (h *Hue) DeleteUser(n string) error {
 }
 
 // Get full state (datastore)
-func (h *Hue) GetFullState() (*Datastore, error) {
+func (b *Bridge) GetFullState() (*Datastore, error) {
 
     var ds *Datastore
 
-    url := h.GetApiUrl("/")
-    res, err := h.GetResource(url)
+    url, err := b.getApiPath("/")
+    if err != nil {
+      return nil, err
+    }
+
+    res, err := b.getResource(url)
     if err != nil {
       return nil, err
     }
