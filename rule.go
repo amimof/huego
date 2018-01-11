@@ -40,7 +40,7 @@ func (b *Bridge) GetRules() ([]*Rule, error) {
     return nil, err
   }
 
-  res, err := b.getResource(url)
+  res, err := get(url)
   if err != nil {
     return nil, err
   }
@@ -74,7 +74,7 @@ func (b *Bridge) GetRule(i int) (*Rule, error) {
     return nil, err
   }
 
-	res, err := b.getResource(url)
+	res, err := get(url)
 	if err != nil {
 		return nil, err
 	}
@@ -103,7 +103,7 @@ func (b *Bridge) CreateRule(s *Rule) (*Response, error) {
     return nil, err
   }
   
-  res, err := b.postResource(url, data)
+  res, err := post(url, data)
   if err != nil {
     return nil, err
   }
@@ -137,7 +137,7 @@ func (b *Bridge) UpdateRule(i int, rule *Rule) (*Response, error) {
     return nil, err
   }
 
-	res, err := b.putResource(url, data)
+	res, err := put(url, data)
 	if err != nil {
 		return nil, err
 	}
@@ -166,7 +166,7 @@ func (b *Bridge) DeleteRule(i int) error {
     return err
   }
 
-	res, err := b.deleteResource(url)
+	res, err := delete(url)
 	if err != nil {
 		return err
 	}

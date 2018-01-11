@@ -112,7 +112,7 @@ func (b *Bridge) GetConfig() (*Config, error) {
   var config *Config
 
   url, err := b.getApiPath("/config/")
-  res, err := b.getResource(url)
+  res, err := get(url)
   if err != nil {
     return nil, err
   }
@@ -135,7 +135,7 @@ func (b *Bridge) GetConfig() (*Config, error) {
 }
 
 // Creates a user by adding n to the list of whitelists in the bridge
-func (b *Bridge) CreateUser(n string) (*Response, error) {
+func (b *Bridge) CreateUser(n string) (string, error) {
 
   var a []*ApiResponse
 
@@ -149,30 +149,30 @@ func (b *Bridge) CreateUser(n string) (*Response, error) {
 
   url, err := b.getApiPath("/")
   if err != nil {
-    return nil, err
+    return "", err
   }
 
   data, err := json.Marshal(&body)
   if err != nil {
-    return nil, err
+    return "", err
   }
 
-  res, err := b.postResource(url, data)
+  res, err := post(url, data)
   if err != nil {
-    return nil, err
+    return "", err
   }
 
   err = json.Unmarshal(res, &a)
   if err != nil {
-    return nil, err
+    return "", err
   }
 
   resp, err := handleResponse(a)
   if err != nil {
-    return nil, err
+    return "", err
   }
 
-  return resp, nil
+  return resp.Success["username"].(string), nil
 
 }
 
@@ -200,7 +200,7 @@ func (b *Bridge) UpdateConfig(c *Config) (*Response, error) {
 		return nil, err
 	}
 
-	res, err := b.putResource(url, data)
+	res, err := put(url, data)
 	if err != nil {
 		return nil, err
 	}
@@ -228,7 +228,7 @@ func (b *Bridge) DeleteUser(n string) error {
     return err
   }
 
-  res, err := b.deleteResource(url)
+  res, err := delete(url)
   if err != nil {
     return err
   }
@@ -254,7 +254,7 @@ func (b *Bridge) GetFullState() (*Datastore, error) {
       return nil, err
     }
 
-    res, err := b.getResource(url)
+    res, err := get(url)
     if err != nil {
       return nil, err
     }

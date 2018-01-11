@@ -53,7 +53,7 @@ func (b *Bridge) GetLights() ([]Light, error) {
 		return nil, err
 	}
 
-	res, err := b.getResource(url)
+	res, err := get(url)
 	if err != nil {
 		return nil, err
 	}
@@ -87,7 +87,7 @@ func (b *Bridge) GetLight(i int) (*Light, error) {
 		return nil, err
 	}
 
-	res, err := b.getResource(url)
+	res, err := get(url)
 	if err != nil {
 		return light, err
 	}
@@ -117,7 +117,7 @@ func (b *Bridge) SetLight(i int, l *State) (*Response, error) {
 	if err != nil {
 		return nil, err
 	}
-	res, err := b.putResource(url, data)
+	res, err := put(url, data)
 	if err != nil {
 		return nil, err
 	}
@@ -147,7 +147,7 @@ func (b *Bridge) FindLights() (*Response, error) {
 		return nil, err
 	}
 
-	res, err := b.postResource(url, nil)
+	res, err := post(url, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -176,7 +176,7 @@ func (b *Bridge) GetNewLights() (*NewLight, error){
 		return nil, err
 	}
 
-	res, err := b.getResource(url)
+	res, err := get(url)
 	if err != nil {
 		return nil, err
 	}
@@ -214,7 +214,7 @@ func (b *Bridge) DeleteLight(i int) error {
 		return err
 	}
 
-	res, err := b.deleteResource(url)
+	res, err := delete(url)
 	if err != nil {
 		return err
 	}
@@ -246,7 +246,7 @@ func (b *Bridge) UpdateLight(i int, light *Light) (*Response, error) {
 		return nil, err
 	}
 
-	res, err := b.putResource(url, data)
+	res, err := put(url, data)
 	if err != nil {
 		return nil, err
 	}
@@ -262,4 +262,9 @@ func (b *Bridge) UpdateLight(i int, light *Light) (*Response, error) {
 	}
 
 	return resp, nil
+}
+
+// Sets the On state of one light to false, turning it off
+func (l *Light) TurnOff() (*Response, error) {
+	return nil, nil
 }

@@ -3,7 +3,6 @@ package huego
 import (
 	"encoding/json"
 	"strconv"
-	"fmt"
 )
 
 // https://developers.meethue.com/documentation/groups-api
@@ -33,12 +32,16 @@ func (b *Bridge) GetGroups() ([]Group, error) {
 		return nil, err
 	}
 
-	res, err := b.getResource(url)
+	res, err := get(url)
 	if err != nil {
 		return nil, err
 	}
 
 	err = json.Unmarshal(res, &m)
+	if err != nil {
+		return nil, err
+	}
+	
 	groups := make([]Group, 0, len(m))
 
 	for i, g := range m {
@@ -63,7 +66,7 @@ func (b *Bridge) GetGroup(i int) (*Group, error) {
 		return nil, err
 	}
 
-	res, err := b.getResource(url)
+	res, err := get(url)
 	if err != nil {
 		return nil, err
 	}
@@ -93,7 +96,7 @@ func (b *Bridge) SetGroupState(i int, l *State) (*Response, error) {
 		return nil, err
 	}
 
-	res, err := b.putResource(url, data)
+	res, err := put(url, data)
 	if err != nil {
 		return nil, err
 	}
@@ -127,7 +130,7 @@ func (b *Bridge) UpdateGroup(i int, l *Group) (*Response, error) {
 		return nil, err
 	}
 
-	res, err := b.putResource(url, data)
+	res, err := put(url, data)
 	if err != nil {
 		return nil, err
 	}
@@ -160,9 +163,7 @@ func (b *Bridge) CreateGroup(g Group) (*Response, error) {
 		return nil, err
 	}
 
-	fmt.Println(string(data))
-
-	res, err := b.postResource(url, data)
+	res, err := post(url, data)
 	if err != nil {
 		return nil, err
 	}
@@ -191,7 +192,7 @@ func (b *Bridge) DeleteGroup(i int) error {
 		return err
 	}
 
-	res, err := b.deleteResource(url)
+	res, err := delete(url)
 	if err != nil {
 		return err
 	}

@@ -7,7 +7,7 @@ This project is currently in **ALPHA** and not recommended for production use. A
 ## Installation
 Get the package
 ```
-go get -u github.com/amimof/huego
+go get github.com/amimof/huego
 ```
 
 Include it in your code
@@ -15,15 +15,15 @@ Include it in your code
 package main
 
 import (
-    "github.com/amimof/huego"
-    "fmt"
+  "github.com/amimof/huego"
+  "fmt"
 )
 
 func main() {
   bridge, err := huego.New("username", "password")
-	l, err := hue.GetLights()
-	if err != nil {
-		fmt.Error(err)
+  l, err := hue.GetLights()
+  if err != nil {
+    fmt.Fatal(err)
   }
   fmt.Printf("Found %d lights", len(l))
 }
@@ -45,7 +45,7 @@ This project is currently in **ALPHA** and still under heavy development. Curren
 | Configuration | `Complete`  | `Complete` 
 | Capabilities | `Not Started` | `Not Started` 
 
-Other than above core modules, each module needs additional *helper* methods for conveniance and flavour. The goal is to keep it simple, and not to bload the library with functionality that developers might want to write on their own. 
+Other than above core modules, each module needs additional *helper* methods for conveniance and flavour. The goal is to keep it simple, and not to bloat the library with functionality that developers might want to write on their own. 
 
 ## Goal
 

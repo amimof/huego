@@ -26,7 +26,7 @@ func (b *Bridge) GetResourcelinks() ([]*Resourcelink, error) {
     return nil, err
   }
 
-  res, err := b.getResource(url)
+  res, err := get(url)
   if err != nil {
     return nil, err
   }
@@ -58,7 +58,7 @@ func (b *Bridge) GetResourcelink(i int) (*Resourcelink, error) {
   url, err := b.getApiPath("/resourcelinks/", strconv.Itoa(i))
 
 
-	res, err := b.getResource(url)
+	res, err := get(url)
 	if err != nil {
 		return nil, err
 	}
@@ -87,7 +87,7 @@ func (b *Bridge) CreateResourcelink(s *Resourcelink) (*Response, error) {
     return nil, err
   }  
 
-  res, err := b.postResource(url, data)
+  res, err := post(url, data)
   if err != nil {
     return nil, err
   }
@@ -120,7 +120,7 @@ func (b *Bridge) UpdateResourcelink(i int, resourcelink *Resourcelink) (*Respons
     return nil, err
   }
 
-	res, err := b.putResource(url, data)
+	res, err := put(url, data)
 	if err != nil {
 		return nil, err
 	}
@@ -149,7 +149,7 @@ func (b *Bridge) DeleteResourcelink(i int) error {
     return err
   }
 
-	res, err := b.deleteResource(url)
+	res, err := delete(url)
 	if err != nil {
 		return err
 	}

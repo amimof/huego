@@ -10,7 +10,7 @@ func TestGetSchedules(t *testing.T) {
 	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	schedules, err := hue.GetSchedules()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	t.Logf("Found %d schedules", len(schedules))
 	for i, schedule := range schedules {
@@ -34,12 +34,12 @@ func TestGetSchedule(t *testing.T) {
 	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	schedules, err := hue.GetSchedules()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	for _, schedule := range schedules {
 		s, err := hue.GetSchedule(schedule.Id)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		t.Logf("Time: %s", s.Time)
 		t.Logf("LocalTime: %s", s.LocalTime)
@@ -70,7 +70,7 @@ func TestCreateSchedule(t *testing.T) {
 	}
 	resp, err := hue.CreateSchedule(schedule)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	} else {
 		t.Logf("Schedule created")
 		for k, v := range resp.Success {
@@ -87,7 +87,7 @@ func TestUpdateSchedule(t *testing.T) {
 		Description: "Updated parameter",
 	})
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	} else {
 		t.Logf("Schedule %d updated", id)
 		for k, v := range resp.Success {
@@ -101,7 +101,7 @@ func TestDeleteSchedule(t *testing.T) {
 	id := 3
 	err := hue.DeleteSchedule(id)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	} else {
 		t.Logf("Schedule %d deleted", id)
 	}

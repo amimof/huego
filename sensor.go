@@ -41,7 +41,7 @@ func (b *Bridge) GetSensors() ([]Sensor, error) {
 		return nil, err
 	}
 
-	res, err := b.getResource(url)
+	res, err := get(url)
 	if err != nil {
 		return nil, err
 	}
@@ -74,7 +74,7 @@ func (b *Bridge) GetSensor(i int) (*Sensor, error) {
 		return nil, err
 	}
 
-	res, err := b.getResource(url)
+	res, err := get(url)
 	if err != nil {
 		return r, err
 	}
@@ -103,7 +103,7 @@ func (b *Bridge) CreateSensor(s *Sensor) (*Response, error) {
 		return nil, err
 	}
 
-	res, err := b.postResource(url, data)
+	res, err := post(url, data)
 	if err != nil {
 		return nil, err
 	}
@@ -133,7 +133,7 @@ func (b *Bridge) FindSensors() (*Response, error) {
 		return nil, err
 	}
 
-	res, err := b.postResource(url, nil)
+	res, err := post(url, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -163,7 +163,7 @@ func (b *Bridge) GetNewSensors() (*NewSensor, error){
 		return nil, err
 	}
 
-	res, err := b.getResource(url)
+	res, err := get(url)
 	if err != nil {
 		return nil, err
 	}
@@ -207,7 +207,7 @@ func (b *Bridge) UpdateSensor(i int, sensor *Sensor) (*Response, error) {
 		return nil, err
 	}
 
-	res, err := b.putResource(url, data)
+	res, err := put(url, data)
 	if err != nil {
 		return nil, err
 	}
@@ -236,7 +236,7 @@ func (b *Bridge) DeleteSensor(i int) error {
 		return err
 	}
 
-	res, err := b.deleteResource(url)
+	res, err := delete(url)
 	if err != nil {
 		return err
 	}
@@ -265,7 +265,7 @@ func (b *Bridge) UpdateSensorConfig(i int, config *SensorConfig) (*Response, err
 		return nil, err
 	}
 	
-	res, err := b.putResource(url, data)
+	res, err := put(url, data)
 	if err != nil {
 		return nil, err
 	}

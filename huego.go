@@ -4,17 +4,10 @@ package huego
 import (
 	"net/http"
 	"encoding/json"
-	"net/url"
-	"path"
 	"strings"
 	"io/ioutil"
 	"fmt"
 )
-
-type Bridge struct {
-	Host string
-	User string
-}
 
 type ApiResponse struct {
 	Success map[string]interface{} `json:"success,omitempty"`
@@ -63,31 +56,7 @@ func handleResponse(a []*ApiResponse) (*Response, error) {
 	return resp, nil
 }
 
-func (b *Bridge) getApiPath(str ...string) (string, error) {
-	u, err := url.Parse(b.Host)
-	if err != nil {
-		return "", err
-	}
-	u.Path = path.Join(u.Path, "/api/", b.User)
-	for _, p := range str {
-		u.Path = path.Join(u.Path, p)
-	}
-	return u.String(), nil
-}
-
-func (b *Bridge) GetApiUrl(str ...string) string {
-	u, err := url.Parse(b.Host)
-	if err != nil {
-		return ""
-	}
-	u.Path = path.Join(u.Path, "/api/", b.User)
-	for _, p := range str {
-		u.Path = path.Join(u.Path, p)
-	}
-	return u.String()
-}
-
-func (b *Bridge) getResource(url string) ([]byte, error) {
+func get(url string) ([]byte, error) {
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -110,7 +79,7 @@ func (b *Bridge) getResource(url string) ([]byte, error) {
 	return body, nil
 }
 
-func (b *Bridge) putResource(url string, data []byte) ([]byte, error) {
+func put(url string, data []byte) ([]byte, error) {
 
 	body := strings.NewReader(string(data))
 
@@ -138,7 +107,7 @@ func (b *Bridge) putResource(url string, data []byte) ([]byte, error) {
 
 }
 
-func (b *Bridge) postResource(url string, data []byte) ([]byte, error) {
+func post(url string, data []byte) ([]byte, error) {
 
 	body := strings.NewReader(string(data))
 
@@ -166,7 +135,7 @@ func (b *Bridge) postResource(url string, data []byte) ([]byte, error) {
 
 }
 
-func (b *Bridge) deleteResource(url string) ([]byte, error) {
+func delete(url string) ([]byte, error) {
 
 	req, err := http.NewRequest("DELETE", url, nil)
 	if err != nil {
@@ -192,7 +161,44 @@ func (b *Bridge) deleteResource(url string) ([]byte, error) {
 
 }
 
-// Instantiates and returns a new Bridge object
+
+// Performs a discovery on the network looking for bridges using https://www.meethue.com/api/nupnp service
+func Discover() ([]Bridge, error) {
+
+	req, err := http.NewRequest("GET", "https://www.meethue.com/api/nupnp", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	client := http.Client{}
+	res, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+
+	defer res.Body.Close()
+	
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	var bridges []Bridge
+
+	err = json.Unmarshal(body, &bridges)
+	if err != nil {
+		return nil, err
+	}
+
+	return bridges, nil
+
+}
+
+// Instantiates and returns a new Bridge
 func New(h, u string) *Bridge {
-	return &Bridge{h, u}
+	return &Bridge{
+		Host: h, 
+		User: u, 
+		Id: "",
+	}
 }

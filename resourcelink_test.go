@@ -10,7 +10,7 @@ func TestGetResourcelinks(t *testing.T) {
 	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	resourcelinks, err := hue.GetResourcelinks()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	t.Logf("Found %d resourcelinks", len(resourcelinks))
 	for i, resourcelink := range resourcelinks {
@@ -30,12 +30,12 @@ func TestGetResourcelink(t *testing.T) {
 	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	resourcelinks, err := hue.GetResourcelinks()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	for _, resourcelink := range resourcelinks {
 		l, err := hue.GetResourcelink(resourcelink.Id)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		t.Logf("Name: %s", l.Name)
 		t.Logf("Description: %s", l.Description)
@@ -60,7 +60,7 @@ func TestCreateResourcelink(t *testing.T) {
 	}
 	resp, err := hue.CreateResourcelink(resourcelink)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	} else {
 		t.Logf("Resourcelink created")
 		for k, v := range resp.Success {
@@ -77,7 +77,7 @@ func TestUpdateResourcelink(t *testing.T) {
 		Description: "Updated Attribute",
 	})
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	} else {
 		t.Logf("Resourcelink %d updated", id)
 		for k, v := range resp.Success {
@@ -91,7 +91,7 @@ func TestDeleteResourcelink(t *testing.T) {
 	id := 3
 	err := hue.DeleteResourcelink(1)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	} else {
 		t.Logf("Resourcelink %d deleted", id)
 	}

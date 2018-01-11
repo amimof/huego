@@ -31,7 +31,7 @@ func (b *Bridge) GetScenes() ([]Scene, error) {
     return nil, err
   }
 
-	res, err := b.getResource(url)
+	res, err := get(url)
 	if err != nil {
 		return nil, err
 	}
@@ -58,7 +58,7 @@ func (b *Bridge) GetScene(i string) (*Scene, error) {
     return nil, err
 	}
 	
-	res, err := b.getResource(url)
+	res, err := get(url)
 	if err != nil {
 		return nil, err
 	}
@@ -91,7 +91,7 @@ func (b *Bridge) UpdateScene(i int, s *Scene) (*Response, error) {
 		return nil, err
 	}
 
-	res, err := b.putResource(url, data)
+	res, err := put(url, data)
 	if err != nil {
 		return nil, err
 	}
@@ -124,7 +124,7 @@ func (b *Bridge) CreateScene(s *Scene) (*Response, error) {
     return nil, err
 	}
 
-	res, err := b.postResource(url, data)
+	res, err := post(url, data)
 	if err != nil {
 		return nil, err
 	}
@@ -153,7 +153,7 @@ func (b *Bridge) DeleteScene(i int) error {
     return err
 	}
 
-	res, err := b.deleteResource(url)
+	res, err := delete(url)
 	if err != nil {
 		return err
 	}
