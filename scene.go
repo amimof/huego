@@ -3,8 +3,10 @@ package huego
 import (
 	"encoding/json"
 	"strconv"
+	"fmt"
 )
 
+// https://developers.meethue.com/documentation/scenes-api
 type Scene struct {
 	Name string `json:"name,omitempty"`
 	Lights []string `json:"lights,omitempty"`
@@ -16,44 +18,53 @@ type Scene struct {
   LastUpdated string `json:"lastupdated,omitempty"`
   Version int `json:"version,omitempty"`
   StoreSceneState bool `json:"storescenestate,omitempty"`
-  Id int `json:",omitempty"`
+  Id string `json:"-"`
 }
 
-// Get all scenes
-func (h *Hue) GetScenes() ([]*Scene, error) {
+// Returns all scenes known to the bridge
+func (b *Bridge) GetScenes() ([]Scene, error) {
 
 	var m map[string]Scene
 
-	res, err := h.GetResource(h.GetApiUrl("/scenes/"))
+	url, err := b.getApiPath("/scenes/")
+  if err != nil {
+    return nil, err
+  }
+
+	res, err := b.getResource(url)
 	if err != nil {
 		return nil, err
 	}
 
 	err = json.Unmarshal(res, &m)
-	scenes := make([]*Scene, 0, len(m))
+	scenes := make([]Scene, 0, len(m))
 
 	for i, g := range m {
-		g.Id, err = strconv.Atoi(i)
-		if err != nil {
-			return nil, err
-		}
-		scenes = append(scenes, &g)
+		g.Id = i
+		scenes = append(scenes, g)
 	}
 
 	return scenes, err
 
 }
 
-// Get one scene
-func (h *Hue) GetScene(i int) (*Scene, error) {
+// Returns one scene by its id of i
+func (b *Bridge) GetScene(i string) (*Scene, error) {
 
 	var g *Scene
 
-	url := h.GetApiUrl("/scenes/", strconv.Itoa(i))
-	res, err := h.GetResource(url)
+	url, err := b.getApiPath("/scenes/", i)
+  if err != nil {
+    return nil, err
+	}
+	
+	res, err := b.getResource(url)
 	if err != nil {
 		return nil, err
 	}
+
+	fmt.Println("Hi")
+	fmt.Println(string(res))
 
 	err = json.Unmarshal(res, &g)
 	if err != nil {
@@ -64,20 +75,23 @@ func (h *Hue) GetScene(i int) (*Scene, error) {
 }
 
 
-// Update a scene
-func (h *Hue) UpdateScene(i int, s *Scene) (*Response, error) {
+// Updates one scene and its attributes by id of i
+func (b *Bridge) UpdateScene(i int, s *Scene) (*Response, error) {
 	
 	var a []*ApiResponse
 
 	id := strconv.Itoa(i)
-	url := h.GetApiUrl("/scenes/", id)
-
+	url, err := b.getApiPath("/scenes/", id)
+  if err != nil {
+    return nil, err
+	}
+	
 	data, err := json.Marshal(&s)
 	if err != nil {
 		return nil, err
 	}
 
-	res, err := h.PutResource(url, data)
+	res, err := b.putResource(url, data)
 	if err != nil {
 		return nil, err
 	}
@@ -95,20 +109,22 @@ func (h *Hue) UpdateScene(i int, s *Scene) (*Response, error) {
 	return resp, nil
 }
 
-// CreateScene creates a new scene
-// See: https://developers.meethue.com/documentation/scenes-api#22_create_scene
-func (h *Hue) CreateScene(s *Scene) (*Response, error) {
+// Creates one new scene with its attributes defined in s
+func (b *Bridge) CreateScene(s *Scene) (*Response, error) {
 
 	var a []*ApiResponse
-
-	url := h.GetApiUrl("/scenes/")
-
+	
 	data, err := json.Marshal(&s)
 	if err != nil {
 		return nil, err
 	}
 
-	res, err := h.PostResource(url, data)
+	url, err := b.getApiPath("/scenes/")
+  if err != nil {
+    return nil, err
+	}
+
+	res, err := b.postResource(url, data)
 	if err != nil {
 		return nil, err
 	}
@@ -126,16 +142,18 @@ func (h *Hue) CreateScene(s *Scene) (*Response, error) {
 	return resp, nil
 }
 
-// DeleteScene deletes a scene with the id of i
-// See: https://developers.meethue.com/documentation/scenes-api#26_delete_scene
-func (h *Hue) DeleteScene(i int) error {
+// Deletes one scene from the bridge
+func (b *Bridge) DeleteScene(i int) error {
 
 	var a []*ApiResponse
 
 	id := strconv.Itoa(i)
-	url := h.GetApiUrl("/scenes/", id)
+	url, err := b.getApiPath("/scenes/", id)
+	if err != nil {
+    return err
+	}
 
-	res, err := h.DeleteResource(url)
+	res, err := b.deleteResource(url)
 	if err != nil {
 		return err
 	}

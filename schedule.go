@@ -5,6 +5,7 @@ import(
   "strconv"
 )
 
+// https://developers.meethue.com/documentation/schedules-api-0
 type Schedule struct {
   Name	string `json:"name"`
   Description	string `json:"description"`
@@ -23,12 +24,17 @@ type Command struct {
   Body interface{} `json:"body"`
 }
 
-// Get all schedules
-func (h *Hue) GetSchedules() ([]*Schedule, error) {
+// Returns all scehdules known to the bridge
+func (b *Bridge) GetSchedules() ([]*Schedule, error) {
 
   var r map[string]Schedule
 
-  res, err := h.GetResource(h.GetApiUrl("/schedules/"))
+  url, err := b.getApiPath("/schedules/")
+  if err != nil {
+    return nil, err
+  }
+
+  res, err := b.getResource(url)
   if err != nil {
     return nil, err
   }
@@ -52,12 +58,17 @@ func (h *Hue) GetSchedules() ([]*Schedule, error) {
 
 }
 
-// Get one schedule
-func (h *Hue) GetSchedule(i int) (*Schedule, error) {
+// Returns one schedule by id defined in i
+func (b *Bridge) GetSchedule(i int) (*Schedule, error) {
 
 	var schedule *Schedule
 
-	res, err := h.GetResource(h.GetApiUrl("/schedules/", strconv.Itoa(i)))
+  url, err := b.getApiPath("/schedules/", strconv.Itoa(i))
+	if err != nil {
+		return nil, err
+	}
+
+	res, err := b.getResource(url)
 	if err != nil {
 		return nil, err
 	}
@@ -71,8 +82,8 @@ func (h *Hue) GetSchedule(i int) (*Schedule, error) {
 
 }
 
-// Create a schedule
-func (h *Hue) CreateSchedule(s *Schedule) (*Response, error) {
+// Creates one schedule and sets its attributes defined in s
+func (b *Bridge) CreateSchedule(s *Schedule) (*Response, error) {
 
   var a []*ApiResponse
 
@@ -81,8 +92,12 @@ func (h *Hue) CreateSchedule(s *Schedule) (*Response, error) {
     return nil, err
   }
 
-  url := h.GetApiUrl("/schedules/")
-  res, err := h.PostResource(url, data)
+  url, err := b.getApiPath("/schedules/")
+	if err != nil {
+		return nil, err
+	}
+
+  res, err := b.postResource(url, data)
   if err != nil {
     return nil, err
   }
@@ -101,8 +116,8 @@ func (h *Hue) CreateSchedule(s *Schedule) (*Response, error) {
 
 }
 
-// Update a schedule
-func (h *Hue) UpdateSchedule(i int, schedule *Schedule) (*Response, error) {
+// Updates one schedule by its id of i and attributes by schedule
+func (b *Bridge) UpdateSchedule(i int, schedule *Schedule) (*Response, error) {
   
   var a []*ApiResponse
 
@@ -111,8 +126,12 @@ func (h *Hue) UpdateSchedule(i int, schedule *Schedule) (*Response, error) {
 		return nil, err
 	}
 
-	url := h.GetApiUrl("/schedules/", strconv.Itoa(i))
-	res, err := h.PutResource(url, data)
+  url, err := b.getApiPath("/schedules/", strconv.Itoa(i))
+	if err != nil {
+		return nil, err
+	}
+
+	res, err := b.putResource(url, data)
 	if err != nil {
 		return nil, err
   }
@@ -130,15 +149,18 @@ func (h *Hue) UpdateSchedule(i int, schedule *Schedule) (*Response, error) {
 	return resp, nil
 }
 
-// Delete a schedule
-func (h *Hue) DeleteSchedule(i int) error {
+// Deletes one schedule from the bridge by its id of i
+func (b *Bridge) DeleteSchedule(i int) error {
   
   var a []*ApiResponse
 
 	id := strconv.Itoa(i)
-	url := h.GetApiUrl("/schedules/", id)
+  url, err := b.getApiPath("/schedules/", id)
+	if err != nil {
+		return err
+	}
 
-	res, err := h.DeleteResource(url)
+	res, err := b.deleteResource(url)
 	if err != nil {
 		return err
 	}

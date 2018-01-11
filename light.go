@@ -3,10 +3,9 @@ package huego
 import (
 	"encoding/json"
 	"strconv"
-	"time"
-	"fmt"
 )
 
+// https://developers.meethue.com/documentation/lights-api
 type Light struct {
 	State *State `json:"state,omitempty"`
 	Type string `json:"type,omitempty"`
@@ -41,16 +40,20 @@ type State struct {
 
 type NewLight struct {
 	Lights []string
-	LastScan time.Time `json:"lastscan"`
+	LastScan string `json:"lastscan"`
 }
 
-// GetLights will return all lights
-// See: https://developers.meethue.com/documentation/lights-api#11_get_all_lights
-func (h *Hue) GetLights() ([]Light, error) {
+// Returns all lights known to the bridge
+func (b *Bridge) GetLights() ([]Light, error) {
 
 	m := map[string]Light{}
 
-	res, err := h.GetResource(h.GetApiUrl("/lights/"))
+	url, err := b.getApiPath("/lights/")
+	if err != nil {
+		return nil, err
+	}
+
+	res, err := b.getResource(url)
 	if err != nil {
 		return nil, err
 	}
@@ -74,13 +77,17 @@ func (h *Hue) GetLights() ([]Light, error) {
 
 }
 
-// GetLight returns a light with the id of i
-// See: https://developers.meethue.com/documentation/lights-api#11_get_all_lights
-func (h *Hue) GetLight(i int) (*Light, error) {
+// Returns one light with the id of i
+func (b *Bridge) GetLight(i int) (*Light, error) {
 
 	var light *Light
 
-	res, err := h.GetResource(h.GetApiUrl("/lights/", strconv.Itoa(i)))
+	url, err := b.getApiPath("/lights/", strconv.Itoa(i))
+	if err != nil {
+		return nil, err
+	}
+
+	res, err := b.getResource(url)
 	if err != nil {
 		return light, err
 	}
@@ -93,9 +100,8 @@ func (h *Hue) GetLight(i int) (*Light, error) {
 	return light, nil
 }
 
-// SetLight allows for controlling a light state properties.
-// See: https://developers.meethue.com/documentation/lights-api#15_set_light_attributes_rename
-func (h *Hue) SetLight(i int, l *State) (*Response, error) {
+// Allows for controlling one light's state
+func (b *Bridge) SetLight(i int, l *State) (*Response, error) {
 
 	var a []*ApiResponse
 
@@ -107,8 +113,11 @@ func (h *Hue) SetLight(i int, l *State) (*Response, error) {
 		return nil, err
 	}
 
-	url := h.GetApiUrl("/lights/", strconv.Itoa(i), "/state")
-	res, err := h.PutResource(url, data)
+	url, err := b.getApiPath("/lights/", strconv.Itoa(i), "/state")
+	if err != nil {
+		return nil, err
+	}
+	res, err := b.putResource(url, data)
 	if err != nil {
 		return nil, err
 	}
@@ -127,15 +136,18 @@ func (h *Hue) SetLight(i int, l *State) (*Response, error) {
 
 }
 
-// Search starts a search for new lights
-// See: https://developers.meethue.com/documentation/lights-api#13_search_for_new_lights
-func (h *Hue) FindLights() (*Response, error) {
+// Starts a search for new lights on the bridge. 
+// Use GetNewLights() verify if new lights have been detected. 
+func (b *Bridge) FindLights() (*Response, error) {
 
 	var a []*ApiResponse
 
-	url := h.GetApiUrl("/lights/")
+	url, err := b.getApiPath("/lights/")
+	if err != nil {
+		return nil, err
+	}
 
-	res, err := h.PostResource(url, nil)
+	res, err := b.postResource(url, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -154,14 +166,17 @@ func (h *Hue) FindLights() (*Response, error) {
 
 }
 
-// See: https://developers.meethue.com/documentation/lights-api#12_get_new_lights
-func (h *Hue) GetNewLights() (*NewLight, error){
+// Returns a list of lights that were discovered last time FindLights() was executed.
+func (b *Bridge) GetNewLights() (*NewLight, error){
 
 	var n map[string]interface{}
 	
-	url := h.GetApiUrl("/lights/new")
+	url, err := b.getApiPath("/lights/new")
+	if err != nil {
+		return nil, err
+	}
 
-	res, err := h.GetResource(url)
+	res, err := b.getResource(url)
 	if err != nil {
 		return nil, err
 	}
@@ -169,11 +184,11 @@ func (h *Hue) GetNewLights() (*NewLight, error){
 	_ = json.Unmarshal(res, &n)
 
 	lights := make([]string, 0, len(n))
-	var lastscan time.Time
+	var lastscan string
 
 	for k, _ := range n {
 		if k == "lastscan" {
-			lastscan = n[k].(time.Time)
+			lastscan = n[k].(string)
 		} else {
 			lights = append(lights, n[k].(string))
 		}
@@ -188,21 +203,21 @@ func (h *Hue) GetNewLights() (*NewLight, error){
 
 }
 
-// DeleteLight deletes a light
-// See: https://developers.meethue.com/documentation/lights-api#17_delete_lights
-func (h *Hue) DeleteLight(i int) error {
+// Deletes one lights from the bridge
+func (b *Bridge) DeleteLight(i int) error {
 
 	var a []*ApiResponse
 
 	id := strconv.Itoa(i)
-	url := h.GetApiUrl("/lights/", id)
-
-	res, err := h.DeleteResource(url)
+	url, err := b.getApiPath("/lights/", id)
 	if err != nil {
 		return err
 	}
 
-	fmt.Println(string(res))
+	res, err := b.deleteResource(url)
+	if err != nil {
+		return err
+	}
 
 	_ = json.Unmarshal(res, &a)
 
@@ -215,20 +230,23 @@ func (h *Hue) DeleteLight(i int) error {
 
 }
 
-// Update a light
-func (h *Hue) UpdateLight(i int, light *Light) (*Response, error) {
+// Updates one light's attributes and state properties
+func (b *Bridge) UpdateLight(i int, light *Light) (*Response, error) {
 
 	var a []*ApiResponse
 
 	id := strconv.Itoa(i)
-	url := h.GetApiUrl("/lights/", id)
+	url, err := b.getApiPath("/lights/", id)
+	if err != nil {
+		return nil, err
+	}
 
 	data, err := json.Marshal(&light)
 	if err != nil {
 		return nil, err
 	}
 
-	res, err := h.PutResource(url, data)
+	res, err := b.putResource(url, data)
 	if err != nil {
 		return nil, err
 	}

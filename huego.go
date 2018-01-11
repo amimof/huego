@@ -1,3 +1,4 @@
+// Package huego provides an easy to use interface to the Philips Hue bridge. 
 package huego
 
 import (
@@ -6,12 +7,11 @@ import (
 	"net/url"
 	"path"
 	"strings"
-	"io"
 	"io/ioutil"
 	"fmt"
 )
 
-type Hue struct {
+type Bridge struct {
 	Host string
 	User string
 }
@@ -47,27 +47,6 @@ func (r *ApiError) Error() string {
 	return fmt.Sprintf("ERROR %d [%s]: \"%s\"", r.Type, r.Address, r.Description)
 }
 
-// func handleResponse(a []*ApiResponse) (*Response, error) {
-// 	var resp []*Response
-// 	for _, r := range a {	
-// 		if r.Error != nil {
-// 			return nil, r.Error
-// 		}
-// 		if r.Success != nil {
-// 			for k, _ := range r.Success {
-// 				j, _ := json.Marshal(&r.Success)
-// 				resp = append(resp, &Response{
-// 					Address: k,
-// 					Value: r.Success[k],
-// 					Interface: r.Success[k],
-// 					Json: j,
-// 				})
-// 			}
-// 		}
-// 	}
-// 	return resp, nil
-// }
-
 func handleResponse(a []*ApiResponse) (*Response, error) {
 	success := map[string]interface{}{}
 	for _, r := range a {
@@ -84,22 +63,31 @@ func handleResponse(a []*ApiResponse) (*Response, error) {
 	return resp, nil
 }
 
+func (b *Bridge) getApiPath(str ...string) (string, error) {
+	u, err := url.Parse(b.Host)
+	if err != nil {
+		return "", err
+	}
+	u.Path = path.Join(u.Path, "/api/", b.User)
+	for _, p := range str {
+		u.Path = path.Join(u.Path, p)
+	}
+	return u.String(), nil
+}
 
-func (h *Hue) GetApiUrl(str ...string) string {
-	u, err := url.Parse(h.Host)
+func (b *Bridge) GetApiUrl(str ...string) string {
+	u, err := url.Parse(b.Host)
 	if err != nil {
 		return ""
 	}
-	u.Path = path.Join(u.Path, "/api/", h.User)
+	u.Path = path.Join(u.Path, "/api/", b.User)
 	for _, p := range str {
 		u.Path = path.Join(u.Path, p)
 	}
 	return u.String()
 }
 
-
-// GET a resource from the url
-func (h *Hue) GetResource(url string) ([]byte, error) {
+func (b *Bridge) getResource(url string) ([]byte, error) {
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -122,8 +110,7 @@ func (h *Hue) GetResource(url string) ([]byte, error) {
 	return body, nil
 }
 
-// PUT a resource to a url
-func (h *Hue) PutResource(url string, data []byte) ([]byte, error) {
+func (b *Bridge) putResource(url string, data []byte) ([]byte, error) {
 
 	body := strings.NewReader(string(data))
 
@@ -151,8 +138,7 @@ func (h *Hue) PutResource(url string, data []byte) ([]byte, error) {
 
 }
 
-// PUT a resource to a url
-func (h *Hue) PostResource(url string, data []byte) ([]byte, error) {
+func (b *Bridge) postResource(url string, data []byte) ([]byte, error) {
 
 	body := strings.NewReader(string(data))
 
@@ -180,8 +166,7 @@ func (h *Hue) PostResource(url string, data []byte) ([]byte, error) {
 
 }
 
-// DELETE a resource to a url
-func (h *Hue) DeleteResource(url string) ([]byte, error) {
+func (b *Bridge) deleteResource(url string) ([]byte, error) {
 
 	req, err := http.NewRequest("DELETE", url, nil)
 	if err != nil {
@@ -207,15 +192,7 @@ func (h *Hue) DeleteResource(url string) ([]byte, error) {
 
 }
 
-// Decode
-func (h *Hue) Decode(res io.ReadCloser, in interface{}) error {
-	err := json.NewDecoder(res).Decode(&in)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func New(h, u string) *Hue {
-	return &Hue{h, u}
+// Instantiates and returns a new Bridge object
+func New(h, u string) *Bridge {
+	return &Bridge{h, u}
 }

@@ -5,6 +5,7 @@ import (
 	"strconv"
 )
 
+// https://developers.meethue.com/documentation/sensors-api
 type Sensor struct {
 	State 			 *SensorState 	`json:"state,omitempty"`
 	Config 			 *SensorConfig 	`json:"config,omitempty"`
@@ -30,14 +31,17 @@ type NewSensor struct {
 	LastScan string `json:"lastscan"`
 }
 
-// GetSensors will return all sensors
-// See: https://developers.meethue.com/documentation/sensors-api#51_get_all_sensors
-func (h *Hue) GetSensors() ([]Sensor, error) {
+// Returns all sensors known to the bridge
+func (b *Bridge) GetSensors() ([]Sensor, error) {
 
 	s := map[string]Sensor{}
-	url := h.GetApiUrl("/sensors/")
+	
+	url, err := b.getApiPath("/sensors/")
+	if err != nil {
+		return nil, err
+	}
 
-	res, err := h.GetResource(url)
+	res, err := b.getResource(url)
 	if err != nil {
 		return nil, err
 	}
@@ -59,15 +63,18 @@ func (h *Hue) GetSensors() ([]Sensor, error) {
 	return sensors, err
 }
 
-// GetSensor returns a sensor with the id of i
-// See: https://developers.meethue.com/documentation/sensors-api#55_get_sensor
-func (h *Hue) GetSensor(i int) (*Sensor, error) {
+// Returns one sensor by its id of i
+func (b *Bridge) GetSensor(i int) (*Sensor, error) {
 
 	var r *Sensor
-	id := strconv.Itoa(i)
-	url := h.GetApiUrl("/sensors/", id)
 
-	res, err := h.GetResource(url)
+	id := strconv.Itoa(i)
+	url, err := b.getApiPath("/sensors/", id)
+	if err != nil {
+		return nil, err
+	}
+
+	res, err := b.getResource(url)
 	if err != nil {
 		return r, err
 	}
@@ -81,8 +88,8 @@ func (h *Hue) GetSensor(i int) (*Sensor, error) {
 
 }
 
-// Creates a sensor
-func (h *Hue) CreateSensor(s *Sensor) (*Response, error) {
+// Creates one new sensor
+func (b *Bridge) CreateSensor(s *Sensor) (*Response, error) {
 
 	var a []*ApiResponse
 
@@ -91,8 +98,12 @@ func (h *Hue) CreateSensor(s *Sensor) (*Response, error) {
 		return nil, err
 	}
 
-	url := h.GetApiUrl("/sensors/")
-	res, err := h.PostResource(url, data)
+	url, err := b.getApiPath("/sensors/")
+	if err != nil {
+		return nil, err
+	}
+
+	res, err := b.postResource(url, data)
 	if err != nil {
 		return nil, err
 	}
@@ -111,13 +122,18 @@ func (h *Hue) CreateSensor(s *Sensor) (*Response, error) {
 
 }
 
-func (h *Hue) FindSensors() (*Response, error) {
+// Starts a search for new sensors.
+// Use GetNewSensors() to verify if new sensors have been discovered in the bridge. 
+func (b *Bridge) FindSensors() (*Response, error) {
 
 	var a []*ApiResponse
 
-	url := h.GetApiUrl("/sensors/")
+	url, err := b.getApiPath("/sensors/")
+	if err != nil {
+		return nil, err
+	}
 
-	res, err := h.PostResource(url, nil)
+	res, err := b.postResource(url, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -136,14 +152,18 @@ func (h *Hue) FindSensors() (*Response, error) {
 
 }
 
-// See: https://developers.meethue.com/documentation/lights-api#12_get_new_lights
-func (h *Hue) GetNewSensors() (*NewSensor, error){
+// Returns a list of sensors that were discovered last time GetNewSensors() was executed.
+func (b *Bridge) GetNewSensors() (*NewSensor, error){
 
 	var n map[string]Sensor
 	var result *NewSensor
 
-	url := h.GetApiUrl("/sensors/new")
-	res, err := h.GetResource(url)
+	url, err := b.getApiPath("/sensors/new")
+	if err != nil {
+		return nil, err
+	}
+
+	res, err := b.getResource(url)
 	if err != nil {
 		return nil, err
 	}
@@ -172,8 +192,8 @@ func (h *Hue) GetNewSensors() (*NewSensor, error){
 
 }
 
-// Update a sensor
-func (h *Hue) UpdateSensor(i int, sensor *Sensor) (*Response, error) {
+// Updates one sensor by its id and attributes by sensor
+func (b *Bridge) UpdateSensor(i int, sensor *Sensor) (*Response, error) {
 	
 	var a []*ApiResponse
 
@@ -182,8 +202,12 @@ func (h *Hue) UpdateSensor(i int, sensor *Sensor) (*Response, error) {
 		return nil, err
 	}
 
-	url := h.GetApiUrl("/sensors/", strconv.Itoa(i))
-	res, err := h.PutResource(url, data)
+	url, err := b.getApiPath("/sensors/", strconv.Itoa(i))
+	if err != nil {
+		return nil, err
+	}
+
+	res, err := b.putResource(url, data)
 	if err != nil {
 		return nil, err
 	}
@@ -201,14 +225,18 @@ func (h *Hue) UpdateSensor(i int, sensor *Sensor) (*Response, error) {
 	return resp, nil
 }
 
-func (h *Hue) DeleteSensor(i int) error {
+// Deletes one sensor from the bridge
+func (b *Bridge) DeleteSensor(i int) error {
 	
 	var a []*ApiResponse
 
 	id := strconv.Itoa(i)
-	url := h.GetApiUrl("/sensors/", id)
+	url, err := b.getApiPath("/sensors/", id)
+	if err != nil {
+		return err
+	}
 
-	res, err := h.DeleteResource(url)
+	res, err := b.deleteResource(url)
 	if err != nil {
 		return err
 	}
@@ -223,7 +251,8 @@ func (h *Hue) DeleteSensor(i int) error {
 	return nil
 }
 
-func (h *Hue) UpdateSensorConfig(i int, config *SensorConfig) (*Response, error) {
+// Updates the configuration of one sensor. The allowed configuration parameters depend on the sensor type
+func (b *Bridge) UpdateSensorConfig(i int, config *SensorConfig) (*Response, error) {
 	var a []*ApiResponse
 
 	data, err := json.Marshal(&config)
@@ -231,8 +260,12 @@ func (h *Hue) UpdateSensorConfig(i int, config *SensorConfig) (*Response, error)
 		return nil, err
 	}
 
-	url := h.GetApiUrl("/sensors/", strconv.Itoa(i), "/config")
-	res, err := h.PutResource(url, data)
+	url, err := b.getApiPath("/sensors/", strconv.Itoa(i), "/config")
+	if err != nil {
+		return nil, err
+	}
+	
+	res, err := b.putResource(url, data)
 	if err != nil {
 		return nil, err
 	}
