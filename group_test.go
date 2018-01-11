@@ -85,32 +85,9 @@ func TestGetGroup(t *testing.T) {
 	}
 }
 
-func TestSetGroupState(t *testing.T) {
-	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
-	groups, err := hue.GetGroups()
-	if err != nil {
-		t.Error(err)
-	}
-	t.Logf("Found %d groups, using the first one", len(groups))
-	for _, group := range groups {
-		resp, err := hue.SetGroupState(group.Id, &huego.State{
-			On: true,
-		})
-		if err != nil {
-			t.Error(err)
-		} else {
-			t.Logf("Group state set")
-			for k, v := range resp.Success {
-				t.Logf("%v: %s", k, v)
-			}		
-		}
-		break
-	}
-}
-
 func TestCreateGroup(t *testing.T) {
 	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
-	resp, err := hue.CreateGroup(&huego.Group{
+	resp, err := hue.CreateGroup(huego.Group{
 		Name: "TestGroup",
 		Type: "Room",
 		Class: "Office",
@@ -140,6 +117,24 @@ func TestUpdateGroup(t *testing.T) {
 		for k, v := range resp.Success {
 			t.Logf("%v: %s", k, v)
 		}
+	}
+}
+
+func TestSetGroupState(t *testing.T) {
+	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	id := 3
+	resp, err := hue.SetGroupState(id, &huego.State{
+		On: true,
+		Bri: 150,
+		Sat: 210,
+	})
+	if err != nil {
+		t.Error(err)
+	} else {
+		t.Logf("Group state set")
+		for k, v := range resp.Success {
+			t.Logf("%v: %s", k, v)
+		}		
 	}
 }
 

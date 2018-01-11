@@ -3,8 +3,6 @@ package huego
 import (
 	"encoding/json"
 	"strconv"
-	"time"
-	"fmt"
 )
 
 // https://developers.meethue.com/documentation/lights-api
@@ -42,7 +40,7 @@ type State struct {
 
 type NewLight struct {
 	Lights []string
-	LastScan time.Time `json:"lastscan"`
+	LastScan string `json:"lastscan"`
 }
 
 // Returns all lights known to the bridge
@@ -186,11 +184,11 @@ func (b *Bridge) GetNewLights() (*NewLight, error){
 	_ = json.Unmarshal(res, &n)
 
 	lights := make([]string, 0, len(n))
-	var lastscan time.Time
+	var lastscan string
 
 	for k, _ := range n {
 		if k == "lastscan" {
-			lastscan = n[k].(time.Time)
+			lastscan = n[k].(string)
 		} else {
 			lights = append(lights, n[k].(string))
 		}
@@ -220,8 +218,6 @@ func (b *Bridge) DeleteLight(i int) error {
 	if err != nil {
 		return err
 	}
-
-	fmt.Println(string(res))
 
 	_ = json.Unmarshal(res, &a)
 

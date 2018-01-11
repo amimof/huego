@@ -3,6 +3,7 @@ package huego
 import (
 	"encoding/json"
 	"strconv"
+	"fmt"
 )
 
 // https://developers.meethue.com/documentation/groups-api
@@ -10,10 +11,10 @@ type Group struct {
 	Name string `json:"name,omitempty"`
 	Lights []string `json:"lights,omitempty"`
 	Type string `json:"type,omitempty"`
-	State	GroupState `json:"state,omitempty"`
+	State	*GroupState `json:"state,omitempty"`
 	Recycle bool `json:"recycle,omitempty"`
 	Class	string `json:"class,omitempty"`
-	Action State `json:"action,omitempty"`
+	Action *State `json:"action,omitempty"`
 	Id int `json:"-"`
 }
 
@@ -145,7 +146,7 @@ func (b *Bridge) UpdateGroup(i int, l *Group) (*Response, error) {
 }
 
 // Creates one new group with attributes defined by g
-func (b *Bridge) CreateGroup(g *Group) (*Response, error) {
+func (b *Bridge) CreateGroup(g Group) (*Response, error) {
 
 	var a []*ApiResponse
 
@@ -158,6 +159,8 @@ func (b *Bridge) CreateGroup(g *Group) (*Response, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	fmt.Println(string(data))
 
 	res, err := b.postResource(url, data)
 	if err != nil {

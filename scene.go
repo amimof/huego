@@ -3,6 +3,7 @@ package huego
 import (
 	"encoding/json"
 	"strconv"
+	"fmt"
 )
 
 // https://developers.meethue.com/documentation/scenes-api
@@ -17,11 +18,11 @@ type Scene struct {
   LastUpdated string `json:"lastupdated,omitempty"`
   Version int `json:"version,omitempty"`
   StoreSceneState bool `json:"storescenestate,omitempty"`
-  Id int `json:",omitempty"`
+  Id string `json:"-"`
 }
 
 // Returns all scenes known to the bridge
-func (b *Bridge) GetScenes() ([]*Scene, error) {
+func (b *Bridge) GetScenes() ([]Scene, error) {
 
 	var m map[string]Scene
 
@@ -36,14 +37,11 @@ func (b *Bridge) GetScenes() ([]*Scene, error) {
 	}
 
 	err = json.Unmarshal(res, &m)
-	scenes := make([]*Scene, 0, len(m))
+	scenes := make([]Scene, 0, len(m))
 
 	for i, g := range m {
-		g.Id, err = strconv.Atoi(i)
-		if err != nil {
-			return nil, err
-		}
-		scenes = append(scenes, &g)
+		g.Id = i
+		scenes = append(scenes, g)
 	}
 
 	return scenes, err
@@ -51,11 +49,11 @@ func (b *Bridge) GetScenes() ([]*Scene, error) {
 }
 
 // Returns one scene by its id of i
-func (b *Bridge) GetScene(i int) (*Scene, error) {
+func (b *Bridge) GetScene(i string) (*Scene, error) {
 
 	var g *Scene
 
-	url, err := b.getApiPath("/scenes/", strconv.Itoa(i))
+	url, err := b.getApiPath("/scenes/", i)
   if err != nil {
     return nil, err
 	}
@@ -64,6 +62,9 @@ func (b *Bridge) GetScene(i int) (*Scene, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	fmt.Println("Hi")
+	fmt.Println(string(res))
 
 	err = json.Unmarshal(res, &g)
 	if err != nil {
