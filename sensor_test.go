@@ -10,7 +10,7 @@ func TestGetSensors(t *testing.T) {
 	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	sensors, err := hue.GetSensors()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	t.Logf("Found %d sensors", len(sensors))
 	for _, sensor := range sensors {
@@ -22,14 +22,14 @@ func TestGetSensor(t *testing.T) {
 	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	sensors, err := hue.GetSensors()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	t.Logf("Found %d sensors", len(sensors))
 	for _, sensor := range sensors {
 		t.Logf("Getting sensor %d, skipping the rest", sensor.Id)
 		s, err := hue.GetSensor(sensor.Id)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		t.Logf("Got sensor name=%s", s.Name)
 		break
@@ -42,7 +42,7 @@ func TestCreateSensor(t *testing.T) {
 		Name: "New Sensor",
 	})
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	} else {
 		t.Logf("Sensor created")
 		for k, v := range resp.Success {
@@ -55,7 +55,7 @@ func TestFindSensors(t *testing.T) {
 	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	resp, err := hue.FindSensors()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	} else {
 		for k, v := range resp.Success {
 			t.Logf("%v: %s", k, v)
@@ -67,7 +67,7 @@ func TestGetNewSensors(t *testing.T) {
 	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	newSensors, err := hue.GetNewSensors()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	t.Logf("Sensors:")
 	for _, sensor := range newSensors.Sensors {
@@ -95,7 +95,7 @@ func TestUpdateSensor(t *testing.T) {
 		Name: "New Sensor",
 	})
 	if err != nil {
-		t.Error(err)	
+		t.Fatal(err)	
 	} else {
 		for k, v := range resp.Success {
 			t.Logf("%v: %s", k, v)
@@ -108,7 +108,7 @@ func TestDeleteSensor(t *testing.T) {
 	id := 3
 	err := hue.DeleteSensor(id)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	} else {
 		t.Logf("Sensor %d deleted")
 	}

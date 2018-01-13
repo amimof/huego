@@ -7,27 +7,38 @@ This project is currently in **ALPHA** and not recommended for production use. A
 ## Installation
 Get the package
 ```
-go get -u github.com/amimof/huego
+go get github.com/amimof/huego
 ```
 
-Include it in your code
+Include it in your code. You may use `huego.New()` if you've already created a user and know the ip-address/hostname to your bridge.
 ```Go
 package main
 
 import (
-    "github.com/amimof/huego"
-    "fmt"
+  "github.com/amimof/huego"
+  "fmt"
 )
 
 func main() {
-  bridge, err := huego.New("username", "password")
-	l, err := hue.GetLights()
-	if err != nil {
-		fmt.Error(err)
+  bridge, err := huego.New("192.168.1.59", "username")
+  l, err := hue.GetLights()
+  if err != nil {
+    fmt.Fatal(err)
   }
   fmt.Printf("Found %d lights", len(l))
 }
 ```
+
+To discover new bridges and add an user, use `huego.Discover()` and `huego.Login()`
+```Go
+func main() {
+  bridge, _ := huego.Discover()
+  user, _ := b.CreateUser("my awesome hue app") // Link button needs to be pressed
+  bridge = b.Login(user)
+  light, _ := bridge.GetLight(3)
+  light.TurnOff()
+}
+``` 
 
 ## Project Status
 
@@ -45,7 +56,7 @@ This project is currently in **ALPHA** and still under heavy development. Curren
 | Configuration | `Complete`  | `Complete` 
 | Capabilities | `Not Started` | `Not Started` 
 
-Other than above core modules, each module needs additional *helper* methods for conveniance and flavour. The goal is to keep it simple, and not to bload the library with functionality that developers might want to write on their own. 
+Other than above core modules, each module needs additional *helper* methods for conveniance and flavour. The goal is to keep it simple, and not to bloat the library with functionality that developers might want to write on their own. 
 
 ## Goal
 

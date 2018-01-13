@@ -10,7 +10,7 @@ func TestGetGroups(t *testing.T) {
 	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	groups, err := hue.GetGroups()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	t.Logf("Found %d groups", len(groups))
 	for i, g := range groups {
@@ -48,12 +48,12 @@ func TestGetGroup(t *testing.T) {
 	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	groups, err := hue.GetGroups()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	for _, group := range groups {
 		g, err := hue.GetGroup(group.Id)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		t.Logf("Name: %s", g.Name)
 		t.Logf("Lights: %s", g.Lights)
@@ -94,7 +94,7 @@ func TestCreateGroup(t *testing.T) {
 		Lights: []string{},
 	})
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	} else {
 		t.Logf("Group created")
 		for k, v := range resp.Success {
@@ -111,7 +111,7 @@ func TestUpdateGroup(t *testing.T) {
 		Class: "Office",
 	})
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	} else {
 		t.Logf("Updated group with id %d", id)
 		for k, v := range resp.Success {
@@ -129,7 +129,7 @@ func TestSetGroupState(t *testing.T) {
 		Sat: 210,
 	})
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	} else {
 		t.Logf("Group state set")
 		for k, v := range resp.Success {
@@ -143,7 +143,7 @@ func TestDeleteGroup(t *testing.T) {
 	id := 3
 	err := hue.DeleteGroup(id)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	} else {
 		t.Logf("Deleted group with id: %d", id)
 	}

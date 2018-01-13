@@ -10,7 +10,7 @@ func TestGetRules(t *testing.T) {
 	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	rules, err := hue.GetRules()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	t.Logf("Found %d rules", len(rules))
 	for _, rule := range rules {
@@ -23,12 +23,12 @@ func TestGetRule(t *testing.T) {
 	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	rules, err := hue.GetRules()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	for _, rule := range rules {
 		l, err := hue.GetRule(rule.Id)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		} else {
 			t.Log(l)
 		}
@@ -59,7 +59,7 @@ func TestCreateRule(t *testing.T) {
 	}
 	resp, err := hue.CreateRule(rule)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	} else {
 		t.Logf("Rule created")
 		for k, v := range resp.Success {
@@ -81,7 +81,7 @@ func TestUpdateRule(t *testing.T) {
 		},
 	})
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	} else {
 		t.Logf("Rule %d updated", id)
 		for k, v := range resp.Success {
@@ -94,7 +94,7 @@ func TestDeleteRule(t *testing.T) {
 	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	err := hue.DeleteRule(1)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	} else {
 		t.Logf("Rule %d deleted")
 	}
