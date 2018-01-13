@@ -1,10 +1,5 @@
 package huego
 
-import (
-	"encoding/json"
-	"strconv"
-)
-
 // https://developers.meethue.com/documentation/lights-api
 type Light struct {
 	State *State `json:"state,omitempty"`
@@ -17,6 +12,7 @@ type Light struct {
 	SwConfigId string `json:"swconfigid,omitempty"`
 	ProductId string `json:"productid,omitempty"`
 	Id int `json:"-"`
+	bridge *Bridge
 }
 
 type State struct {
@@ -43,223 +39,96 @@ type NewLight struct {
 	LastScan string `json:"lastscan"`
 }
 
-// Returns all lights known to the bridge
-func (b *Bridge) GetLights() ([]Light, error) {
 
-	m := map[string]Light{}
-
-	url, err := b.getApiPath("/lights/")
-	if err != nil {
-		return nil, err
-	}
-
-	res, err := b.getResource(url)
-	if err != nil {
-		return nil, err
-	}
-
-	err = json.Unmarshal(res, &m)
-	if err != nil {
-		return nil, err
-	}
-
-	lights := make([]Light, 0, len(m))
-
-	for i, l := range m {
-		l.Id, err = strconv.Atoi(i)
-		if err != nil {
-			return nil, err
-		}
-		lights = append(lights, l)
-	}
-
-	return lights, nil
-
-}
-
-// Returns one light with the id of i
-func (b *Bridge) GetLight(i int) (*Light, error) {
-
-	var light *Light
-
-	url, err := b.getApiPath("/lights/", strconv.Itoa(i))
-	if err != nil {
-		return nil, err
-	}
-
-	res, err := b.getResource(url)
-	if err != nil {
-		return light, err
-	}
-
-	err = json.Unmarshal(res, &light)
-	if err != nil {
-		return light, err
-	}
-
-	return light, nil
-}
-
-// Allows for controlling one light's state
-func (b *Bridge) SetLight(i int, l *State) (*Response, error) {
-
-	var a []*ApiResponse
-
-	l.Reachable = false
-	l.ColorMode = ""
-
-	data, err := json.Marshal(&l)
-	if err != nil {
-		return nil, err
-	}
-
-	url, err := b.getApiPath("/lights/", strconv.Itoa(i), "/state")
-	if err != nil {
-		return nil, err
-	}
-	res, err := b.putResource(url, data)
-	if err != nil {
-		return nil, err
-	}
-
-	err = json.Unmarshal(res, &a)
-	if err != nil {
-		return nil, err
-	}
-	
-	resp, err := handleResponse(a)
-	if err != nil {
-		return nil, err
-	}
-
-	return resp, nil
-
-}
-
-// Starts a search for new lights on the bridge. 
-// Use GetNewLights() verify if new lights have been detected. 
-func (b *Bridge) FindLights() (*Response, error) {
-
-	var a []*ApiResponse
-
-	url, err := b.getApiPath("/lights/")
-	if err != nil {
-		return nil, err
-	}
-
-	res, err := b.postResource(url, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	err = json.Unmarshal(res, &a)
-	if err != nil {
-		return nil, err
-	}
-
-	resp, err := handleResponse(a)
-	if err != nil {
-		return nil, err
-	}
-
-	return resp, nil
-
-}
-
-// Returns a list of lights that were discovered last time FindLights() was executed.
-func (b *Bridge) GetNewLights() (*NewLight, error){
-
-	var n map[string]interface{}
-	
-	url, err := b.getApiPath("/lights/new")
-	if err != nil {
-		return nil, err
-	}
-
-	res, err := b.getResource(url)
-	if err != nil {
-		return nil, err
-	}
-
-	_ = json.Unmarshal(res, &n)
-
-	lights := make([]string, 0, len(n))
-	var lastscan string
-
-	for k, _ := range n {
-		if k == "lastscan" {
-			lastscan = n[k].(string)
-		} else {
-			lights = append(lights, n[k].(string))
-		}
-	}
-
-	result := &NewLight{
-		Lights: lights, 
-		LastScan: lastscan,
-	}
-
-	return result, nil
-
-}
-
-// Deletes one lights from the bridge
-func (b *Bridge) DeleteLight(i int) error {
-
-	var a []*ApiResponse
-
-	id := strconv.Itoa(i)
-	url, err := b.getApiPath("/lights/", id)
+// Sets the On state of one light to false, turning it off
+func (l *Light) Off() error {
+	state := State{ On: false }
+	_, err := l.bridge.SetLight(l.Id, state)
 	if err != nil {
 		return err
 	}
-
-	res, err := b.deleteResource(url)
-	if err != nil {
-		return err
-	}
-
-	_ = json.Unmarshal(res, &a)
-
-	_, err = handleResponse(a)
-	if err != nil {
-		return err
-	}
-
+	l.State.On = false
 	return nil
-
 }
 
-// Updates one light's attributes and state properties
-func (b *Bridge) UpdateLight(i int, light *Light) (*Response, error) {
-
-	var a []*ApiResponse
-
-	id := strconv.Itoa(i)
-	url, err := b.getApiPath("/lights/", id)
+// Sets the On state of one light to true, turning it on
+func (l *Light) On() error {
+	state := State{ On: true }
+	_, err := l.bridge.SetLight(l.Id, state)
 	if err != nil {
-		return nil, err
-	}
+		return err
+	}	
+	l.State.On = true
+	return nil
+}
 
-	data, err := json.Marshal(&light)
+// Returns true if light state On property is true
+func (l *Light) IsOn() bool {
+	return l.State.On
+}
+
+// Sets the name property of the light
+func (l *Light) Rename(new string) error {
+	update := Light{ Name: new }
+	_, err := l.bridge.UpdateLight(l.Id, update)
 	if err != nil {
-		return nil, err
+		return err
 	}
+	l.Name = new
+	return nil
+}
 
-	res, err := b.putResource(url, data)
+// Sets the light brightness state property
+func (l *Light) Bri(new uint8) error {
+	update := State{ On: true, Bri: new }
+	_, err := l.bridge.SetLight(l.Id, update)
 	if err != nil {
-		return nil, err
+		return err
 	}
+	l.State.Bri = new
+	return nil
+}
 
-	err = json.Unmarshal(res, &a)
+// Sets the light hue state property (0-65535)
+func (l *Light) Hue(new uint16) error {
+	update := State{ On: true, Hue: new }
+	_, err := l.bridge.SetLight(l.Id, update)
 	if err != nil {
-		return nil, err
+		return err
 	}
+	l.State.Hue = new
+	return nil
+}
 
-	resp, err := handleResponse(a)
+// Sets the light saturation state property (0-254)
+func (l *Light) Sat(new uint8) error {
+	update := State{ On: true, Sat: new }
+	_, err := l.bridge.SetLight(l.Id, update)
 	if err != nil {
-		return nil, err
+		return err
 	}
+	l.State.Sat = new
+	return nil
+}
 
-	return resp, nil
+// Sets the x and y coordinates of a color in CIE color space. (0-1 per value)
+func (l *Light) Xy(new []float32) error {
+	update := State{ On: true, Xy: new }
+	_, err := l.bridge.SetLight(l.Id, update)
+	if err != nil {
+		return err
+	}
+	l.State.Xy = new
+	return nil
+}
+
+// Sets the light color temperature state property
+func (l *Light) Ct(new uint16) error {
+	update := State{ On: true, Ct: new }
+	_, err := l.bridge.SetLight(l.Id, update)
+	if err != nil {
+		return err
+	}
+	l.State.Ct = new
+	return nil
 }

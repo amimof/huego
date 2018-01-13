@@ -11,7 +11,7 @@ func TestGetConfig(t *testing.T) {
 	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	config, err := hue.GetConfig()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	t.Logf("Name: %s", config.Name)
 	t.Logf("SwUpdate:")
@@ -67,18 +67,19 @@ func TestGetConfig(t *testing.T) {
 
 func TestCreateUser(t *testing.T) {
 	hue := huego.New(os.Getenv("HUE_HOSTNAME"), "")
-	u, err := hue.CreateUser("huego#tests")
+	u, err := hue.CreateUser("github.com/amimof/huego#tests")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
+	} else {	
+		t.Logf("User created with username: %s", u)
 	}
-	t.Logf("User created with username: %s", u)
 }
 
 func TestGetUsers(t *testing.T) {
 	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	users, err := hue.GetUsers()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	for i, u := range users {
 		t.Logf("%d:", i)
@@ -91,11 +92,11 @@ func TestGetUsers(t *testing.T) {
 
 func TestDeleteUser(t *testing.T) {
 	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
-	uid := "Ot82OcV7FWBl1kHXOWCTY5znQXk9WpNkNDZIGYQX"
+	uid := "9zLKE0LNZOJuLDGI6QYjQpWHmVTWO7BVwuirvIbh"
 	err := hue.DeleteUser(uid)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	} else {
-		t.Logf("Delete user %s", uid)
+		t.Logf("Deleted user %s", uid)
 	}
 }
