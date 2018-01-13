@@ -163,34 +163,39 @@ func delete(url string) ([]byte, error) {
 
 
 // Performs a discovery on the network looking for bridges using https://www.meethue.com/api/nupnp service
-func Discover() ([]Bridge, error) {
+func DiscoverAll() ([]Bridge, error) {
 
-	req, err := http.NewRequest("GET", "https://www.meethue.com/api/nupnp", nil)
-	if err != nil {
-		return nil, err
-	}
-
-	client := http.Client{}
-	res, err := client.Do(req)
-	if err != nil {
-		return nil, err
-	}
-
-	defer res.Body.Close()
-	
-	body, err := ioutil.ReadAll(res.Body)
+	res, err := get("https://www.meethue.com/api/nupnp")
 	if err != nil {
 		return nil, err
 	}
 
 	var bridges []Bridge
 
-	err = json.Unmarshal(body, &bridges)
+	err = json.Unmarshal(res, &bridges)
 	if err != nil {
 		return nil, err
 	}
 
 	return bridges, nil
+
+}
+
+// Performs a discovery on the network looking for bridges using https://www.meethue.com/api/nupnp service. Returns the first bridge if any found
+func Discover() (*Bridge, error) {
+
+	var b *Bridge
+
+	bridges, err := DiscoverAll()
+	if err != nil {
+		return nil, err
+	}
+
+	if len(bridges) > 0 {
+		b = &bridges[0]
+	}
+
+	return b, nil
 
 }
 

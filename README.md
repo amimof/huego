@@ -10,7 +10,7 @@ Get the package
 go get github.com/amimof/huego
 ```
 
-Include it in your code
+Include it in your code. You may use `huego.New()` if you've already created a user and know the ip-address/hostname to your bridge.
 ```Go
 package main
 
@@ -20,7 +20,7 @@ import (
 )
 
 func main() {
-  bridge, err := huego.New("username", "password")
+  bridge, err := huego.New("192.168.1.59", "username")
   l, err := hue.GetLights()
   if err != nil {
     fmt.Fatal(err)
@@ -28,6 +28,17 @@ func main() {
   fmt.Printf("Found %d lights", len(l))
 }
 ```
+
+To discover new bridges and add an user, use `huego.Discover()` and `huego.Login()`
+```Go
+func main() {
+  bridge, _ := huego.Discover()
+  user, _ := b.CreateUser("my awesome hue app") // Link button needs to be pressed
+  bridge = b.Login(user)
+  light, _ := bridge.GetLight(3)
+  light.TurnOff()
+}
+``` 
 
 ## Project Status
 

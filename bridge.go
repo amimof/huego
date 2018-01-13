@@ -429,6 +429,7 @@ func (b *Bridge) GetLights() ([]Light, error) {
 		if err != nil {
 			return nil, err
 		}
+		l.bridge = b
 		lights = append(lights, l)
 	}
 
@@ -439,7 +440,9 @@ func (b *Bridge) GetLights() ([]Light, error) {
 // Returns one light with the id of i
 func (b *Bridge) GetLight(i int) (*Light, error) {
 
-	var light *Light
+	light := &Light{
+		Id: i,
+	}
 
 	url, err := b.getApiPath("/lights/", strconv.Itoa(i))
 	if err != nil {
@@ -456,11 +459,13 @@ func (b *Bridge) GetLight(i int) (*Light, error) {
 		return light, err
 	}
 
+	light.bridge = b
+
 	return light, nil
 }
 
 // Allows for controlling one light's state
-func (b *Bridge) SetLight(i int, l *State) (*Response, error) {
+func (b *Bridge) SetLight(i int, l State) (*Response, error) {
 
 	var a []*ApiResponse
 
@@ -590,7 +595,7 @@ func (b *Bridge) DeleteLight(i int) error {
 }
 
 // Updates one light's attributes and state properties
-func (b *Bridge) UpdateLight(i int, light *Light) (*Response, error) {
+func (b *Bridge) UpdateLight(i int, light Light) (*Response, error) {
 
 	var a []*ApiResponse
 
