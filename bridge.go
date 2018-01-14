@@ -238,6 +238,7 @@ func (b *Bridge) GetGroups() ([]Group, error) {
 		if err != nil {
 			return nil, err
 		}
+		g.bridge = b
 		groups = append(groups, g)
 	}
 
@@ -248,7 +249,9 @@ func (b *Bridge) GetGroups() ([]Group, error) {
 // Returns one group known to the bridge by its id
 func (b *Bridge) GetGroup(i int) (*Group, error) {
 
-	var g *Group
+	g := &Group{
+		Id: i,
+	}
 
 	url, err := b.getApiPath("/groups/", strconv.Itoa(i))
 	if err != nil {
@@ -265,12 +268,14 @@ func (b *Bridge) GetGroup(i int) (*Group, error) {
 		return nil, err
 	}
 
+	g.bridge = b
+
 	return g, nil
 }
 
 
 // Allows for setting the state of one group, controlling the state of all lights in that group.
-func (b *Bridge) SetGroupState(i int, l *State) (*Response, error) {
+func (b *Bridge) SetGroupState(i int, l State) (*Response, error) {
 
 	var a []*ApiResponse
 
@@ -304,7 +309,7 @@ func (b *Bridge) SetGroupState(i int, l *State) (*Response, error) {
 }
 
 // Updates one group known to the bridge 
-func (b *Bridge) UpdateGroup(i int, l *Group) (*Response, error) {
+func (b *Bridge) UpdateGroup(i int, l Group) (*Response, error) {
 	
 	var a []*ApiResponse
 

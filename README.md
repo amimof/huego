@@ -2,7 +2,9 @@
 
 An extensive Philips Hue client library for [`Go`](https://golang.org/) with an emphasis on simplicity.
 
-This project is currently in **ALPHA** and not recommended for production use. All help in any form is highly appreciated. You are more than welcome to contact me if you have feedback, feature requests, report bugs etc.
+_This project is currently in **ALPHA** and not recommended for production use. All help in any form is highly appreciated. You are more than welcome to contact me if you have feedback, feature requests, report bugs etc._
+
+Ses [godoc.org/github.com/amimof/huego](https://godoc.org/github.com/amimof/huego) for the full package documentation.
 
 ## Installation
 Get the package
@@ -21,7 +23,7 @@ import (
 
 func main() {
   bridge, err := huego.New("192.168.1.59", "username")
-  l, err := hue.GetLights()
+  l, err := bridge.GetLights()
   if err != nil {
     fmt.Fatal(err)
   }
@@ -33,12 +35,16 @@ To discover new bridges and add an user, use `huego.Discover()` and `huego.Login
 ```Go
 func main() {
   bridge, _ := huego.Discover()
-  user, _ := b.CreateUser("my awesome hue app") // Link button needs to be pressed
-  bridge = b.Login(user)
+  user, _ := bridge.CreateUser("my awesome hue app") // Link button needs to be pressed
+  bridge = bridge.Login(user)
   light, _ := bridge.GetLight(3)
-  light.TurnOff()
+  light.Off()
 }
 ``` 
+
+## Documentation
+
+See [godoc.org/github.com/amimof/huego](https://godoc.org/github.com/amimof/huego).
 
 ## Project Status
 
