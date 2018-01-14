@@ -32,6 +32,7 @@ type State struct {
 	XyInc int `json:"xy_inc,omitempty"`
 	ColorMode	string `json:"colormode,omitempty"`
 	Reachable	bool `json:"reachable,omitempty"`
+	Scene	string `json:"scene,omitempty"`
 }
 
 type NewLight struct {
@@ -132,3 +133,40 @@ func (l *Light) Ct(new uint16) error {
 	l.State.Ct = new
 	return nil
 }
+
+// Sets the duration of the transition from the light’s current state to the new state
+func (l *Light) TransitionTime(new uint16) error {
+	update := State{ On: l.State.On, TransitionTime: new }
+	_, err := l.bridge.SetLight(l.Id, update)
+	if err != nil {
+		return err
+	}
+	l.State.TransitionTime = new
+	return nil
+}
+
+// The dynamic effect of the light, currently “none” and “colorloop” are supported
+func (l *Light) Effect(new string) error {
+	update := State{ On: true, Effect: new }
+	_, err := l.bridge.SetLight(l.Id, update)
+	if err != nil {
+		return err
+	}
+	l.State.Effect = new
+	return nil
+}
+
+// Makes the light blink in its current color. Supported values are:
+// “none” – The light is not performing an alert effect.
+// “select” – The light is performing one breathe cycle.
+// “lselect” – The light is performing breathe cycles for 15 seconds or until alert is set to "none".
+func (l *Light) Alert(new string) error {
+	update := State{ On: true, Alert: new }
+	_, err := l.bridge.SetLight(l.Id, update)
+	if err != nil {
+		return err
+	}
+	l.State.Effect = new
+	return nil
+}
+
