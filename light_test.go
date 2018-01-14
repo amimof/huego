@@ -276,3 +276,45 @@ func TestSetLightCt(t *testing.T) {
 	}
 	t.Logf("Ct of light %d set to %d", light.Id, light.State.Ct)
 }
+
+func TestSetLightTransitionTime(t *testing.T) {
+	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	id := 4
+	light, err := b.GetLight(id)
+	if err != nil {
+		t.Fatal(err)
+	}
+	err = light.TransitionTime(10)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Logf("TransitionTime of light %d set to %d", light.Id, light.State.TransitionTime)
+}
+
+func TestSetLightEffect(t *testing.T) {
+	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	id := 4
+	light, err := b.GetLight(id)
+	if err != nil {
+		t.Fatal(err)
+	}
+	err = light.Effect("colorloop")
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Logf("Effect of light %d set to %s", light.Id, light.State.Effect)
+}
+
+func TestSetLightAlert(t *testing.T) {
+	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	id := 4
+	light, err := b.GetLight(id)
+	if err != nil {
+		t.Fatal(err)
+	}
+	err = light.Alert("lselect")
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Logf("Alert of light %d set to %s", light.Id, light.State.Alert)
+}
