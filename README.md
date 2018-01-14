@@ -2,6 +2,8 @@
 
 An extensive Philips Hue client library for [`Go`](https://golang.org/) with an emphasis on simplicity.
 
+![](./logo.png)
+
 _This project is currently in **ALPHA** and not recommended for production use. All help in any form is highly appreciated. You are more than welcome to contact me if you have feedback, feature requests, report bugs etc._
 
 Ses [godoc.org/github.com/amimof/huego](https://godoc.org/github.com/amimof/huego) for the full package documentation.

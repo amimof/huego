@@ -1,4 +1,4 @@
-// Package huego provides an easy to use interface to the Philips Hue bridge. 
+// Provides an extensive, easy to use interface to the Philips Hue bridge. 
 package huego
 
 import (
