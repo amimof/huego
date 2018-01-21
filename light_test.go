@@ -1,9 +1,9 @@
 package huego_test
 
 import (
-	"testing"
-	"os"
 	"github.com/amimof/huego"
+	"os"
+	"testing"
 )
 
 func TestGetLights(t *testing.T) {
@@ -14,15 +14,15 @@ func TestGetLights(t *testing.T) {
 	}
 	t.Logf("Found %d lights", len(lights))
 	for _, l := range lights {
-		t.Logf("Id: %d", l.Id)
+		t.Logf("ID: %d", l.ID)
 		t.Logf("  Type: %s", l.Type)
 		t.Logf("  Name: %s", l.Name)
-		t.Logf("  ModelId: %s", l.ModelId)
+		t.Logf("  ModelID: %s", l.ModelID)
 		t.Logf("  ManufacturerName: %s", l.ManufacturerName)
-		t.Logf("  UniqueId: %s", l.UniqueId)
+		t.Logf("  UniqueID: %s", l.UniqueID)
 		t.Logf("  SwVersion: %s", l.SwVersion)
-		t.Logf("  SwConfigId: %s", l.SwConfigId)
-		t.Logf("  ProductId: %s", l.ProductId)
+		t.Logf("  SwConfigID: %s", l.SwConfigID)
+		t.Logf("  ProductID: %s", l.ProductID)
 	}
 }
 
@@ -33,19 +33,19 @@ func TestGetLight(t *testing.T) {
 		t.Fatal(err)
 	}
 	for _, light := range lights {
-		l, err := b.GetLight(light.Id)
+		l, err := b.GetLight(light.ID)
 		if err != nil {
 			t.Fatal(err)
 		} else {
-			t.Logf("Id: %d", l.Id)
+			t.Logf("ID: %d", l.ID)
 			t.Logf("Type: %s", l.Type)
 			t.Logf("Name: %s", l.Name)
-			t.Logf("ModelId: %s", l.ModelId)
+			t.Logf("ModelID: %s", l.ModelID)
 			t.Logf("ManufacturerName: %s", l.ManufacturerName)
-			t.Logf("UniqueId: %s", l.UniqueId)
+			t.Logf("UniqueID: %s", l.UniqueID)
 			t.Logf("SwVersion: %s", l.SwVersion)
-			t.Logf("SwConfigId: %s", l.SwConfigId)
-			t.Logf("ProductId: %s", l.ProductId)
+			t.Logf("SwConfigID: %s", l.SwConfigID)
+			t.Logf("ProductID: %s", l.ProductID)
 			t.Logf("State:")
 			t.Logf("  On: %t", l.State.On)
 			t.Logf("  Bri: %d", l.State.Bri)
@@ -72,7 +72,7 @@ func TestSetLight(t *testing.T) {
 	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	id := 3
 	resp, err := b.SetLight(id, huego.State{
-		On: true,
+		On:  true,
 		Bri: 254,
 	})
 	if err != nil {
@@ -135,7 +135,7 @@ func TestDeleteLight(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	} else {
-		t.Logf("Light %d deleted")
+		t.Logf("Light %d deleted", id)
 	}
 }
 
@@ -150,7 +150,7 @@ func TestTurnOffLight(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Logf("Turned off light with id %d", light.Id)
+	t.Logf("Turned off light with id %d", light.ID)
 }
 
 func TestTurnOffLightLazy(t *testing.T) {
@@ -158,7 +158,7 @@ func TestTurnOffLightLazy(t *testing.T) {
 	id := 4
 	light, _ := b.GetLight(id)
 	light.Off()
-	t.Logf("Turned off light with id %d", light.Id)
+	t.Logf("Turned off light with id %d", light.ID)
 }
 
 func TestTurnOnLight(t *testing.T) {
@@ -172,7 +172,7 @@ func TestTurnOnLight(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Logf("Turned on light with id %d", light.Id)
+	t.Logf("Turned on light with id %d", light.ID)
 }
 
 func TestTurnOnLightLazy(t *testing.T) {
@@ -180,7 +180,7 @@ func TestTurnOnLightLazy(t *testing.T) {
 	id := 4
 	light, _ := b.GetLight(id)
 	light.On()
-	t.Logf("Turned on light with id %d", light.Id)
+	t.Logf("Turned on light with id %d", light.ID)
 }
 
 func TestIfLightIsOn(t *testing.T) {
@@ -190,7 +190,7 @@ func TestIfLightIsOn(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Logf("Is light %d on?: %t", light.Id, light.IsOn())
+	t.Logf("Is light %d on?: %t", light.ID, light.IsOn())
 }
 
 func TestRenameLight(t *testing.T) {
@@ -218,7 +218,7 @@ func TestSetLightBri(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Logf("Brightness of light %d set to %d", light.Id, light.State.Bri)
+	t.Logf("Brightness of light %d set to %d", light.ID, light.State.Bri)
 }
 
 func TestSetLightHue(t *testing.T) {
@@ -232,7 +232,7 @@ func TestSetLightHue(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Logf("Hue of light %d set to %d", light.Id, light.State.Hue)
+	t.Logf("Hue of light %d set to %d", light.ID, light.State.Hue)
 }
 
 func TestSetLightSat(t *testing.T) {
@@ -246,7 +246,7 @@ func TestSetLightSat(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Logf("Sat of light %d set to %d", light.Id, light.State.Sat)
+	t.Logf("Sat of light %d set to %d", light.ID, light.State.Sat)
 }
 
 func TestSetLightXy(t *testing.T) {
@@ -260,7 +260,7 @@ func TestSetLightXy(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Logf("Xy of light %d set to %d", light.Id, light.State.Xy)
+	t.Logf("Xy of light %d set to %+v", light.ID, light.State.Xy)
 }
 
 func TestSetLightCt(t *testing.T) {
@@ -274,7 +274,7 @@ func TestSetLightCt(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Logf("Ct of light %d set to %d", light.Id, light.State.Ct)
+	t.Logf("Ct of light %d set to %d", light.ID, light.State.Ct)
 }
 
 func TestSetLightTransitionTime(t *testing.T) {
@@ -288,7 +288,7 @@ func TestSetLightTransitionTime(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Logf("TransitionTime of light %d set to %d", light.Id, light.State.TransitionTime)
+	t.Logf("TransitionTime of light %d set to %d", light.ID, light.State.TransitionTime)
 }
 
 func TestSetLightEffect(t *testing.T) {
@@ -302,7 +302,7 @@ func TestSetLightEffect(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Logf("Effect of light %d set to %s", light.Id, light.State.Effect)
+	t.Logf("Effect of light %d set to %s", light.ID, light.State.Effect)
 }
 
 func TestSetLightAlert(t *testing.T) {
@@ -316,5 +316,5 @@ func TestSetLightAlert(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Logf("Alert of light %d set to %s", light.Id, light.State.Alert)
+	t.Logf("Alert of light %d set to %s", light.ID, light.State.Alert)
 }

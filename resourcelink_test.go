@@ -1,9 +1,9 @@
 package huego_test
 
 import (
-	"testing"
-	"os"
 	"github.com/amimof/huego"
+	"os"
+	"testing"
 )
 
 func TestGetResourcelinks(t *testing.T) {
@@ -18,13 +18,12 @@ func TestGetResourcelinks(t *testing.T) {
 		t.Logf("  Name: %s", resourcelink.Name)
 		t.Logf("  Description: %s", resourcelink.Description)
 		t.Logf("  Type: %s", resourcelink.Type)
-		t.Logf("  ClassId: %s", resourcelink.ClassId)
+		t.Logf("  ClassID: %s", resourcelink.ClassID)
 		t.Logf("  Owner: %s", resourcelink.Owner)
 		t.Logf("  Links: %s", resourcelink.Links)
-		t.Logf("  Id: %s", resourcelink.Id)
+		t.Logf("  ID: %s", resourcelink.ID)
 	}
 }
-
 
 func TestGetResourcelink(t *testing.T) {
 	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
@@ -33,17 +32,17 @@ func TestGetResourcelink(t *testing.T) {
 		t.Fatal(err)
 	}
 	for _, resourcelink := range resourcelinks {
-		l, err := hue.GetResourcelink(resourcelink.Id)
+		l, err := hue.GetResourcelink(resourcelink.ID)
 		if err != nil {
 			t.Fatal(err)
 		}
 		t.Logf("Name: %s", l.Name)
 		t.Logf("Description: %s", l.Description)
 		t.Logf("Type: %s", l.Type)
-		t.Logf("ClassId: %s", l.ClassId)
+		t.Logf("ClassID: %s", l.ClassID)
 		t.Logf("Owner: %s", l.Owner)
 		t.Logf("Links: %s", l.Links)
-		t.Logf("Id: %s", l.Id)
+		t.Logf("ID: %s", l.ID)
 		break
 	}
 }
@@ -51,12 +50,12 @@ func TestGetResourcelink(t *testing.T) {
 func TestCreateResourcelink(t *testing.T) {
 	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	resourcelink := &huego.Resourcelink{
-		Name: "Huego Test Resourcelink",
-    Description: "Amir's wakeup experience",
-    Type: "Link",
-    ClassId: 1,
-    Owner: "78H56B12BAABCDEF",
-    Links: []string{"/schedules/2", "/schedules/3", "/scenes/ABCD"},
+		Name:        "Huego Test Resourcelink",
+		Description: "Amir's wakeup experience",
+		Type:        "Link",
+		ClassID:     1,
+		Owner:       "78H56B12BAABCDEF",
+		Links:       []string{"/schedules/2", "/schedules/3", "/scenes/ABCD"},
 	}
 	resp, err := hue.CreateResourcelink(resourcelink)
 	if err != nil {
@@ -73,7 +72,7 @@ func TestUpdateResourcelink(t *testing.T) {
 	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	id := 3
 	resp, err := hue.UpdateResourcelink(id, &huego.Resourcelink{
-		Name: "New Resourcelink",
+		Name:        "New Resourcelink",
 		Description: "Updated Attribute",
 	})
 	if err != nil {

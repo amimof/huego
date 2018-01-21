@@ -1,9 +1,9 @@
 package huego_test
 
 import (
-	"testing"
-	"os"
 	"github.com/amimof/huego"
+	"os"
+	"testing"
 )
 
 func TestGetSchedules(t *testing.T) {
@@ -26,7 +26,7 @@ func TestGetSchedules(t *testing.T) {
 		t.Logf("  StartTime: %s", schedule.StartTime)
 		t.Logf("  Status: %s", schedule.Status)
 		t.Logf("  AutoDelete: %t", schedule.AutoDelete)
-		t.Logf("  Id: %d", schedule.Id)
+		t.Logf("  ID: %d", schedule.ID)
 	}
 }
 
@@ -37,7 +37,7 @@ func TestGetSchedule(t *testing.T) {
 		t.Fatal(err)
 	}
 	for _, schedule := range schedules {
-		s, err := hue.GetSchedule(schedule.Id)
+		s, err := hue.GetSchedule(schedule.ID)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -45,8 +45,8 @@ func TestGetSchedule(t *testing.T) {
 		t.Logf("LocalTime: %s", s.LocalTime)
 		t.Logf("StartTime: %s", s.StartTime)
 		t.Logf("Status: %s", s.Status)
-		t.Logf("AutoDelete: %s", s.AutoDelete)
-		t.Logf("Id: %s", s.Id)
+		t.Logf("AutoDelete: %t", s.AutoDelete)
+		t.Logf("ID: %d", s.ID)
 		break
 	}
 }
@@ -54,19 +54,19 @@ func TestGetSchedule(t *testing.T) {
 func TestCreateSchedule(t *testing.T) {
 	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	command := &huego.Command{
-		Address: "/api/"+os.Getenv("HUE_USERNAME")+"/lights/0",
-		Body: &struct{
+		Address: "/api/" + os.Getenv("HUE_USERNAME") + "/lights/0",
+		Body: &struct {
 			on bool
 		}{
-			false,	
+			false,
 		},
 		Method: "PUT",
 	}
 	schedule := &huego.Schedule{
-		Name: "TestSchedule",
+		Name:        "TestSchedule",
 		Description: "Huego test schedule",
-		Command: command,
-		LocalTime: "2019-09-22T13:37:00",
+		Command:     command,
+		LocalTime:   "2019-09-22T13:37:00",
 	}
 	resp, err := hue.CreateSchedule(schedule)
 	if err != nil {
@@ -83,7 +83,7 @@ func TestUpdateSchedule(t *testing.T) {
 	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	id := 3
 	resp, err := hue.UpdateSchedule(id, &huego.Schedule{
-		Name: "New Scehdule",
+		Name:        "New Scehdule",
 		Description: "Updated parameter",
 	})
 	if err != nil {

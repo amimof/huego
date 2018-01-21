@@ -1,9 +1,9 @@
 package huego_test
 
 import (
-	"testing"
-	"os"
 	"github.com/amimof/huego"
+	"os"
+	"testing"
 )
 
 func TestGetScenes(t *testing.T) {
@@ -18,14 +18,14 @@ func TestGetScenes(t *testing.T) {
 		t.Logf("  Name: %s", scene.Name)
 		t.Logf("  Lights: %s", scene.Lights)
 		t.Logf("  Owner: %s", scene.Owner)
-		t.Logf("  Recycle: %s", scene.Recycle)
-		t.Logf("  Locked: %s", scene.Locked)
+		t.Logf("  Recycle: %t", scene.Recycle)
+		t.Logf("  Locked: %t", scene.Locked)
 		t.Logf("  AppData: %s", scene.AppData)
 		t.Logf("  Picture: %s", scene.Picture)
 		t.Logf("  LastUpdated: %s", scene.LastUpdated)
-		t.Logf("  Version: %s", scene.Version)
-		t.Logf("  StoreSceneState: %s", scene.StoreSceneState)
-		t.Logf("  Id: %s", scene.Id)
+		t.Logf("  Version: %d", scene.Version)
+		t.Logf("  StoreSceneState: %t", scene.StoreSceneState)
+		t.Logf("  ID: %d", scene.ID)
 	}
 }
 
@@ -37,8 +37,8 @@ func TestGetScene(t *testing.T) {
 	}
 	t.Logf("Found %d scenes", len(scenes))
 	for _, scene := range scenes {
-		t.Logf("Getting scene %d, skipping the rest", scene.Id)
-		s, err := hue.GetScene(scene.Id)
+		t.Logf("Getting scene %d, skipping the rest", scene.ID)
+		s, err := hue.GetScene(scene.ID)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -50,8 +50,8 @@ func TestGetScene(t *testing.T) {
 func TestCreateScene(t *testing.T) {
 	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	resp, err := hue.CreateScene(&huego.Scene{
-		Name: "New Scene",
-		Lights: []string{},
+		Name:    "New Scene",
+		Lights:  []string{},
 		Recycle: true,
 	})
 	if err != nil {
@@ -64,12 +64,11 @@ func TestCreateScene(t *testing.T) {
 	}
 }
 
-
 func TestUpdateScene(t *testing.T) {
 	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	id := 3
 	resp, err := hue.UpdateScene(id, &huego.Scene{
-		Name: "New Scene",
+		Name:   "New Scene",
 		Lights: []string{},
 	})
 	if err != nil {

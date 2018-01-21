@@ -1,3 +1,6 @@
+[![huego](https://godoc.org/github.com/amimof/huego?status.svg)](https://godoc.org/github.com/amimof/huego) 
+[![Go Report Card](https://goreportcard.com/badge/github.com/amimof/huego)](https://goreportcard.com/report/github.com/amimof/huego)
+
 # Huego
 
 An extensive Philips Hue client library for [`Go`](https://golang.org/) with an emphasis on simplicity.
