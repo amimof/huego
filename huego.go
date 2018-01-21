@@ -1,30 +1,34 @@
-// Package huego provides an easy to use interface to the Philips Hue bridge. 
+// Package huego provides an extensive, easy to use interface to the Philips Hue bridge.
 package huego
 
 import (
-	"net/http"
 	"encoding/json"
-	"strings"
-	"io/ioutil"
 	"fmt"
+	"io/ioutil"
+	"net/http"
+	"strings"
 )
 
-type ApiResponse struct {
+// APIResponse holds the response data returned form the bridge after a request has been made.
+type APIResponse struct {
 	Success map[string]interface{} `json:"success,omitempty"`
-	Error *ApiError `json:"error,omitempty"`
+	Error   *APIError              `json:"error,omitempty"`
 }
 
-type ApiError struct {
-	Type int
-	Address string
+// APIError defines the error response object returned from the bridge after an invalid API request.
+type APIError struct {
+	Type        int
+	Address     string
 	Description string
 }
 
+// Response is a wrapper struct of the success response returned from the bridge after a successfull API call.
 type Response struct {
 	Success map[string]interface{}
 }
 
-func (a *ApiError) UnmarshalJSON(data []byte) error {
+// UnmarshalJSON makes sure that types are correct when unmarshalling. Implements package encoding/json
+func (a *APIError) UnmarshalJSON(data []byte) error {
 	var aux map[string]interface{}
 	err := json.Unmarshal(data, &aux)
 	if err != nil {
@@ -36,11 +40,12 @@ func (a *ApiError) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (r *ApiError) Error() string {
-	return fmt.Sprintf("ERROR %d [%s]: \"%s\"", r.Type, r.Address, r.Description)
+// Error returns an error string
+func (a *APIError) Error() string {
+	return fmt.Sprintf("ERROR %d [%s]: \"%s\"", a.Type, a.Address, a.Description)
 }
 
-func handleResponse(a []*ApiResponse) (*Response, error) {
+func handleResponse(a []*APIResponse) (*Response, error) {
 	success := map[string]interface{}{}
 	for _, r := range a {
 		if r.Success != nil {
@@ -161,8 +166,7 @@ func delete(url string) ([]byte, error) {
 
 }
 
-
-// Performs a discovery on the network looking for bridges using https://www.meethue.com/api/nupnp service
+// DiscoverAll performs a discovery on the network looking for bridges using https://www.meethue.com/api/nupnp service
 func DiscoverAll() ([]Bridge, error) {
 
 	res, err := get("https://www.meethue.com/api/nupnp")
@@ -181,7 +185,7 @@ func DiscoverAll() ([]Bridge, error) {
 
 }
 
-// Performs a discovery on the network looking for bridges using https://www.meethue.com/api/nupnp service. Returns the first bridge if any found
+// Discover performs a discovery on the network looking for bridges using https://www.meethue.com/api/nupnp service. Returns the first bridge if any found
 func Discover() (*Bridge, error) {
 
 	var b *Bridge
@@ -199,11 +203,11 @@ func Discover() (*Bridge, error) {
 
 }
 
-// Instantiates and returns a new Bridge
+// New instantiates and returns a new Bridge
 func New(h, u string) *Bridge {
 	return &Bridge{
-		Host: h, 
-		User: u, 
-		Id: "",
+		Host: h,
+		User: u,
+		ID:   "",
 	}
 }

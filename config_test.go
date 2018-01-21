@@ -1,9 +1,9 @@
 package huego_test
 
 import (
-	"testing"
-	"os"
 	"github.com/amimof/huego"
+	"os"
+	"testing"
 )
 
 // O60ECZZJhwrTI8AkY1xjOK5ifj20igjw6R5WsWih
@@ -22,7 +22,7 @@ func TestGetConfig(t *testing.T) {
 	t.Logf("    Sensors (length): %d", len(config.SwUpdate.DeviceTypes.Sensors))
 	t.Logf("  UpdateState: %d", config.SwUpdate.UpdateState)
 	t.Logf("  Notify: %t", config.SwUpdate.Notify)
-	t.Logf("  Url: %s", config.SwUpdate.Url)
+	t.Logf("  URL: %s", config.SwUpdate.URL)
 	t.Logf("  Text: %s", config.SwUpdate.Text)
 	t.Logf("SwUpdate2:")
 	t.Logf("  Bridge: %s", config.SwUpdate2.Bridge)
@@ -42,12 +42,12 @@ func TestGetConfig(t *testing.T) {
 	t.Logf("  Incoming: %t", config.PortalState.Incoming)
 	t.Logf("  Outgoing: %t", config.PortalState.Outgoing)
 	t.Logf("  Communication: %s", config.PortalState.Communication)
-	t.Logf("ApiVersion: %s", config.ApiVersion)
+	t.Logf("APIVersion: %s", config.APIVersion)
 	t.Logf("SwVersion: %s", config.SwVersion)
 	t.Logf("ProxyAddress: %s", config.ProxyAddress)
 	t.Logf("ProxyPort: %d", config.ProxyPort)
 	t.Logf("LinkButton: %t", config.LinkButton)
-	t.Logf("IpAddress: %s", config.IpAddress)
+	t.Logf("IPAddress: %s", config.IPAddress)
 	t.Logf("Mac: %s", config.Mac)
 	t.Logf("NetMask: %s", config.NetMask)
 	t.Logf("Gateway: %s", config.Gateway)
@@ -57,12 +57,12 @@ func TestGetConfig(t *testing.T) {
 	t.Logf("LocalTime: %s", config.LocalTime)
 	t.Logf("TimeZone: %s", config.TimeZone)
 	t.Logf("ZigbeeChannel: %d", config.ZigbeeChannel)
-	t.Logf("ModelId: %s", config.ModelId)
-	t.Logf("BridgeId: %s", config.BridgeId)
+	t.Logf("ModelID: %s", config.ModelID)
+	t.Logf("BridgeID: %s", config.BridgeID)
 	t.Logf("FactoryNew: %t", config.FactoryNew)
-	t.Logf("ReplacesBridgeId: %s", config.ReplacesBridgeId)
+	t.Logf("ReplacesBridgeID: %s", config.ReplacesBridgeID)
 	t.Logf("DatastoreVersion: %s", config.DatastoreVersion)
-	t.Logf("StarterKitId: %s", config.StarterKitId)
+	t.Logf("StarterKitID: %s", config.StarterKitID)
 }
 
 func TestCreateUser(t *testing.T) {
@@ -70,7 +70,7 @@ func TestCreateUser(t *testing.T) {
 	u, err := hue.CreateUser("github.com/amimof/huego#tests")
 	if err != nil {
 		t.Fatal(err)
-	} else {	
+	} else {
 		t.Logf("User created with username: %s", u)
 	}
 }

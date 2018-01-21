@@ -1,9 +1,9 @@
 package huego_test
 
 import (
-	"testing"
-	"os"
 	"github.com/amimof/huego"
+	"os"
+	"testing"
 )
 
 func TestGetRules(t *testing.T) {
@@ -18,7 +18,6 @@ func TestGetRules(t *testing.T) {
 	}
 }
 
-
 func TestGetRule(t *testing.T) {
 	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	rules, err := hue.GetRules()
@@ -26,7 +25,7 @@ func TestGetRule(t *testing.T) {
 		t.Fatal(err)
 	}
 	for _, rule := range rules {
-		l, err := hue.GetRule(rule.Id)
+		l, err := hue.GetRule(rule.ID)
 		if err != nil {
 			t.Fatal(err)
 		} else {
@@ -39,23 +38,23 @@ func TestGetRule(t *testing.T) {
 func TestCreateRule(t *testing.T) {
 	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	conditions := []*huego.Condition{
-	&huego.Condition{
-			Address: "/sensors/2/state/buttonevent",
+		&huego.Condition{
+			Address:  "/sensors/2/state/buttonevent",
 			Operator: "eq",
-			Value: "16",
+			Value:    "16",
 		},
 	}
 	actions := []*huego.RuleAction{
-	&huego.RuleAction{
+		&huego.RuleAction{
 			Address: "/groups/0/action",
-			Method: "PUT",
-			Body: &huego.State{On: true},
+			Method:  "PUT",
+			Body:    &huego.State{On: true},
 		},
 	}
 	rule := &huego.Rule{
-		Name: "Huego Test Rule",
+		Name:       "Huego Test Rule",
 		Conditions: conditions,
-		Actions: actions,
+		Actions:    actions,
 	}
 	resp, err := hue.CreateRule(rule)
 	if err != nil {
@@ -75,8 +74,8 @@ func TestUpdateRule(t *testing.T) {
 		Actions: []*huego.RuleAction{
 			&huego.RuleAction{
 				Address: "/groups/3/action",
-				Method: "PUT",
-				Body: &huego.State{On: true},
+				Method:  "PUT",
+				Body:    &huego.State{On: true},
 			},
 		},
 	})
@@ -92,10 +91,11 @@ func TestUpdateRule(t *testing.T) {
 
 func TestDeleteRule(t *testing.T) {
 	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
-	err := hue.DeleteRule(1)
+	id := 3
+	err := hue.DeleteRule(id)
 	if err != nil {
 		t.Fatal(err)
 	} else {
-		t.Logf("Rule %d deleted")
+		t.Logf("Rule %d deleted", id)
 	}
 }
