@@ -1,12 +1,12 @@
 package huego_test
 
 import (
-	"testing"
 	"github.com/amimof/huego"
+	"testing"
 )
 
 func TestDiscoverAndLoginLazy(t *testing.T) {
-  b, _ := huego.Discover()
+	b, _ := huego.Discover()
 	b = b.Login("n7yx6YCUvV6-CGJZ5-VuyZoc3qgi9S2WjtEeDFpO")
 	t.Logf("Successfully logged in to bridge")
 }
@@ -48,7 +48,7 @@ func TestDiscoverAllBridges(t *testing.T) {
 		t.Logf("%d: ", i)
 		t.Logf("  Host: %s", bridge.Host)
 		t.Logf("  User: %s", bridge.User)
-		t.Logf("  Id: %s", bridge.Id)
+		t.Logf("  ID: %s", bridge.ID)
 	}
 }
 
@@ -56,7 +56,7 @@ func TestDiscoverAllAndCreateUser(t *testing.T) {
 	bridges, err := huego.DiscoverAll()
 	if err != nil {
 		t.Fatal(err)
-	} 
+	}
 	t.Logf("Discovered %d bridges, using the first one", len(bridges))
 	if len(bridges) > 0 {
 		user, err := bridges[0].CreateUser("github.com/amimof/huego#tests")
@@ -68,7 +68,7 @@ func TestDiscoverAllAndCreateUser(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		t.Logf("Successfully logged in to bridge. Id: %s", config.BridgeId)
+		t.Logf("Successfully logged in to bridge. ID: %s", config.BridgeID)
 	} else {
 		t.Logf("No bridges found")
 	}

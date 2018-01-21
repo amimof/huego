@@ -1,9 +1,9 @@
 package huego_test
 
 import (
-	"testing"
-	"os"
 	"github.com/amimof/huego"
+	"os"
+	"testing"
 )
 
 func TestGetGroups(t *testing.T) {
@@ -40,7 +40,7 @@ func TestGetGroups(t *testing.T) {
 		t.Logf("    XyInc: %d", g.State.XyInc)
 		t.Logf("    ColorMode: %s", g.State.ColorMode)
 		t.Logf("    Reachable: %t", g.State.Reachable)
-		t.Logf("  Id: %d", g.Id)
+		t.Logf("  ID: %d", g.ID)
 	}
 }
 
@@ -51,7 +51,7 @@ func TestGetGroup(t *testing.T) {
 		t.Fatal(err)
 	}
 	for _, group := range groups {
-		g, err := hue.GetGroup(group.Id)
+		g, err := hue.GetGroup(group.ID)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -80,7 +80,7 @@ func TestGetGroup(t *testing.T) {
 		t.Logf("  XyInc: %d", g.State.XyInc)
 		t.Logf("  ColorMode: %s", g.State.ColorMode)
 		t.Logf("  Reachable: %t", g.State.Reachable)
-		t.Logf("Id: %d", g.Id)
+		t.Logf("ID: %d", g.ID)
 		break
 	}
 }
@@ -88,9 +88,9 @@ func TestGetGroup(t *testing.T) {
 func TestCreateGroup(t *testing.T) {
 	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	resp, err := hue.CreateGroup(huego.Group{
-		Name: "TestGroup",
-		Type: "Room",
-		Class: "Office",
+		Name:   "TestGroup",
+		Type:   "Room",
+		Class:  "Office",
 		Lights: []string{},
 	})
 	if err != nil {
@@ -107,7 +107,7 @@ func TestUpdateGroup(t *testing.T) {
 	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	id := 3
 	resp, err := hue.UpdateGroup(id, huego.Group{
-		Name: "TestGroup (Updated)",
+		Name:  "TestGroup (Updated)",
 		Class: "Office",
 	})
 	if err != nil {
@@ -124,7 +124,7 @@ func TestSetGroupState(t *testing.T) {
 	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	id := 3
 	resp, err := hue.SetGroupState(id, huego.State{
-		On: true,
+		On:  true,
 		Bri: 150,
 		Sat: 210,
 	})
@@ -134,7 +134,7 @@ func TestSetGroupState(t *testing.T) {
 		t.Logf("Group state set")
 		for k, v := range resp.Success {
 			t.Logf("%v: %s", k, v)
-		}		
+		}
 	}
 }
 
@@ -174,7 +174,7 @@ func TestTurnOffGroup(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Logf("Turned off group with id %d", group.Id)
+	t.Logf("Turned off group with id %d", group.ID)
 	t.Logf("Group IsOn: %t", group.State.On)
 }
 
@@ -189,7 +189,7 @@ func TestTurnOnGroup(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Logf("Turned on group with id %d", group.Id)
+	t.Logf("Turned on group with id %d", group.ID)
 	t.Logf("Group IsOn: %t", group.State.On)
 }
 
@@ -200,7 +200,7 @@ func TestIfGroupIsOn(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Logf("Is group %d on?: %t", group.Id, group.IsOn())
+	t.Logf("Is group %d on?: %t", group.ID, group.IsOn())
 }
 
 func TestSetGroupBri(t *testing.T) {
@@ -214,7 +214,7 @@ func TestSetGroupBri(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Logf("Brightness of group %d set to %d", group.Id, group.State.Bri)
+	t.Logf("Brightness of group %d set to %d", group.ID, group.State.Bri)
 }
 
 func TestSetGroupHue(t *testing.T) {
@@ -228,7 +228,7 @@ func TestSetGroupHue(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Logf("Hue of group %d set to %d", group.Id, group.State.Hue)
+	t.Logf("Hue of group %d set to %d", group.ID, group.State.Hue)
 }
 
 func TestSetGroupSat(t *testing.T) {
@@ -242,7 +242,7 @@ func TestSetGroupSat(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Logf("Sat of group %d set to %d", group.Id, group.State.Sat)
+	t.Logf("Sat of group %d set to %d", group.ID, group.State.Sat)
 }
 
 func TestSetGroupXy(t *testing.T) {
@@ -256,7 +256,7 @@ func TestSetGroupXy(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Logf("Xy of group %d set to %d", group.Id, group.State.Xy)
+	t.Logf("Xy of group %d set to %d", group.ID, group.State.Xy)
 }
 
 func TestSetGroupCt(t *testing.T) {
@@ -270,7 +270,7 @@ func TestSetGroupCt(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Logf("Ct of group %d set to %d", group.Id, group.State.Ct)
+	t.Logf("Ct of group %d set to %d", group.ID, group.State.Ct)
 }
 
 func TestSetGroupScene(t *testing.T) {
@@ -284,7 +284,7 @@ func TestSetGroupScene(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Logf("Scene of group %d set to %s", group.Id, group.State.Scene)
+	t.Logf("Scene of group %d set to %s", group.ID, group.State.Scene)
 }
 
 func TestSetGroupTransitionTime(t *testing.T) {
@@ -295,10 +295,10 @@ func TestSetGroupTransitionTime(t *testing.T) {
 		t.Fatal(err)
 	}
 	err = group.TransitionTime(10)
-	if err != nil {	
+	if err != nil {
 		t.Fatal(err)
 	}
-	t.Logf("TransitionTime of group %d set to %d", group.Id, group.State.TransitionTime)
+	t.Logf("TransitionTime of group %d set to %d", group.ID, group.State.TransitionTime)
 }
 
 func TestSetGroupEffect(t *testing.T) {
@@ -312,7 +312,7 @@ func TestSetGroupEffect(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Logf("Effect of group %d set to %s", group.Id, group.State.Effect)
+	t.Logf("Effect of group %d set to %s", group.ID, group.State.Effect)
 }
 
 func TestSetGroupAlert(t *testing.T) {
@@ -326,5 +326,5 @@ func TestSetGroupAlert(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Logf("Alert of group %d set to %s", group.Id, group.State.Alert)
+	t.Logf("Alert of group %d set to %s", group.ID, group.State.Alert)
 }
