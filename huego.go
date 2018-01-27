@@ -205,9 +205,5 @@ func Discover() (*Bridge, error) {
 
 // New instantiates and returns a new Bridge
 func New(h, u string) *Bridge {
-	return &Bridge{
-		Host: h,
-		User: u,
-		ID:   "",
-	}
+	return &Bridge{h, u, ""}
 }

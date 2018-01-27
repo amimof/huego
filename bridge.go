@@ -469,8 +469,8 @@ func (b *Bridge) GetLight(i int) (*Light, error) {
 	return light, nil
 }
 
-// SetLight allows for controlling one light's state
-func (b *Bridge) SetLight(i int, l State) (*Response, error) {
+// SetLightState allows for controlling one light's state
+func (b *Bridge) SetLightState(i int, l State) (*Response, error) {
 
 	var a []*APIResponse
 

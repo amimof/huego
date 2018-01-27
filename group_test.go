@@ -328,3 +328,20 @@ func TestSetGroupAlert(t *testing.T) {
 	}
 	t.Logf("Alert of group %d set to %s", group.ID, group.State.Alert)
 }
+
+func TestSetStateGroup(t *testing.T) {
+	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	id := 1
+	group, err := b.GetGroup(id)
+	if err != nil {
+		t.Fatal(err)
+	}
+	err = group.SetState(huego.State{
+		On: true,
+		Bri: 254,
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Logf("State set successfully on group %d", id)
+} 

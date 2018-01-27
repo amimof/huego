@@ -20,6 +20,16 @@ type GroupState struct {
 	AnyOn bool `json:"any_on,omitempty"`
 }
 
+// SetState sets the state of the group to s.
+func (g *Group) SetState(s State) error {
+	_, err := g.bridge.SetGroupState(g.ID, s)
+	if err != nil {
+		return err
+	}
+	g.State = &s
+	return nil
+} 
+
 // Rename sets the name property of the group
 func (g *Group) Rename(new string) error {
 	update := Group{Name: new}

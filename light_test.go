@@ -71,7 +71,7 @@ func TestGetLight(t *testing.T) {
 func TestSetLight(t *testing.T) {
 	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	id := 3
-	resp, err := b.SetLight(id, huego.State{
+	resp, err := b.SetLightState(id, huego.State{
 		On:  true,
 		Bri: 254,
 	})
@@ -318,3 +318,20 @@ func TestSetLightAlert(t *testing.T) {
 	}
 	t.Logf("Alert of light %d set to %s", light.ID, light.State.Alert)
 }
+
+func TestSetStateLight(t *testing.T) {
+	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	id := 4
+	light, err := b.GetLight(id)
+	if err != nil {
+		t.Fatal(err)
+	}
+	err = light.SetState(huego.State{
+		On: true,
+		Bri: 254,
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Logf("State set successfully on light %d", id)
+} 
