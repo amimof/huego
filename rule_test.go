@@ -7,8 +7,8 @@ import (
 )
 
 func TestGetRules(t *testing.T) {
-	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
-	rules, err := hue.GetRules()
+	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	rules, err := b.GetRules()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -19,13 +19,13 @@ func TestGetRules(t *testing.T) {
 }
 
 func TestGetRule(t *testing.T) {
-	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
-	rules, err := hue.GetRules()
+	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	rules, err := b.GetRules()
 	if err != nil {
 		t.Fatal(err)
 	}
 	for _, rule := range rules {
-		l, err := hue.GetRule(rule.ID)
+		l, err := b.GetRule(rule.ID)
 		if err != nil {
 			t.Fatal(err)
 		} else {
@@ -36,7 +36,7 @@ func TestGetRule(t *testing.T) {
 }
 
 func TestCreateRule(t *testing.T) {
-	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	conditions := []*huego.Condition{
 		{
 			Address:  "/sensors/2/state/buttonevent",
@@ -56,7 +56,7 @@ func TestCreateRule(t *testing.T) {
 		Conditions: conditions,
 		Actions:    actions,
 	}
-	resp, err := hue.CreateRule(rule)
+	resp, err := b.CreateRule(rule)
 	if err != nil {
 		t.Fatal(err)
 	} else {
@@ -68,9 +68,9 @@ func TestCreateRule(t *testing.T) {
 }
 
 func TestUpdateRule(t *testing.T) {
-	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	id := 3
-	resp, err := hue.UpdateRule(id, &huego.Rule{
+	resp, err := b.UpdateRule(id, &huego.Rule{
 		Actions: []*huego.RuleAction{
 			{
 				Address: "/groups/3/action",
@@ -90,9 +90,9 @@ func TestUpdateRule(t *testing.T) {
 }
 
 func TestDeleteRule(t *testing.T) {
-	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	id := 3
-	err := hue.DeleteRule(id)
+	err := b.DeleteRule(id)
 	if err != nil {
 		t.Fatal(err)
 	} else {

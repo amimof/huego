@@ -8,8 +8,8 @@ import (
 
 // O60ECZZJhwrTI8AkY1xjOK5ifj20igjw6R5WsWih
 func TestGetConfig(t *testing.T) {
-	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
-	config, err := hue.GetConfig()
+	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	config, err := b.GetConfig()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -66,8 +66,8 @@ func TestGetConfig(t *testing.T) {
 }
 
 func TestCreateUser(t *testing.T) {
-	hue := huego.New(os.Getenv("HUE_HOSTNAME"), "")
-	u, err := hue.CreateUser("github.com/amimof/huego#tests")
+	b := huego.New(os.Getenv("HUE_HOSTNAME"), "")
+	u, err := b.CreateUser("github.com/amimof/huego#tests")
 	if err != nil {
 		t.Fatal(err)
 	} else {
@@ -76,8 +76,8 @@ func TestCreateUser(t *testing.T) {
 }
 
 func TestGetUsers(t *testing.T) {
-	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
-	users, err := hue.GetUsers()
+	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	users, err := b.GetUsers()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -91,9 +91,9 @@ func TestGetUsers(t *testing.T) {
 }
 
 func TestDeleteUser(t *testing.T) {
-	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	uid := "9zLKE0LNZOJuLDGI6QYjQpWHmVTWO7BVwuirvIbh"
-	err := hue.DeleteUser(uid)
+	err := b.DeleteUser(uid)
 	if err != nil {
 		t.Fatal(err)
 	} else {

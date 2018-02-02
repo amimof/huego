@@ -7,8 +7,8 @@ import (
 )
 
 func TestGetGroups(t *testing.T) {
-	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
-	groups, err := hue.GetGroups()
+	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	groups, err := b.GetGroups()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -45,13 +45,13 @@ func TestGetGroups(t *testing.T) {
 }
 
 func TestGetGroup(t *testing.T) {
-	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
-	groups, err := hue.GetGroups()
+	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	groups, err := b.GetGroups()
 	if err != nil {
 		t.Fatal(err)
 	}
 	for _, group := range groups {
-		g, err := hue.GetGroup(group.ID)
+		g, err := b.GetGroup(group.ID)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -86,8 +86,8 @@ func TestGetGroup(t *testing.T) {
 }
 
 func TestCreateGroup(t *testing.T) {
-	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
-	resp, err := hue.CreateGroup(huego.Group{
+	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	resp, err := b.CreateGroup(huego.Group{
 		Name:   "TestGroup",
 		Type:   "Room",
 		Class:  "Office",
@@ -104,9 +104,9 @@ func TestCreateGroup(t *testing.T) {
 }
 
 func TestUpdateGroup(t *testing.T) {
-	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	id := 3
-	resp, err := hue.UpdateGroup(id, huego.Group{
+	resp, err := b.UpdateGroup(id, huego.Group{
 		Name:  "TestGroup (Updated)",
 		Class: "Office",
 	})
@@ -121,9 +121,9 @@ func TestUpdateGroup(t *testing.T) {
 }
 
 func TestSetGroupState(t *testing.T) {
-	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	id := 3
-	resp, err := hue.SetGroupState(id, huego.State{
+	resp, err := b.SetGroupState(id, huego.State{
 		On:  true,
 		Bri: 150,
 		Sat: 210,
@@ -139,9 +139,9 @@ func TestSetGroupState(t *testing.T) {
 }
 
 func TestDeleteGroup(t *testing.T) {
-	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	id := 3
-	err := hue.DeleteGroup(id)
+	err := b.DeleteGroup(id)
 	if err != nil {
 		t.Fatal(err)
 	} else {

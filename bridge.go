@@ -676,7 +676,9 @@ func (b *Bridge) GetResourcelinks() ([]*Resourcelink, error) {
 // GetResourcelink returns one resourcelink by its id defined by i
 func (b *Bridge) GetResourcelink(i int) (*Resourcelink, error) {
 
-	var resourcelink *Resourcelink
+	g := &Resourcelink{
+		ID: i,
+	}
 
 	url, err := b.getAPIPath("/resourcelinks/", strconv.Itoa(i))
 
@@ -685,12 +687,12 @@ func (b *Bridge) GetResourcelink(i int) (*Resourcelink, error) {
 		return nil, err
 	}
 
-	err = json.Unmarshal(res, &resourcelink)
+	err = json.Unmarshal(res, &g)
 	if err != nil {
 		return nil, err
 	}
 
-	return resourcelink, nil
+	return g, nil
 
 }
 
@@ -829,7 +831,9 @@ func (b *Bridge) GetRules() ([]*Rule, error) {
 // GetRule returns one rule by its id of i
 func (b *Bridge) GetRule(i int) (*Rule, error) {
 
-	var rule *Rule
+	g := &Rule{
+		ID: i,
+	}
 
 	url, err := b.getAPIPath("/rules/", strconv.Itoa(i))
 	if err != nil {
@@ -841,12 +845,12 @@ func (b *Bridge) GetRule(i int) (*Rule, error) {
 		return nil, err
 	}
 
-	err = json.Unmarshal(res, &rule)
+	err = json.Unmarshal(res, &g)
 	if err != nil {
 		return nil, err
 	}
 
-	return rule, nil
+	return g, nil
 
 }
 
@@ -969,6 +973,7 @@ func (b *Bridge) GetScenes() ([]Scene, error) {
 
 	for i, g := range m {
 		g.ID = i
+		g.bridge = b
 		scenes = append(scenes, g)
 	}
 
@@ -979,7 +984,10 @@ func (b *Bridge) GetScenes() ([]Scene, error) {
 // GetScene returns one scene by its id of i
 func (b *Bridge) GetScene(i string) (*Scene, error) {
 
-	var g *Scene
+	g := &Scene{
+		ID: i,
+		LightStates: []State{},
+	}
 
 	url, err := b.getAPIPath("/scenes/", i)
 	if err != nil {
@@ -996,15 +1004,16 @@ func (b *Bridge) GetScene(i string) (*Scene, error) {
 		return nil, err
 	}
 
+	g.bridge = b
+
 	return g, nil
 }
 
 // UpdateScene updates one scene and its attributes by id of i
-func (b *Bridge) UpdateScene(i int, s *Scene) (*Response, error) {
+func (b *Bridge) UpdateScene(id string, s *Scene) (*Response, error) {
 
 	var a []*APIResponse
 
-	id := strconv.Itoa(i)
 	url, err := b.getAPIPath("/scenes/", id)
 	if err != nil {
 		return nil, err
@@ -1031,6 +1040,78 @@ func (b *Bridge) UpdateScene(i int, s *Scene) (*Response, error) {
 	}
 
 	return resp, nil
+}
+
+// SetSceneLightState allows for setting the state of a light in a scene. 
+// SetSceneLightState accepts the id of the scene, the id of a light associated with the scene and the state object.
+func (b *Bridge) SetSceneLightState(id string, iid int, l *State) (*Response, error) {
+
+	var a []*APIResponse
+
+	lightid := strconv.Itoa(iid)
+	url, err := b.getAPIPath("scenes", id, "lightstates", lightid)
+	if err != nil {
+		return nil, err
+	}
+
+	data, err := json.Marshal(&l)
+	if err != nil {
+		return nil, err
+	}
+
+	res, err := put(url, data)
+	if err != nil {
+		return nil, err
+	}
+
+	err = json.Unmarshal(res, &a)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := handleResponse(a)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, nil
+}
+
+// RecallScene will recall a scene in a group identified by both scene and group identifiers
+func (b *Bridge) RecallScene(id string, gid int) (*Response, error) {
+	
+	var a []*APIResponse
+
+	data, err := json.Marshal(struct{
+		Scene string `json:"scene"`
+	}{
+		id,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	url, err := b.getAPIPath("/groups/", strconv.Itoa(gid), "/action")
+	if err != nil {
+		return nil, err
+	}
+
+	res, err := put(url, data)
+	if err != nil {
+		return nil, err
+	}
+
+	err = json.Unmarshal(res, &a)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := handleResponse(a)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // CreateScene creates one new scene with its attributes defined in s
@@ -1067,11 +1148,10 @@ func (b *Bridge) CreateScene(s *Scene) (*Response, error) {
 }
 
 // DeleteScene deletes one scene from the bridge
-func (b *Bridge) DeleteScene(i int) error {
+func (b *Bridge) DeleteScene(id string) error {
 
 	var a []*APIResponse
 
-	id := strconv.Itoa(i)
 	url, err := b.getAPIPath("/scenes/", id)
 	if err != nil {
 		return err
@@ -1135,7 +1215,9 @@ func (b *Bridge) GetSchedules() ([]*Schedule, error) {
 // GetSchedule returns one schedule by id defined in i
 func (b *Bridge) GetSchedule(i int) (*Schedule, error) {
 
-	var schedule *Schedule
+	g := &Schedule{
+		ID: i,
+	}
 
 	url, err := b.getAPIPath("/schedules/", strconv.Itoa(i))
 	if err != nil {
@@ -1147,12 +1229,12 @@ func (b *Bridge) GetSchedule(i int) (*Schedule, error) {
 		return nil, err
 	}
 
-	err = json.Unmarshal(res, &schedule)
+	err = json.Unmarshal(res, &g)
 	if err != nil {
 		return nil, err
 	}
 
-	return schedule, nil
+	return g, nil
 
 }
 
@@ -1290,7 +1372,9 @@ func (b *Bridge) GetSensors() ([]Sensor, error) {
 // GetSensor returns one sensor by its id of i
 func (b *Bridge) GetSensor(i int) (*Sensor, error) {
 
-	var r *Sensor
+	r := &Sensor{
+		ID: i,
+	}
 
 	id := strconv.Itoa(i)
 	url, err := b.getAPIPath("/sensors/", id)

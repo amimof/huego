@@ -7,8 +7,8 @@ import (
 )
 
 func TestGetCapabilities(t *testing.T) {
-	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
-	c, err := hue.GetCapabilities()
+	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	c, err := b.GetCapabilities()
 	if err != nil {
 		t.Fatal(c)
 	}

@@ -12,5 +12,16 @@ type Scene struct {
 	LastUpdated     string      `json:"lastupdated,omitempty"`
 	Version         int         `json:"version,omitempty"`
 	StoreSceneState bool        `json:"storescenestate,omitempty"`
+	LightStates			[]State			`json:"-"`
 	ID              string      `json:"-"`
+	bridge          *Bridge
+}
+
+// Recall will recall the scene in the group identified by id
+func (s *Scene) Recall(id int) error {
+	_, err := s.bridge.RecallScene(s.ID, id)
+	if err != nil {
+		return err
+	}
+	return nil
 }

@@ -7,8 +7,8 @@ import (
 )
 
 func TestGetResourcelinks(t *testing.T) {
-	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
-	resourcelinks, err := hue.GetResourcelinks()
+	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	resourcelinks, err := b.GetResourcelinks()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -26,13 +26,13 @@ func TestGetResourcelinks(t *testing.T) {
 }
 
 func TestGetResourcelink(t *testing.T) {
-	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
-	resourcelinks, err := hue.GetResourcelinks()
+	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	resourcelinks, err := b.GetResourcelinks()
 	if err != nil {
 		t.Fatal(err)
 	}
 	for _, resourcelink := range resourcelinks {
-		l, err := hue.GetResourcelink(resourcelink.ID)
+		l, err := b.GetResourcelink(resourcelink.ID)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -48,7 +48,7 @@ func TestGetResourcelink(t *testing.T) {
 }
 
 func TestCreateResourcelink(t *testing.T) {
-	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	resourcelink := &huego.Resourcelink{
 		Name:        "Huego Test Resourcelink",
 		Description: "Amir's wakeup experience",
@@ -57,7 +57,7 @@ func TestCreateResourcelink(t *testing.T) {
 		Owner:       "78H56B12BAABCDEF",
 		Links:       []string{"/schedules/2", "/schedules/3", "/scenes/ABCD"},
 	}
-	resp, err := hue.CreateResourcelink(resourcelink)
+	resp, err := b.CreateResourcelink(resourcelink)
 	if err != nil {
 		t.Fatal(err)
 	} else {
@@ -69,9 +69,9 @@ func TestCreateResourcelink(t *testing.T) {
 }
 
 func TestUpdateResourcelink(t *testing.T) {
-	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	id := 3
-	resp, err := hue.UpdateResourcelink(id, &huego.Resourcelink{
+	resp, err := b.UpdateResourcelink(id, &huego.Resourcelink{
 		Name:        "New Resourcelink",
 		Description: "Updated Attribute",
 	})
@@ -86,9 +86,9 @@ func TestUpdateResourcelink(t *testing.T) {
 }
 
 func TestDeleteResourcelink(t *testing.T) {
-	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	id := 3
-	err := hue.DeleteResourcelink(1)
+	err := b.DeleteResourcelink(1)
 	if err != nil {
 		t.Fatal(err)
 	} else {

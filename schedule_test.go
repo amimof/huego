@@ -7,8 +7,8 @@ import (
 )
 
 func TestGetSchedules(t *testing.T) {
-	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
-	schedules, err := hue.GetSchedules()
+	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	schedules, err := b.GetSchedules()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -31,13 +31,13 @@ func TestGetSchedules(t *testing.T) {
 }
 
 func TestGetSchedule(t *testing.T) {
-	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
-	schedules, err := hue.GetSchedules()
+	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	schedules, err := b.GetSchedules()
 	if err != nil {
 		t.Fatal(err)
 	}
 	for _, schedule := range schedules {
-		s, err := hue.GetSchedule(schedule.ID)
+		s, err := b.GetSchedule(schedule.ID)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -52,7 +52,7 @@ func TestGetSchedule(t *testing.T) {
 }
 
 func TestCreateSchedule(t *testing.T) {
-	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	command := &huego.Command{
 		Address: "/api/" + os.Getenv("HUE_USERNAME") + "/lights/0",
 		Body: &struct {
@@ -68,7 +68,7 @@ func TestCreateSchedule(t *testing.T) {
 		Command:     command,
 		LocalTime:   "2019-09-22T13:37:00",
 	}
-	resp, err := hue.CreateSchedule(schedule)
+	resp, err := b.CreateSchedule(schedule)
 	if err != nil {
 		t.Fatal(err)
 	} else {
@@ -80,9 +80,9 @@ func TestCreateSchedule(t *testing.T) {
 }
 
 func TestUpdateSchedule(t *testing.T) {
-	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	id := 3
-	resp, err := hue.UpdateSchedule(id, &huego.Schedule{
+	resp, err := b.UpdateSchedule(id, &huego.Schedule{
 		Name:        "New Scehdule",
 		Description: "Updated parameter",
 	})
@@ -97,9 +97,9 @@ func TestUpdateSchedule(t *testing.T) {
 }
 
 func TestDeleteSchedule(t *testing.T) {
-	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	id := 3
-	err := hue.DeleteSchedule(id)
+	err := b.DeleteSchedule(id)
 	if err != nil {
 		t.Fatal(err)
 	} else {
