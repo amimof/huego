@@ -28,7 +28,7 @@ func (g *Group) SetState(s State) error {
 	}
 	g.State = &s
 	return nil
-} 
+}
 
 // Rename sets the name property of the group
 func (g *Group) Rename(new string) error {

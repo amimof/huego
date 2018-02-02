@@ -51,7 +51,7 @@ func (l *Light) SetState(s State) error {
 	}
 	l.State = &s
 	return nil
-} 
+}
 
 // Off sets the On state of one light to false, turning it off
 func (l *Light) Off() error {

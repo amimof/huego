@@ -1506,3 +1506,32 @@ func (b *Bridge) UpdateSensorConfig(i int, config *SensorConfig) (*Response, err
 
 	return resp, nil
 }
+
+/*
+
+	CAPABILITIES API
+
+*/
+
+// GetCapabilities returns a list of capabilities of resources supported in the bridge.
+func (b *Bridge) GetCapabilities() (*Capabilities, error) {
+
+	s := &Capabilities{}
+
+	url, err := b.getAPIPath("/capabilities/")
+	if err != nil {
+		return nil, err
+	}
+
+	res, err := get(url)
+	if err != nil {
+		return nil, err
+	}
+
+	err = json.Unmarshal(res, &s)
+	if err != nil {
+		return nil, err
+	}
+
+	return s, err
+}

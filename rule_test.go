@@ -38,14 +38,14 @@ func TestGetRule(t *testing.T) {
 func TestCreateRule(t *testing.T) {
 	hue := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	conditions := []*huego.Condition{
-		&huego.Condition{
+		{
 			Address:  "/sensors/2/state/buttonevent",
 			Operator: "eq",
 			Value:    "16",
 		},
 	}
 	actions := []*huego.RuleAction{
-		&huego.RuleAction{
+		{
 			Address: "/groups/0/action",
 			Method:  "PUT",
 			Body:    &huego.State{On: true},
@@ -72,7 +72,7 @@ func TestUpdateRule(t *testing.T) {
 	id := 3
 	resp, err := hue.UpdateRule(id, &huego.Rule{
 		Actions: []*huego.RuleAction{
-			&huego.RuleAction{
+			{
 				Address: "/groups/3/action",
 				Method:  "PUT",
 				Body:    &huego.State{On: true},

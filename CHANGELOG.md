@@ -3,6 +3,7 @@
 ## 1.0.0-alpha.5
 * Added `SetState` receivers to `Group` and `Light`.
 * Renamed `SetLight` to `SetLightState` for a more consistent naming convention.
+* Implemented `Capabilities`
 
 ## 1.0.0-alpha.4
 * Huego now has a logo

@@ -327,11 +327,11 @@ func TestSetStateLight(t *testing.T) {
 		t.Fatal(err)
 	}
 	err = light.SetState(huego.State{
-		On: true,
+		On:  true,
 		Bri: 254,
 	})
 	if err != nil {
 		t.Fatal(err)
 	}
 	t.Logf("State set successfully on light %d", id)
-} 
+}

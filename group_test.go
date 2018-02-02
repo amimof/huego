@@ -337,11 +337,11 @@ func TestSetStateGroup(t *testing.T) {
 		t.Fatal(err)
 	}
 	err = group.SetState(huego.State{
-		On: true,
+		On:  true,
 		Bri: 254,
 	})
 	if err != nil {
 		t.Fatal(err)
 	}
 	t.Logf("State set successfully on group %d", id)
-} 
+}
