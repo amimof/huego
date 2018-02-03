@@ -64,8 +64,8 @@ This project is currently in **ALPHA** and still under heavy development. Curren
 | Scenes | `Complete` | `Complete` |
 | Rules | `Complete` | `Complete` |
 | Resourcelinks | `Complete` | `Complete` |
-| Configuration | `Complete`  | `Complete` 
-| Capabilities | `Not Started` | `Not Started` 
+| Configuration | `Complete`  | `Complete` |
+| Capabilities | `Complete` | `Complete` |
 
 Other than above core modules, each module needs additional *helper* methods for conveniance and flavour. The goal is to keep it simple, and not to bloat the library with functionality that developers might want to write on their own. 
 
@@ -76,7 +76,7 @@ The goal of this project is to provide an easy to use, stable and extensive libr
 ## To-Do
 
 * Add helper methods on each module
-* Add `SetSceneLightState`
-* Add `RecallScene`
-* Finish `Capabilities`
+* ~~Add `SetSceneLightState`~~
+* ~~Add `RecallScene`~~
+* ~~Finish `Capabilities`~~
 * More tests

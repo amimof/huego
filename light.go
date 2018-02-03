@@ -43,10 +43,20 @@ type NewLight struct {
 	LastScan string `json:"lastscan"`
 }
 
+// SetState sets the state of the light to s.
+func (l *Light) SetState(s State) error {
+	_, err := l.bridge.SetLightState(l.ID, s)
+	if err != nil {
+		return err
+	}
+	l.State = &s
+	return nil
+}
+
 // Off sets the On state of one light to false, turning it off
 func (l *Light) Off() error {
 	state := State{On: false}
-	_, err := l.bridge.SetLight(l.ID, state)
+	_, err := l.bridge.SetLightState(l.ID, state)
 	if err != nil {
 		return err
 	}
@@ -57,7 +67,7 @@ func (l *Light) Off() error {
 // On sets the On state of one light to true, turning it on
 func (l *Light) On() error {
 	state := State{On: true}
-	_, err := l.bridge.SetLight(l.ID, state)
+	_, err := l.bridge.SetLightState(l.ID, state)
 	if err != nil {
 		return err
 	}
@@ -84,7 +94,7 @@ func (l *Light) Rename(new string) error {
 // Bri sets the light brightness state property
 func (l *Light) Bri(new uint8) error {
 	update := State{On: true, Bri: new}
-	_, err := l.bridge.SetLight(l.ID, update)
+	_, err := l.bridge.SetLightState(l.ID, update)
 	if err != nil {
 		return err
 	}
@@ -95,7 +105,7 @@ func (l *Light) Bri(new uint8) error {
 // Hue sets the light hue state property (0-65535)
 func (l *Light) Hue(new uint16) error {
 	update := State{On: true, Hue: new}
-	_, err := l.bridge.SetLight(l.ID, update)
+	_, err := l.bridge.SetLightState(l.ID, update)
 	if err != nil {
 		return err
 	}
@@ -106,7 +116,7 @@ func (l *Light) Hue(new uint16) error {
 // Sat sets the light saturation state property (0-254)
 func (l *Light) Sat(new uint8) error {
 	update := State{On: true, Sat: new}
-	_, err := l.bridge.SetLight(l.ID, update)
+	_, err := l.bridge.SetLightState(l.ID, update)
 	if err != nil {
 		return err
 	}
@@ -117,7 +127,7 @@ func (l *Light) Sat(new uint8) error {
 // Xy sets the x and y coordinates of a color in CIE color space. (0-1 per value)
 func (l *Light) Xy(new []float32) error {
 	update := State{On: true, Xy: new}
-	_, err := l.bridge.SetLight(l.ID, update)
+	_, err := l.bridge.SetLightState(l.ID, update)
 	if err != nil {
 		return err
 	}
@@ -128,7 +138,7 @@ func (l *Light) Xy(new []float32) error {
 // Ct sets the light color temperature state property
 func (l *Light) Ct(new uint16) error {
 	update := State{On: true, Ct: new}
-	_, err := l.bridge.SetLight(l.ID, update)
+	_, err := l.bridge.SetLightState(l.ID, update)
 	if err != nil {
 		return err
 	}
@@ -139,7 +149,7 @@ func (l *Light) Ct(new uint16) error {
 // TransitionTime sets the duration of the transition from the light’s current state to the new state
 func (l *Light) TransitionTime(new uint16) error {
 	update := State{On: l.State.On, TransitionTime: new}
-	_, err := l.bridge.SetLight(l.ID, update)
+	_, err := l.bridge.SetLightState(l.ID, update)
 	if err != nil {
 		return err
 	}
@@ -150,7 +160,7 @@ func (l *Light) TransitionTime(new uint16) error {
 // Effect the dynamic effect of the light, currently “none” and “colorloop” are supported
 func (l *Light) Effect(new string) error {
 	update := State{On: true, Effect: new}
-	_, err := l.bridge.SetLight(l.ID, update)
+	_, err := l.bridge.SetLightState(l.ID, update)
 	if err != nil {
 		return err
 	}
@@ -164,7 +174,7 @@ func (l *Light) Effect(new string) error {
 // “lselect” – The light is performing breathe cycles for 15 seconds or until alert is set to "none".
 func (l *Light) Alert(new string) error {
 	update := State{On: true, Alert: new}
-	_, err := l.bridge.SetLight(l.ID, update)
+	_, err := l.bridge.SetLightState(l.ID, update)
 	if err != nil {
 		return err
 	}
