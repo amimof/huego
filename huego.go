@@ -22,7 +22,7 @@ type APIError struct {
 	Description string
 }
 
-// Response is a wrapper struct of the success response returned from the bridge after a successfull API call.
+// Response is a wrapper struct of the success response returned from the bridge after a successful API call.
 type Response struct {
 	Success map[string]interface{}
 }
@@ -166,7 +166,8 @@ func delete(url string) ([]byte, error) {
 
 }
 
-// DiscoverAll performs a discovery on the network looking for bridges using https://www.meethue.com/api/nupnp service
+// DiscoverAll performs a discovery on the network looking for bridges using https://www.meethue.com/api/nupnp service.
+// DiscoverAll returns a list of Bridge objects.
 func DiscoverAll() ([]Bridge, error) {
 
 	res, err := get("https://www.meethue.com/api/nupnp")
@@ -185,7 +186,8 @@ func DiscoverAll() ([]Bridge, error) {
 
 }
 
-// Discover performs a discovery on the network looking for bridges using https://www.meethue.com/api/nupnp service. Returns the first bridge if any found
+// Discover performs a discovery on the network looking for bridges using https://www.meethue.com/api/nupnp service.
+// Discover uses DiscoverAll() but only returns the first instance in the array of bridges if any.
 func Discover() (*Bridge, error) {
 
 	var b *Bridge
@@ -203,7 +205,9 @@ func Discover() (*Bridge, error) {
 
 }
 
-// New instantiates and returns a new Bridge
+// New instantiates and returns a new Bridge. New accepts hostname/ip address to the bridge (h) as well as an username (u).
+// h may or may not be prefixed with http(s)://. For example http://192.168.1.20/ or 192.168.1.20.
+// u is a username known to the bridge. Use Discover() and CreateUser() to create a user.
 func New(h, u string) *Bridge {
 	return &Bridge{h, u, ""}
 }

@@ -34,8 +34,9 @@ func (b *Bridge) getAPIPath(str ...string) (string, error) {
 	return u.String(), nil
 }
 
-// Login calls New() and passes Host on this Bridge instance
+// Login calls New() and passes Host on this Bridge instance.
 func (b *Bridge) Login(u string) *Bridge {
+	b.User = u
 	return New(b.Host, u)
 }
 
