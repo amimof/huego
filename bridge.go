@@ -81,10 +81,7 @@ func (b *Bridge) CreateUser(n string) (string, error) {
 	body := struct {
 		DeviceType        string `json:"devicetype,omitempty"`
 		GenerateClientKey bool   `json:"generateclientkey,omitempty"`
-	}{
-		n,
-		true,
-	}
+	}{n, true}
 
 	url, err := b.getAPIPath("/")
 	if err != nil {
@@ -984,10 +981,10 @@ func (b *Bridge) GetScenes() ([]Scene, error) {
 // GetScene returns one scene by its id of i
 func (b *Bridge) GetScene(i string) (*Scene, error) {
 
-	g := &Scene{
-		ID: i,
-		LightStates: []State{},
-	}
+	g := &Scene{ID: i}
+	l := struct {
+		LightStates map[int]State `json:"lightstates"`
+	}{}
 
 	url, err := b.getAPIPath("/scenes/", i)
 	if err != nil {
@@ -995,6 +992,11 @@ func (b *Bridge) GetScene(i string) (*Scene, error) {
 	}
 
 	res, err := get(url)
+	if err != nil {
+		return nil, err
+	}
+
+	err = json.Unmarshal(res, &l)
 	if err != nil {
 		return nil, err
 	}
@@ -1042,7 +1044,7 @@ func (b *Bridge) UpdateScene(id string, s *Scene) (*Response, error) {
 	return resp, nil
 }
 
-// SetSceneLightState allows for setting the state of a light in a scene. 
+// SetSceneLightState allows for setting the state of a light in a scene.
 // SetSceneLightState accepts the id of the scene, the id of a light associated with the scene and the state object.
 func (b *Bridge) SetSceneLightState(id string, iid int, l *State) (*Response, error) {
 
@@ -1079,14 +1081,13 @@ func (b *Bridge) SetSceneLightState(id string, iid int, l *State) (*Response, er
 
 // RecallScene will recall a scene in a group identified by both scene and group identifiers
 func (b *Bridge) RecallScene(id string, gid int) (*Response, error) {
-	
+
 	var a []*APIResponse
 
-	data, err := json.Marshal(struct{
+	data, err := json.Marshal(struct {
 		Scene string `json:"scene"`
-	}{
-		id,
-	})
+	}{id})
+
 	if err != nil {
 		return nil, err
 	}

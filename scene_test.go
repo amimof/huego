@@ -53,6 +53,9 @@ func TestGetScene(t *testing.T) {
 		t.Logf("  StoreSceneState: %t", s.StoreSceneState)
 		t.Logf("  ID: %s", s.ID)
 		t.Logf("  LightStates: %d", len(s.LightStates))
+		for k := range s.LightStates {
+			t.Logf("    Light %d: %+v", k, s.LightStates[k])
+		}
 		break
 	}
 }
@@ -66,7 +69,7 @@ func TestCreateScene(t *testing.T) {
 	})
 	if err != nil {
 		t.Fatal(err)
-	} 
+	}
 	t.Logf("Scene created")
 	for k, v := range resp.Success {
 		t.Logf("%v: %s", k, v)
@@ -87,7 +90,7 @@ func TestUpdateScene(t *testing.T) {
 			})
 			if err != nil {
 				t.Fatal(err)
-			} 
+			}
 			t.Logf("Scene '%s' (%s) updated", scene.Name, scene.ID)
 			for k, v := range resp.Success {
 				t.Logf("%v: %s", k, v)
@@ -109,7 +112,7 @@ func TestSetSceneLightState(t *testing.T) {
 			t.Logf("ID: %s", scene.ID)
 			t.Logf("LightStates: %+v", scene.LightStates)
 			_, err := b.SetSceneLightState(scene.ID, light, &huego.State{
-				On: true,
+				On:  true,
 				Bri: 255,
 			})
 			if err != nil {
@@ -125,7 +128,7 @@ func TestDeleteScene(t *testing.T) {
 	scenes, err := b.GetScenes()
 	if err != nil {
 		t.Fatal(err)
-	} 
+	}
 	for _, scene := range scenes {
 		if scene.Name == "New Scene" {
 			err := b.DeleteScene(scene.ID)
