@@ -1,5 +1,9 @@
 package huego_test
 
+// I'm too lazy to have this elsewhere
+// export HUE_USERNAME=9D6iHMbM-Bt7Kd0Cwh9Quo4tE02FMnmrNrnFAdAq
+// export HUE_HOSTNAME=192.168.1.59
+
 import (
 	"github.com/amimof/huego"
 	"testing"
