@@ -61,7 +61,7 @@ func TestCreateSensor(t *testing.T) {
 	})
 	if err != nil {
 		t.Fatal(err)
-	} 
+	}
 	t.Logf("Sensor created")
 	for k, v := range resp.Success {
 		t.Logf("%v: %s", k, v)
@@ -74,7 +74,7 @@ func TestFindSensors(t *testing.T) {
 	resp, err := b.FindSensors()
 	if err != nil {
 		t.Fatal(err)
-	} 
+	}
 	for k, v := range resp.Success {
 		t.Logf("%v: %s", k, v)
 	}
@@ -110,7 +110,7 @@ func TestUpdateSensor(t *testing.T) {
 	})
 	if err != nil {
 		t.Fatal(err)
-	} 
+	}
 	for k, v := range resp.Success {
 		t.Logf("%v: %s", k, v)
 	}
@@ -123,6 +123,6 @@ func TestDeleteSensor(t *testing.T) {
 	err := b.DeleteSensor(id)
 	if err != nil {
 		t.Fatal(err)
-	} 
+	}
 	t.Logf("Sensor %d deleted", id)
 }

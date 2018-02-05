@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.0-beta.2
+
+## 1.0.0-beta.1
+* `Sensor.State` and `Sensor.Config` is now `interface{}` since these varry depending on the type
+* As of this release `Gitflow` is obsolete.
+
 ## 1.0.0-alpha.5
 * Added `SetState` receivers to `Group` and `Light`.
 * Renamed `SetLight` to `SetLightState` for a more consistent naming convention.
