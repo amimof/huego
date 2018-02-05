@@ -7,7 +7,7 @@ An extensive Philips Hue client library for [`Go`](https://golang.org/) with an 
 
 ![](./logo.png)
 
-_This project is currently in **ALPHA** and not recommended for production use. All help in any form is highly appreciated. You are more than welcome to contact me if you have feedback, feature requests, report bugs etc._
+_This project is currently in **BETA** and not recommended for production use. All help in any form is highly appreciated. You are more than welcome to contact me if you have feedback, feature requests, report bugs etc._
 
 Ses [godoc.org/github.com/amimof/huego](https://godoc.org/github.com/amimof/huego) for the full package documentation.
 
@@ -17,7 +17,7 @@ Get the package
 go get github.com/amimof/huego
 ```
 
-Include it in your code. You may use `huego.New()` if you've already created a user and know the ip-address/hostname to your bridge.
+Include it in your code. You may use [`New()`](https://godoc.org/github.com/amimof/huego#New) if you have already created an user and know the IP address to your bridge.
 ```Go
 package main
 
@@ -27,16 +27,16 @@ import (
 )
 
 func main() {
-  bridge, err := huego.New("192.168.1.59", "username")
+  bridge := huego.New("192.168.1.59", "username")
   l, err := bridge.GetLights()
   if err != nil {
-    fmt.Fatal(err)
+    panic(err)
   }
   fmt.Printf("Found %d lights", len(l))
 }
 ```
 
-To discover new bridges and add an user, use `huego.Discover()` and `huego.Login()`
+Discover a bridge on your network with [`Discover()`](https://godoc.org/github.com/amimof/huego#Discover) and create a new user with [`CreateUser()`](https://godoc.org/github.com/amimof/huego#Bridge.CreateUser).
 ```Go
 func main() {
   bridge, _ := huego.Discover()
@@ -49,34 +49,7 @@ func main() {
 
 ## Documentation
 
-See [godoc.org/github.com/amimof/huego](https://godoc.org/github.com/amimof/huego).
+See [godoc.org/github.com/amimof/huego](https://godoc.org/github.com/amimof/huego)
 
-## Project Status
-
-This project is currently in **ALPHA** and still under heavy development. Current iteration is subject to big changes until the initial release. Below is the current status of *modules* that are expected to be implemented.
-
-| Module | Functions | Tests |
-| ------ | ------ | ------ |
-| Lights | `Complete` | `Complete` |
-| Groups | `Complete` | `Complete` |
-| Sensors | `Complete` | `Complete` |
-| Schedules | `Complete` | `Complete` |
-| Scenes | `Complete` | `Complete` |
-| Rules | `Complete` | `Complete` |
-| Resourcelinks | `Complete` | `Complete` |
-| Configuration | `Complete`  | `Complete` |
-| Capabilities | `Complete` | `Complete` |
-
-Other than above core modules, each module needs additional *helper* methods for conveniance and flavour. The goal is to keep it simple, and not to bloat the library with functionality that developers might want to write on their own. 
-
-## Goal
-
-The goal of this project is to provide an easy to use, stable and extensive library that is up to spec with the official [Philips Hue API](https://www.developers.meethue.com/philips-hue-api). It should be possible to interact with *all* API endpoints that is available on a Philips Hue bridge through the package(s) in this repository.
-
-## To-Do
-
-* Add helper methods on each module
-* ~~Add `SetSceneLightState`~~
-* ~~Add `RecallScene`~~
-* ~~Finish `Capabilities`~~
-* More tests
+## Testing
+The tests requires an accessible Philips Hue Bridge IP address and a pre-configured username for authenticating. Before running the tests, make sure to set the environment variables `HUE_HOSTNAME` and `HUE_USERNAME`. If you don't have an username, you may create one using [`CreateUser()`](https://godoc.org/github.com/amimof/huego#Bridge.CreateUser) or refer to the official [Getting Started Guide](https://www.developers.meethue.com/documentation/getting-started).

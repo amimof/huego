@@ -6,7 +6,6 @@ import (
 	"testing"
 )
 
-// O60ECZZJhwrTI8AkY1xjOK5ifj20igjw6R5WsWih
 func TestGetConfig(t *testing.T) {
 	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	config, err := b.GetConfig()
@@ -67,7 +66,7 @@ func TestGetConfig(t *testing.T) {
 
 func TestCreateUser(t *testing.T) {
 	b := huego.New(os.Getenv("HUE_HOSTNAME"), "")
-	u, err := b.CreateUser("github.com/amimof/huego#tests")
+	u, err := b.CreateUser("github.com/amimof/huego#go test")
 	if err != nil {
 		t.Fatal(err)
 	} else {
@@ -92,11 +91,18 @@ func TestGetUsers(t *testing.T) {
 
 func TestDeleteUser(t *testing.T) {
 	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
-	uid := "9zLKE0LNZOJuLDGI6QYjQpWHmVTWO7BVwuirvIbh"
-	err := b.DeleteUser(uid)
+	users, err := b.GetUsers()
 	if err != nil {
 		t.Fatal(err)
-	} else {
-		t.Logf("Deleted user %s", uid)
 	}
+	for _, user := range users {
+		if user.Name == "huego#tests" {
+			err := b.DeleteUser(user.Username)
+			if err != nil {
+				t.Fatal(err)
+			}
+			t.Logf("Deleted user '%s' (%s)", user.Name, user.Username)
+		}
+	}
+	
 }
