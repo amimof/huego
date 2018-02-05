@@ -1562,10 +1562,10 @@ func (b *Bridge) DeleteSensor(i int) error {
 }
 
 // UpdateSensorConfig updates the configuration of one sensor. The allowed configuration parameters depend on the sensor type
-func (b *Bridge) UpdateSensorConfig(i int, config *SensorConfig) (*Response, error) {
+func (b *Bridge) UpdateSensorConfig(i int, c interface{}) (*Response, error) {
 	var a []*APIResponse
 
-	data, err := json.Marshal(&config)
+	data, err := json.Marshal(&c)
 	if err != nil {
 		return nil, err
 	}
