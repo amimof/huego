@@ -7,9 +7,7 @@ An extensive Philips Hue client library for [`Go`](https://golang.org/) with an 
 
 ![](./logo.png)
 
-_This project is currently in **BETA** and not recommended for production use. All help in any form is highly appreciated. You are more than welcome to contact me if you have feedback, feature requests, report bugs etc._
-
-Ses [godoc.org/github.com/amimof/huego](https://godoc.org/github.com/amimof/huego) for the full package documentation.
+Huego supports *all* API resources available on a Philips Hue Bridge
 
 ## Installation
 Get the package
@@ -49,7 +47,12 @@ func main() {
 
 ## Documentation
 
-See [godoc.org/github.com/amimof/huego](https://godoc.org/github.com/amimof/huego)
+See [godoc.org/github.com/amimof/huego](https://godoc.org/github.com/amimof/huego) for the full package documentation.
 
 ## Testing
+
 The tests requires an accessible Philips Hue Bridge IP address and a pre-configured username for authenticating. Before running the tests, make sure to set the environment variables `HUE_HOSTNAME` and `HUE_USERNAME`. If you don't have an username, you may create one using [`CreateUser()`](https://godoc.org/github.com/amimof/huego#Bridge.CreateUser) or refer to the official [Getting Started Guide](https://www.developers.meethue.com/documentation/getting-started).
+
+## Contributing
+
+All help in any form is highly appreciated and your are welcome participate in developing `Huego` together. To contribute, clone the `master` branch and create a `Pull Request`. If you want provide feedback, open up a `New Issue` or contact me personally. 
