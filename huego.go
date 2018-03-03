@@ -61,6 +61,24 @@ func handleResponse(a []*APIResponse) (*Response, error) {
 	return resp, nil
 }
 
+// unmarshal will try to unmarshal data into APIResponse so that we can
+// return the actual error returned by the bridge http API as an error struct.
+func unmarshal(data []byte, v interface{}) error {
+	err := json.Unmarshal(data, &v) 
+	if err != nil {
+		var a []*APIResponse
+		err = json.Unmarshal(data, &a)
+		if err != nil {
+			return err
+		}
+		_, err = handleResponse(a)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 func get(url string) ([]byte, error) {
 
 	req, err := http.NewRequest("GET", url, nil)
@@ -77,6 +95,7 @@ func get(url string) ([]byte, error) {
 	defer res.Body.Close()
 
 	body, err := ioutil.ReadAll(res.Body)
+	
 	if err != nil {
 		return nil, err
 	}

@@ -138,17 +138,6 @@ func TestSetGroupState(t *testing.T) {
 	}
 }
 
-func TestDeleteGroup(t *testing.T) {
-	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
-	id := 3
-	err := b.DeleteGroup(id)
-	if err != nil {
-		t.Fatal(err)
-	} else {
-		t.Logf("Deleted group with id: %d", id)
-	}
-}
-
 func TestRenameGroup(t *testing.T) {
 	bridge := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
 	id := 3
@@ -344,4 +333,15 @@ func TestSetStateGroup(t *testing.T) {
 		t.Fatal(err)
 	}
 	t.Logf("State set successfully on group %d", id)
+}
+
+func TestDeleteGroup(t *testing.T) {
+	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	id := 3
+	err := b.DeleteGroup(id)
+	if err != nil {
+		t.Fatal(err)
+	} else {
+		t.Logf("Deleted group with id: %d", id)
+	}
 }

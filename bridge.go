@@ -57,7 +57,7 @@ func (b *Bridge) GetConfig() (*Config, error) {
 		return nil, err
 	}
 
-	err = json.Unmarshal(res, &config)
+	err = unmarshal(res, &config)
 	if err != nil {
 		return nil, err
 	}
@@ -99,7 +99,7 @@ func (b *Bridge) CreateUser(n string) (string, error) {
 		return "", err
 	}
 
-	err = json.Unmarshal(res, &a)
+	err = unmarshal(res, &a)
 	if err != nil {
 		return "", err
 	}
@@ -142,7 +142,7 @@ func (b *Bridge) UpdateConfig(c *Config) (*Response, error) {
 		return nil, err
 	}
 
-	err = json.Unmarshal(res, &a)
+	err = unmarshal(res, &a)
 	if err != nil {
 		return nil, err
 	}
@@ -170,7 +170,7 @@ func (b *Bridge) DeleteUser(n string) error {
 		return err
 	}
 
-	_ = json.Unmarshal(res, &a)
+	_ = unmarshal(res, &a)
 
 	_, err = handleResponse(a)
 	if err != nil {
@@ -196,7 +196,7 @@ func (b *Bridge) GetFullState() (*Datastore, error) {
 		return nil, err
 	}
 
-	err = json.Unmarshal(res, &ds)
+	err = unmarshal(res, &ds)
 	if err != nil {
 		return nil, err
 	}
@@ -225,7 +225,8 @@ func (b *Bridge) GetGroups() ([]Group, error) {
 		return nil, err
 	}
 
-	err = json.Unmarshal(res, &m)
+	//err = unmarshal(res, &m)
+	err = unmarshal(res, &m)
 	if err != nil {
 		return nil, err
 	}
@@ -262,7 +263,7 @@ func (b *Bridge) GetGroup(i int) (*Group, error) {
 		return nil, err
 	}
 
-	err = json.Unmarshal(res, &g)
+	err = unmarshal(res, &g)
 	if err != nil {
 		return nil, err
 	}
@@ -293,7 +294,7 @@ func (b *Bridge) SetGroupState(i int, l State) (*Response, error) {
 		return nil, err
 	}
 
-	err = json.Unmarshal(res, &a)
+	err = unmarshal(res, &a)
 	if err != nil {
 		return nil, err
 	}
@@ -316,18 +317,18 @@ func (b *Bridge) UpdateGroup(i int, l Group) (*Response, error) {
 	if err != nil {
 		return nil, err
 	}
-
+	
 	data, err := json.Marshal(&l)
 	if err != nil {
 		return nil, err
 	}
-
+	
 	res, err := put(url, data)
 	if err != nil {
 		return nil, err
 	}
 
-	err = json.Unmarshal(res, &a)
+	err = unmarshal(res, &a)
 	if err != nil {
 		return nil, err
 	}
@@ -360,7 +361,7 @@ func (b *Bridge) CreateGroup(g Group) (*Response, error) {
 		return nil, err
 	}
 
-	err = json.Unmarshal(res, &a)
+	err = unmarshal(res, &a)
 	if err != nil {
 		return nil, err
 	}
@@ -369,7 +370,7 @@ func (b *Bridge) CreateGroup(g Group) (*Response, error) {
 	if err != nil {
 		return nil, err
 	}
-
+	
 	return resp, nil
 }
 
@@ -389,7 +390,7 @@ func (b *Bridge) DeleteGroup(i int) error {
 		return err
 	}
 
-	_ = json.Unmarshal(res, &a)
+	_ = unmarshal(res, &a)
 
 	_, err = handleResponse(a)
 	if err != nil {
@@ -420,7 +421,7 @@ func (b *Bridge) GetLights() ([]Light, error) {
 		return nil, err
 	}
 
-	err = json.Unmarshal(res, &m)
+	err = unmarshal(res, &m)
 	if err != nil {
 		return nil, err
 	}
@@ -457,7 +458,7 @@ func (b *Bridge) GetLight(i int) (*Light, error) {
 		return light, err
 	}
 
-	err = json.Unmarshal(res, &light)
+	err = unmarshal(res, &light)
 	if err != nil {
 		return light, err
 	}
@@ -489,7 +490,7 @@ func (b *Bridge) SetLightState(i int, l State) (*Response, error) {
 		return nil, err
 	}
 
-	err = json.Unmarshal(res, &a)
+	err = unmarshal(res, &a)
 	if err != nil {
 		return nil, err
 	}
@@ -519,7 +520,7 @@ func (b *Bridge) FindLights() (*Response, error) {
 		return nil, err
 	}
 
-	err = json.Unmarshal(res, &a)
+	err = unmarshal(res, &a)
 	if err != nil {
 		return nil, err
 	}
@@ -548,7 +549,7 @@ func (b *Bridge) GetNewLights() (*NewLight, error) {
 		return nil, err
 	}
 
-	_ = json.Unmarshal(res, &n)
+	_ = unmarshal(res, &n)
 
 	lights := make([]string, 0, len(n))
 	var lastscan string
@@ -586,7 +587,7 @@ func (b *Bridge) DeleteLight(i int) error {
 		return err
 	}
 
-	_ = json.Unmarshal(res, &a)
+	_ = unmarshal(res, &a)
 
 	_, err = handleResponse(a)
 	if err != nil {
@@ -618,7 +619,7 @@ func (b *Bridge) UpdateLight(i int, light Light) (*Response, error) {
 		return nil, err
 	}
 
-	err = json.Unmarshal(res, &a)
+	err = unmarshal(res, &a)
 	if err != nil {
 		return nil, err
 	}
@@ -652,7 +653,7 @@ func (b *Bridge) GetResourcelinks() ([]*Resourcelink, error) {
 		return nil, err
 	}
 
-	err = json.Unmarshal(res, &r)
+	err = unmarshal(res, &r)
 	if err != nil {
 		return nil, err
 	}
@@ -685,7 +686,7 @@ func (b *Bridge) GetResourcelink(i int) (*Resourcelink, error) {
 		return nil, err
 	}
 
-	err = json.Unmarshal(res, &g)
+	err = unmarshal(res, &g)
 	if err != nil {
 		return nil, err
 	}
@@ -714,7 +715,7 @@ func (b *Bridge) CreateResourcelink(s *Resourcelink) (*Response, error) {
 		return nil, err
 	}
 
-	err = json.Unmarshal(res, &a)
+	err = unmarshal(res, &a)
 	if err != nil {
 		return nil, err
 	}
@@ -747,7 +748,7 @@ func (b *Bridge) UpdateResourcelink(i int, resourcelink *Resourcelink) (*Respons
 		return nil, err
 	}
 
-	err = json.Unmarshal(res, &a)
+	err = unmarshal(res, &a)
 	if err != nil {
 		return nil, err
 	}
@@ -776,7 +777,7 @@ func (b *Bridge) DeleteResourcelink(i int) error {
 		return err
 	}
 
-	_ = json.Unmarshal(res, &a)
+	_ = unmarshal(res, &a)
 
 	_, err = handleResponse(a)
 	if err != nil {
@@ -807,7 +808,7 @@ func (b *Bridge) GetRules() ([]*Rule, error) {
 		return nil, err
 	}
 
-	err = json.Unmarshal(res, &r)
+	err = unmarshal(res, &r)
 	if err != nil {
 		return nil, err
 	}
@@ -843,7 +844,7 @@ func (b *Bridge) GetRule(i int) (*Rule, error) {
 		return nil, err
 	}
 
-	err = json.Unmarshal(res, &g)
+	err = unmarshal(res, &g)
 	if err != nil {
 		return nil, err
 	}
@@ -872,7 +873,7 @@ func (b *Bridge) CreateRule(s *Rule) (*Response, error) {
 		return nil, err
 	}
 
-	err = json.Unmarshal(res, &a)
+	err = unmarshal(res, &a)
 	if err != nil {
 		return nil, err
 	}
@@ -906,7 +907,7 @@ func (b *Bridge) UpdateRule(i int, rule *Rule) (*Response, error) {
 		return nil, err
 	}
 
-	err = json.Unmarshal(res, &a)
+	err = unmarshal(res, &a)
 	if err != nil {
 		return nil, err
 	}
@@ -935,7 +936,7 @@ func (b *Bridge) DeleteRule(i int) error {
 		return err
 	}
 
-	_ = json.Unmarshal(res, &a)
+	_ = unmarshal(res, &a)
 
 	_, err = handleResponse(a)
 	if err != nil {
@@ -966,7 +967,7 @@ func (b *Bridge) GetScenes() ([]Scene, error) {
 		return nil, err
 	}
 
-	err = json.Unmarshal(res, &m)
+	err = unmarshal(res, &m)
 	scenes := make([]Scene, 0, len(m))
 
 	for i, g := range m {
@@ -997,12 +998,12 @@ func (b *Bridge) GetScene(i string) (*Scene, error) {
 		return nil, err
 	}
 
-	err = json.Unmarshal(res, &l)
+	err = unmarshal(res, &l)
 	if err != nil {
 		return nil, err
 	}
 
-	err = json.Unmarshal(res, &g)
+	err = unmarshal(res, &g)
 	if err != nil {
 		return nil, err
 	}
@@ -1032,7 +1033,7 @@ func (b *Bridge) UpdateScene(id string, s *Scene) (*Response, error) {
 		return nil, err
 	}
 
-	err = json.Unmarshal(res, &a)
+	err = unmarshal(res, &a)
 	if err != nil {
 		return nil, err
 	}
@@ -1067,7 +1068,7 @@ func (b *Bridge) SetSceneLightState(id string, iid int, l *State) (*Response, er
 		return nil, err
 	}
 
-	err = json.Unmarshal(res, &a)
+	err = unmarshal(res, &a)
 	if err != nil {
 		return nil, err
 	}
@@ -1103,7 +1104,7 @@ func (b *Bridge) RecallScene(id string, gid int) (*Response, error) {
 		return nil, err
 	}
 
-	err = json.Unmarshal(res, &a)
+	err = unmarshal(res, &a)
 	if err != nil {
 		return nil, err
 	}
@@ -1136,7 +1137,7 @@ func (b *Bridge) CreateScene(s *Scene) (*Response, error) {
 		return nil, err
 	}
 
-	err = json.Unmarshal(res, &a)
+	err = unmarshal(res, &a)
 	if err != nil {
 		return nil, err
 	}
@@ -1164,7 +1165,7 @@ func (b *Bridge) DeleteScene(id string) error {
 		return err
 	}
 
-	_ = json.Unmarshal(res, &a)
+	_ = unmarshal(res, &a)
 
 	_, err = handleResponse(a)
 	if err != nil {
@@ -1195,7 +1196,7 @@ func (b *Bridge) GetSchedules() ([]*Schedule, error) {
 		return nil, err
 	}
 
-	err = json.Unmarshal(res, &r)
+	err = unmarshal(res, &r)
 	if err != nil {
 		return nil, err
 	}
@@ -1231,7 +1232,7 @@ func (b *Bridge) GetSchedule(i int) (*Schedule, error) {
 		return nil, err
 	}
 
-	err = json.Unmarshal(res, &g)
+	err = unmarshal(res, &g)
 	if err != nil {
 		return nil, err
 	}
@@ -1260,7 +1261,7 @@ func (b *Bridge) CreateSchedule(s *Schedule) (*Response, error) {
 		return nil, err
 	}
 
-	err = json.Unmarshal(res, &a)
+	err = unmarshal(res, &a)
 	if err != nil {
 		return nil, err
 	}
@@ -1294,7 +1295,7 @@ func (b *Bridge) UpdateSchedule(i int, schedule *Schedule) (*Response, error) {
 		return nil, err
 	}
 
-	err = json.Unmarshal(res, &a)
+	err = unmarshal(res, &a)
 	if err != nil {
 		return nil, err
 	}
@@ -1323,7 +1324,7 @@ func (b *Bridge) DeleteSchedule(i int) error {
 		return err
 	}
 
-	_ = json.Unmarshal(res, &a)
+	_ = unmarshal(res, &a)
 
 	_, err = handleResponse(a)
 	if err != nil {
@@ -1354,7 +1355,7 @@ func (b *Bridge) GetSensors() ([]Sensor, error) {
 		return nil, err
 	}
 
-	err = json.Unmarshal(res, &s)
+	err = unmarshal(res, &s)
 	if err != nil {
 		return nil, err
 	}
@@ -1389,7 +1390,7 @@ func (b *Bridge) GetSensor(i int) (*Sensor, error) {
 		return r, err
 	}
 
-	err = json.Unmarshal(res, &r)
+	err = unmarshal(res, &r)
 	if err != nil {
 		return r, err
 	}
@@ -1418,7 +1419,7 @@ func (b *Bridge) CreateSensor(s *Sensor) (*Response, error) {
 		return nil, err
 	}
 
-	err = json.Unmarshal(res, &a)
+	err = unmarshal(res, &a)
 	if err != nil {
 		return nil, err
 	}
@@ -1448,7 +1449,7 @@ func (b *Bridge) FindSensors() (*Response, error) {
 		return nil, err
 	}
 
-	err = json.Unmarshal(res, &a)
+	err = unmarshal(res, &a)
 	if err != nil {
 		return nil, err
 	}
@@ -1478,7 +1479,7 @@ func (b *Bridge) GetNewSensors() (*NewSensor, error) {
 		return nil, err
 	}
 
-	err = json.Unmarshal(res, &n)
+	err = unmarshal(res, &n)
 	sensors := make([]*Sensor, 0, len(n))
 
 	for i, l := range n {
@@ -1491,7 +1492,7 @@ func (b *Bridge) GetNewSensors() (*NewSensor, error) {
 		}
 	}
 
-	err = json.Unmarshal(res, &result)
+	err = unmarshal(res, &result)
 	if err != nil {
 		return nil, err
 	}
@@ -1522,7 +1523,7 @@ func (b *Bridge) UpdateSensor(i int, sensor *Sensor) (*Response, error) {
 		return nil, err
 	}
 
-	err = json.Unmarshal(res, &a)
+	err = unmarshal(res, &a)
 	if err != nil {
 		return nil, err
 	}
@@ -1551,7 +1552,7 @@ func (b *Bridge) DeleteSensor(i int) error {
 		return err
 	}
 
-	_ = json.Unmarshal(res, &a)
+	_ = unmarshal(res, &a)
 
 	_, err = handleResponse(a)
 	if err != nil {
@@ -1580,7 +1581,7 @@ func (b *Bridge) UpdateSensorConfig(i int, c interface{}) (*Response, error) {
 		return nil, err
 	}
 
-	err = json.Unmarshal(res, &a)
+	err = unmarshal(res, &a)
 	if err != nil {
 		return nil, err
 	}
@@ -1614,7 +1615,7 @@ func (b *Bridge) GetCapabilities() (*Capabilities, error) {
 		return nil, err
 	}
 
-	err = json.Unmarshal(res, &s)
+	err = unmarshal(res, &s)
 	if err != nil {
 		return nil, err
 	}
