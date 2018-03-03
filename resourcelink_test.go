@@ -18,10 +18,10 @@ func TestGetResourcelinks(t *testing.T) {
 		t.Logf("  Name: %s", resourcelink.Name)
 		t.Logf("  Description: %s", resourcelink.Description)
 		t.Logf("  Type: %s", resourcelink.Type)
-		t.Logf("  ClassID: %s", resourcelink.ClassID)
+		t.Logf("  ClassID: %d", resourcelink.ClassID)
 		t.Logf("  Owner: %s", resourcelink.Owner)
 		t.Logf("  Links: %s", resourcelink.Links)
-		t.Logf("  ID: %s", resourcelink.ID)
+		t.Logf("  ID: %d", resourcelink.ID)
 	}
 }
 
@@ -39,10 +39,10 @@ func TestGetResourcelink(t *testing.T) {
 		t.Logf("Name: %s", l.Name)
 		t.Logf("Description: %s", l.Description)
 		t.Logf("Type: %s", l.Type)
-		t.Logf("ClassID: %s", l.ClassID)
+		t.Logf("ClassID: %d", l.ClassID)
 		t.Logf("Owner: %s", l.Owner)
 		t.Logf("Links: %s", l.Links)
-		t.Logf("ID: %s", l.ID)
+		t.Logf("ID: %d", l.ID)
 		break
 	}
 }
@@ -60,12 +60,12 @@ func TestCreateResourcelink(t *testing.T) {
 	resp, err := b.CreateResourcelink(resourcelink)
 	if err != nil {
 		t.Fatal(err)
-	} else {
-		t.Logf("Resourcelink created")
-		for k, v := range resp.Success {
-			t.Logf("%v: %s", k, v)
-		}
 	}
+	t.Logf("Resourcelink created")
+	for k, v := range resp.Success {
+		t.Logf("%v: %s", k, v)
+	}
+
 }
 
 func TestUpdateResourcelink(t *testing.T) {
@@ -77,12 +77,12 @@ func TestUpdateResourcelink(t *testing.T) {
 	})
 	if err != nil {
 		t.Fatal(err)
-	} else {
-		t.Logf("Resourcelink %d updated", id)
-		for k, v := range resp.Success {
-			t.Logf("%v: %s", k, v)
-		}
 	}
+	t.Logf("Resourcelink %d updated", id)
+	for k, v := range resp.Success {
+		t.Logf("%v: %s", k, v)
+	}
+
 }
 
 func TestDeleteResourcelink(t *testing.T) {
@@ -91,7 +91,6 @@ func TestDeleteResourcelink(t *testing.T) {
 	err := b.DeleteResourcelink(1)
 	if err != nil {
 		t.Fatal(err)
-	} else {
-		t.Logf("Resourcelink %d deleted", id)
 	}
+	t.Logf("Resourcelink %d deleted", id)
 }

@@ -104,5 +104,5 @@ func TestDeleteUser(t *testing.T) {
 			t.Logf("Deleted user '%s' (%s)", user.Name, user.Username)
 		}
 	}
-	
+
 }
