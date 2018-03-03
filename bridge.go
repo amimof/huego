@@ -317,12 +317,12 @@ func (b *Bridge) UpdateGroup(i int, l Group) (*Response, error) {
 	if err != nil {
 		return nil, err
 	}
-	
+
 	data, err := json.Marshal(&l)
 	if err != nil {
 		return nil, err
 	}
-	
+
 	res, err := put(url, data)
 	if err != nil {
 		return nil, err
@@ -370,7 +370,7 @@ func (b *Bridge) CreateGroup(g Group) (*Response, error) {
 	if err != nil {
 		return nil, err
 	}
-	
+
 	return resp, nil
 }
 

@@ -1,9 +1,9 @@
 package huego_test
 
 import (
+	"github.com/amimof/huego"
 	"os"
 	"testing"
-	"github.com/amimof/huego"
 )
 
 func TestLogin(t *testing.T) {
@@ -24,11 +24,10 @@ func TestLoginUnauthorized(t *testing.T) {
 		t.Fatal(err)
 		/*
 			We should do something here to check if the user is allowed
-			the requested resource (in this case Config). A simple err 
+			the requested resource (in this case Config). A simple err
 			shouldn't fail the test.
 		*/
 	}
 	t.Logf("Bridge: %s, Username: %s", b.Host, b.User)
 	t.Log("User logged in and authenticated which isn't what we want")
 }
-
