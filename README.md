@@ -3,11 +3,10 @@
 
 # Huego
 
-An extensive Philips Hue client library for [`Go`](https://golang.org/) with an emphasis on simplicity.
+An extensive Philips Hue client library for [`Go`](https://golang.org/) with an emphasis on simplicity. It is designed to be clean, unbloated and extensible. With `Huego` you can interact with any Philips Hue bridge and its resources including `Lights`, `Groups`, `Scenes`, `Sensors`, `Rules`, `Schedules`, `Resourcelinks`, `Capabilities` and `Configuration` .
 
-![](./logo.png)
+![](./logo/logo.png)
 
-Huego supports *all* API resources available on a Philips Hue Bridge
 
 ## Installation
 Get the package
