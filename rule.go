@@ -17,7 +17,7 @@ type Rule struct {
 type Condition struct {
 	Address  string `json:"address,omitempty"`
 	Operator string `json:"operator,omitempty"`
-	Value    string `json:"string,omitempty"`
+	Value    string `json:"value,omitempty"`
 }
 
 // RuleAction defines the rule to execute when a rule triggers
