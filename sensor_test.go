@@ -2,12 +2,11 @@ package huego_test
 
 import (
 	"github.com/amimof/huego"
-	"os"
 	"testing"
 )
 
 func TestGetSensors(t *testing.T) {
-	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	b := huego.New(hostname, username)
 	sensors, err := b.GetSensors()
 	if err != nil {
 		t.Fatal(err)
@@ -28,7 +27,7 @@ func TestGetSensors(t *testing.T) {
 }
 
 func TestGetSensor(t *testing.T) {
-	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	b := huego.New(hostname, username)
 	sensors, err := b.GetSensors()
 	if err != nil {
 		t.Fatal(err)
@@ -55,7 +54,7 @@ func TestGetSensor(t *testing.T) {
 }
 
 func TestCreateSensor(t *testing.T) {
-	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	b := huego.New(hostname, username)
 	resp, err := b.CreateSensor(&huego.Sensor{
 		Name: "New Sensor",
 	})
@@ -70,7 +69,7 @@ func TestCreateSensor(t *testing.T) {
 }
 
 func TestFindSensors(t *testing.T) {
-	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	b := huego.New(hostname, username)
 	resp, err := b.FindSensors()
 	if err != nil {
 		t.Fatal(err)
@@ -82,7 +81,7 @@ func TestFindSensors(t *testing.T) {
 }
 
 func TestGetNewSensors(t *testing.T) {
-	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	b := huego.New(hostname, username)
 	newSensors, err := b.GetNewSensors()
 	if err != nil {
 		t.Fatal(err)
@@ -103,7 +102,7 @@ func TestGetNewSensors(t *testing.T) {
 }
 
 func TestUpdateSensor(t *testing.T) {
-	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	b := huego.New(hostname, username)
 	id := 3
 	resp, err := b.UpdateSensor(id, &huego.Sensor{
 		Name: "New Sensor",
@@ -118,7 +117,7 @@ func TestUpdateSensor(t *testing.T) {
 }
 
 func TestDeleteSensor(t *testing.T) {
-	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	b := huego.New(hostname, username)
 	id := 3
 	err := b.DeleteSensor(id)
 	if err != nil {

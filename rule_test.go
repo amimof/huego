@@ -2,12 +2,11 @@ package huego_test
 
 import (
 	"github.com/amimof/huego"
-	"os"
 	"testing"
 )
 
 func TestGetRules(t *testing.T) {
-	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	b := huego.New(hostname, username)
 	rules, err := b.GetRules()
 	if err != nil {
 		t.Fatal(err)
@@ -19,7 +18,7 @@ func TestGetRules(t *testing.T) {
 }
 
 func TestGetRule(t *testing.T) {
-	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	b := huego.New(hostname, username)
 	rules, err := b.GetRules()
 	if err != nil {
 		t.Fatal(err)
@@ -36,7 +35,7 @@ func TestGetRule(t *testing.T) {
 }
 
 func TestCreateRule(t *testing.T) {
-	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	b := huego.New(hostname, username)
 	conditions := []*huego.Condition{
 		{
 			Address:  "/sensors/2/state/buttonevent",
@@ -68,7 +67,7 @@ func TestCreateRule(t *testing.T) {
 }
 
 func TestUpdateRule(t *testing.T) {
-	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	b := huego.New(hostname, username)
 	id := 3
 	resp, err := b.UpdateRule(id, &huego.Rule{
 		Actions: []*huego.RuleAction{
@@ -90,7 +89,7 @@ func TestUpdateRule(t *testing.T) {
 }
 
 func TestDeleteRule(t *testing.T) {
-	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	b := huego.New(hostname, username)
 	id := 3
 	err := b.DeleteRule(id)
 	if err != nil {

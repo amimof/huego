@@ -2,12 +2,11 @@ package huego_test
 
 import (
 	"github.com/amimof/huego"
-	"os"
 	"testing"
 )
 
 func TestGetConfig(t *testing.T) {
-	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	b := huego.New(hostname, username)
 	config, err := b.GetConfig()
 	if err != nil {
 		t.Fatal(err)
@@ -65,7 +64,7 @@ func TestGetConfig(t *testing.T) {
 }
 
 func TestCreateUser(t *testing.T) {
-	b := huego.New(os.Getenv("HUE_HOSTNAME"), "")
+	b := huego.New(hostname, "")
 	u, err := b.CreateUser("github.com/amimof/huego#go test")
 	if err != nil {
 		t.Fatal(err)
@@ -75,7 +74,7 @@ func TestCreateUser(t *testing.T) {
 }
 
 func TestGetUsers(t *testing.T) {
-	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	b := huego.New(hostname, username)
 	users, err := b.GetUsers()
 	if err != nil {
 		t.Fatal(err)
@@ -90,13 +89,13 @@ func TestGetUsers(t *testing.T) {
 }
 
 func TestDeleteUser(t *testing.T) {
-	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	b := huego.New(hostname, username)
 	users, err := b.GetUsers()
 	if err != nil {
 		t.Fatal(err)
 	}
 	for _, user := range users {
-		if user.Name == "huego#tests" {
+		if user.Name == "github.com/amimof/huego#go test" {
 			err := b.DeleteUser(user.Username)
 			if err != nil {
 				t.Fatal(err)

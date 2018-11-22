@@ -2,12 +2,11 @@ package huego_test
 
 import (
 	"github.com/amimof/huego"
-	"os"
 	"testing"
 )
 
 func TestGetLights(t *testing.T) {
-	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	b := huego.New(hostname, username)
 	lights, err := b.GetLights()
 	if err != nil {
 		t.Fatal(err)
@@ -27,7 +26,7 @@ func TestGetLights(t *testing.T) {
 }
 
 func TestGetLight(t *testing.T) {
-	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	b := huego.New(hostname, username)
 	lights, err := b.GetLights()
 	if err != nil {
 		t.Fatal(err)
@@ -69,7 +68,7 @@ func TestGetLight(t *testing.T) {
 }
 
 func TestSetLight(t *testing.T) {
-	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	b := huego.New(hostname, username)
 	id := 3
 	resp, err := b.SetLightState(id, huego.State{
 		On:  true,
@@ -86,7 +85,7 @@ func TestSetLight(t *testing.T) {
 }
 
 func TestFindLights(t *testing.T) {
-	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	b := huego.New(hostname, username)
 	resp, err := b.FindLights()
 	if err != nil {
 		t.Fatal(err)
@@ -99,7 +98,7 @@ func TestFindLights(t *testing.T) {
 }
 
 func TestGetNewLights(t *testing.T) {
-	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	b := huego.New(hostname, username)
 	newlights, err := b.GetNewLights()
 	if err != nil {
 		t.Fatal(err)
@@ -113,7 +112,7 @@ func TestGetNewLights(t *testing.T) {
 }
 
 func TestUpdateLight(t *testing.T) {
-	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	b := huego.New(hostname, username)
 	id := 2
 	resp, err := b.UpdateLight(id, huego.Light{
 		Name: "New Light",
@@ -129,7 +128,7 @@ func TestUpdateLight(t *testing.T) {
 }
 
 func TestDeleteLight(t *testing.T) {
-	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	b := huego.New(hostname, username)
 	id := 3
 	err := b.DeleteLight(id)
 	if err != nil {
@@ -140,7 +139,7 @@ func TestDeleteLight(t *testing.T) {
 }
 
 func TestTurnOffLight(t *testing.T) {
-	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	b := huego.New(hostname, username)
 	id := 4
 	light, err := b.GetLight(id)
 	if err != nil {
@@ -153,16 +152,8 @@ func TestTurnOffLight(t *testing.T) {
 	t.Logf("Turned off light with id %d", light.ID)
 }
 
-func TestTurnOffLightLazy(t *testing.T) {
-	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
-	id := 4
-	light, _ := b.GetLight(id)
-	light.Off()
-	t.Logf("Turned off light with id %d", light.ID)
-}
-
 func TestTurnOnLight(t *testing.T) {
-	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	b := huego.New(hostname, username)
 	id := 4
 	light, err := b.GetLight(id)
 	if err != nil {
@@ -175,16 +166,8 @@ func TestTurnOnLight(t *testing.T) {
 	t.Logf("Turned on light with id %d", light.ID)
 }
 
-func TestTurnOnLightLazy(t *testing.T) {
-	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
-	id := 4
-	light, _ := b.GetLight(id)
-	light.On()
-	t.Logf("Turned on light with id %d", light.ID)
-}
-
 func TestIfLightIsOn(t *testing.T) {
-	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	b := huego.New(hostname, username)
 	id := 4
 	light, err := b.GetLight(id)
 	if err != nil {
@@ -194,7 +177,7 @@ func TestIfLightIsOn(t *testing.T) {
 }
 
 func TestRenameLight(t *testing.T) {
-	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	b := huego.New(hostname, username)
 	id := 4
 	light, err := b.GetLight(id)
 	if err != nil {
@@ -208,7 +191,7 @@ func TestRenameLight(t *testing.T) {
 }
 
 func TestSetLightBri(t *testing.T) {
-	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	b := huego.New(hostname, username)
 	id := 4
 	light, err := b.GetLight(id)
 	if err != nil {
@@ -222,7 +205,7 @@ func TestSetLightBri(t *testing.T) {
 }
 
 func TestSetLightHue(t *testing.T) {
-	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	b := huego.New(hostname, username)
 	id := 4
 	light, err := b.GetLight(id)
 	if err != nil {
@@ -236,7 +219,7 @@ func TestSetLightHue(t *testing.T) {
 }
 
 func TestSetLightSat(t *testing.T) {
-	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	b := huego.New(hostname, username)
 	id := 4
 	light, err := b.GetLight(id)
 	if err != nil {
@@ -250,7 +233,7 @@ func TestSetLightSat(t *testing.T) {
 }
 
 func TestSetLightXy(t *testing.T) {
-	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	b := huego.New(hostname, username)
 	id := 4
 	light, err := b.GetLight(id)
 	if err != nil {
@@ -264,7 +247,7 @@ func TestSetLightXy(t *testing.T) {
 }
 
 func TestSetLightCt(t *testing.T) {
-	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	b := huego.New(hostname, username)
 	id := 4
 	light, err := b.GetLight(id)
 	if err != nil {
@@ -278,7 +261,7 @@ func TestSetLightCt(t *testing.T) {
 }
 
 func TestSetLightTransitionTime(t *testing.T) {
-	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	b := huego.New(hostname, username)
 	id := 4
 	light, err := b.GetLight(id)
 	if err != nil {
@@ -292,7 +275,7 @@ func TestSetLightTransitionTime(t *testing.T) {
 }
 
 func TestSetLightEffect(t *testing.T) {
-	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	b := huego.New(hostname, username)
 	id := 4
 	light, err := b.GetLight(id)
 	if err != nil {
@@ -306,7 +289,7 @@ func TestSetLightEffect(t *testing.T) {
 }
 
 func TestSetLightAlert(t *testing.T) {
-	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	b := huego.New(hostname, username)
 	id := 4
 	light, err := b.GetLight(id)
 	if err != nil {
@@ -320,7 +303,7 @@ func TestSetLightAlert(t *testing.T) {
 }
 
 func TestSetStateLight(t *testing.T) {
-	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	b := huego.New(hostname, username)
 	id := 4
 	light, err := b.GetLight(id)
 	if err != nil {
