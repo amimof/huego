@@ -2,12 +2,11 @@ package huego_test
 
 import (
 	"github.com/amimof/huego"
-	"os"
 	"testing"
 )
 
 func TestGetResourcelinks(t *testing.T) {
-	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	b := huego.New(hostname, username)
 	resourcelinks, err := b.GetResourcelinks()
 	if err != nil {
 		t.Fatal(err)
@@ -26,7 +25,7 @@ func TestGetResourcelinks(t *testing.T) {
 }
 
 func TestGetResourcelink(t *testing.T) {
-	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	b := huego.New(hostname, username)
 	resourcelinks, err := b.GetResourcelinks()
 	if err != nil {
 		t.Fatal(err)
@@ -48,7 +47,7 @@ func TestGetResourcelink(t *testing.T) {
 }
 
 func TestCreateResourcelink(t *testing.T) {
-	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	b := huego.New(hostname, username)
 	resourcelink := &huego.Resourcelink{
 		Name:        "Huego Test Resourcelink",
 		Description: "Amir's wakeup experience",
@@ -69,7 +68,7 @@ func TestCreateResourcelink(t *testing.T) {
 }
 
 func TestUpdateResourcelink(t *testing.T) {
-	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	b := huego.New(hostname, username)
 	id := 3
 	resp, err := b.UpdateResourcelink(id, &huego.Resourcelink{
 		Name:        "New Resourcelink",
@@ -86,7 +85,7 @@ func TestUpdateResourcelink(t *testing.T) {
 }
 
 func TestDeleteResourcelink(t *testing.T) {
-	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	b := huego.New(hostname, username)
 	id := 3
 	err := b.DeleteResourcelink(1)
 	if err != nil {

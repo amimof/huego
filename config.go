@@ -3,11 +3,11 @@ package huego
 // Config holds the bridge hardware configuration
 type Config struct {
 	Name             string               `json:"name,omitempty"`
-	SwUpdate         *SwUpdate            `json:"swupdate"`
-	SwUpdate2        *SwUpdate2           `json:"swupdate2"`
+	SwUpdate         SwUpdate             `json:"swupdate"`
+	SwUpdate2        SwUpdate2            `json:"swupdate2"`
 	WhitelistMap     map[string]Whitelist `json:"whitelist"`
 	Whitelist        []Whitelist          `json:"-"`
-	PortalState      *PortalState         `json:"portalstate"`
+	PortalState      PortalState          `json:"portalstate"`
 	APIVersion       string               `json:"apiversion,omitempty"`
 	SwVersion        string               `json:"swversion,omitempty"`
 	ProxyAddress     string               `json:"proxyaddress,omitempty"`
@@ -29,28 +29,28 @@ type Config struct {
 	ReplacesBridgeID string               `json:"replacesbridgeid,omitempty"`
 	DatastoreVersion string               `json:"datastoreversion,omitempty"`
 	StarterKitID     string               `json:"starterkitid,omitempty"`
-	InternetService  *InternetService     `json:"internetservices,omitempty"`
+	InternetService  InternetService      `json:"internetservices,omitempty"`
 }
 
 // SwUpdate contains information related to software updates. Deprecated in 1.20
 type SwUpdate struct {
-	CheckForUpdate bool         `json:"checkforupdate,omitempty"`
-	DeviceTypes    *DeviceTypes `json:"devicetypes"`
-	UpdateState    uint8        `json:"updatestate,omitempty"`
-	Notify         bool         `json:"notify,omitempty"`
-	URL            string       `json:"url,omitempty"`
-	Text           string       `json:"text,omitempty"`
+	CheckForUpdate bool        `json:"checkforupdate,omitempty"`
+	DeviceTypes    DeviceTypes `json:"devicetypes"`
+	UpdateState    uint8       `json:"updatestate,omitempty"`
+	Notify         bool        `json:"notify,omitempty"`
+	URL            string      `json:"url,omitempty"`
+	Text           string      `json:"text,omitempty"`
 }
 
 // SwUpdate2 contains information related to software updates
 type SwUpdate2 struct {
-	Bridge         *BridgeConfig `json:"bridge"`
-	CheckForUpdate bool          `json:"checkforupdate,omitempty"`
-	State          string        `json:"state,omitempty"`
-	Install        bool          `json:"install,omitempty"`
-	AutoInstall    *AutoInstall  `json:"autoinstall"`
-	LastChange     string        `json:"lastchange,omitempty"`
-	LastInstall    string        `json:"lastinstall,omitempty"`
+	Bridge         BridgeConfig `json:"bridge"`
+	CheckForUpdate bool         `json:"checkforupdate,omitempty"`
+	State          string       `json:"state,omitempty"`
+	Install        bool         `json:"install,omitempty"`
+	AutoInstall    AutoInstall  `json:"autoinstall"`
+	LastChange     string       `json:"lastchange,omitempty"`
+	LastInstall    string       `json:"lastinstall,omitempty"`
 }
 
 // DeviceTypes details the type of updates available
@@ -106,7 +106,7 @@ type PortalState struct {
 type Datastore struct {
 	Lights    []Light    `json:"lights"`
 	Groups    []Group    `json:"groups"`
-	Config    *Config    `json:"config"`
+	Config    Config     `json:"config"`
 	Schedules []Schedule `json:"schedules"`
 	Scenes    []Scene    `json:"scenes"`
 	Sensors   []Sensor   `json:"sensors"`

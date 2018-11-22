@@ -1,17 +1,26 @@
 package huego_test
 
+import (
+	"github.com/amimof/huego"
+	"os"
+	"testing"
+)
+
 // I'm too lazy to have this elsewhere
 // export HUE_USERNAME=9D6iHMbM-Bt7Kd0Cwh9Quo4tE02FMnmrNrnFAdAq
 // export HUE_HOSTNAME=192.168.1.59
 
-import (
-	"github.com/amimof/huego"
-	"testing"
-)
+var username string
+var hostname string
+
+func init() {
+	hostname = os.Getenv("HUE_HOSTNAME")
+	username = os.Getenv("HUE_USERNAME")
+}
 
 func TestDiscoverAndLoginLazy(t *testing.T) {
 	b, _ := huego.Discover()
-	b = b.Login("n7yx6YCUvV6-CGJZ5-VuyZoc3qgi9S2WjtEeDFpO")
+	b = b.Login(username)
 	t.Logf("Successfully logged in to bridge")
 }
 
@@ -20,7 +29,7 @@ func TestDiscoverAndLogin(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	bridge = bridge.Login("n7yx6YCUvV6-CGJZ5-VuyZoc3qgi9S2WjtEeDFpO")
+	bridge = bridge.Login(username)
 	t.Logf("Successfully logged in to bridge")
 	config, err := bridge.GetConfig()
 	if err != nil {

@@ -2,12 +2,11 @@ package huego_test
 
 import (
 	"github.com/amimof/huego"
-	"os"
 	"testing"
 )
 
 func TestGetSchedules(t *testing.T) {
-	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	b := huego.New(hostname, username)
 	schedules, err := b.GetSchedules()
 	if err != nil {
 		t.Fatal(err)
@@ -31,7 +30,7 @@ func TestGetSchedules(t *testing.T) {
 }
 
 func TestGetSchedule(t *testing.T) {
-	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	b := huego.New(hostname, username)
 	schedules, err := b.GetSchedules()
 	if err != nil {
 		t.Fatal(err)
@@ -52,9 +51,9 @@ func TestGetSchedule(t *testing.T) {
 }
 
 func TestCreateSchedule(t *testing.T) {
-	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	b := huego.New(hostname, username)
 	command := &huego.Command{
-		Address: "/api/" + os.Getenv("HUE_USERNAME") + "/lights/0",
+		Address: "/api/" + username + "/lights/0",
 		Body: &struct {
 			on bool
 		}{
@@ -80,7 +79,7 @@ func TestCreateSchedule(t *testing.T) {
 }
 
 func TestUpdateSchedule(t *testing.T) {
-	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	b := huego.New(hostname, username)
 	id := 3
 	resp, err := b.UpdateSchedule(id, &huego.Schedule{
 		Name:        "New Scehdule",
@@ -97,7 +96,7 @@ func TestUpdateSchedule(t *testing.T) {
 }
 
 func TestDeleteSchedule(t *testing.T) {
-	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	b := huego.New(hostname, username)
 	id := 3
 	err := b.DeleteSchedule(id)
 	if err != nil {

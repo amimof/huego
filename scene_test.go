@@ -2,12 +2,11 @@ package huego_test
 
 import (
 	"github.com/amimof/huego"
-	"os"
 	"testing"
 )
 
 func TestGetScenes(t *testing.T) {
-	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	b := huego.New(hostname, username)
 	scenes, err := b.GetScenes()
 	if err != nil {
 		t.Fatal(err)
@@ -30,7 +29,7 @@ func TestGetScenes(t *testing.T) {
 }
 
 func TestGetScene(t *testing.T) {
-	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	b := huego.New(hostname, username)
 	scenes, err := b.GetScenes()
 	if err != nil {
 		t.Fatal(err)
@@ -61,7 +60,7 @@ func TestGetScene(t *testing.T) {
 }
 
 func TestCreateScene(t *testing.T) {
-	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	b := huego.New(hostname, username)
 	resp, err := b.CreateScene(&huego.Scene{
 		Name:    "New Scene",
 		Lights:  []string{"4", "5"},
@@ -77,7 +76,7 @@ func TestCreateScene(t *testing.T) {
 }
 
 func TestUpdateScene(t *testing.T) {
-	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	b := huego.New(hostname, username)
 	scenes, err := b.GetScenes()
 	if err != nil {
 		t.Fatal(err)
@@ -100,7 +99,7 @@ func TestUpdateScene(t *testing.T) {
 }
 
 func TestSetSceneLightState(t *testing.T) {
-	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	b := huego.New(hostname, username)
 	scenes, err := b.GetScenes()
 	if err != nil {
 		t.Fatal(err)
@@ -124,7 +123,7 @@ func TestSetSceneLightState(t *testing.T) {
 }
 
 func TestDeleteScene(t *testing.T) {
-	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	b := huego.New(hostname, username)
 	scenes, err := b.GetScenes()
 	if err != nil {
 		t.Fatal(err)
@@ -141,7 +140,7 @@ func TestDeleteScene(t *testing.T) {
 }
 
 func TestRecallScene(t *testing.T) {
-	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	b := huego.New(hostname, username)
 	scene := "HcK1mEcgS7gcVcT"
 	group := 1
 	resp, err := b.RecallScene("HcK1mEcgS7gcVcT", group)
@@ -155,7 +154,7 @@ func TestRecallScene(t *testing.T) {
 }
 
 func TestRecallScene2(t *testing.T) {
-	b := huego.New(os.Getenv("HUE_HOSTNAME"), os.Getenv("HUE_USERNAME"))
+	b := huego.New(hostname, username)
 	group := 1
 	scenes, err := b.GetScenes()
 	if err != nil {
