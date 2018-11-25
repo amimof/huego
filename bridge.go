@@ -52,6 +52,10 @@ func (b *Bridge) GetConfig() (*Config, error) {
 	var config *Config
 
 	url, err := b.getAPIPath("/config/")
+	if err != nil {
+		return nil, err
+	}
+
 	res, err := get(url)
 	if err != nil {
 		return nil, err
@@ -680,6 +684,9 @@ func (b *Bridge) GetResourcelink(i int) (*Resourcelink, error) {
 	}
 
 	url, err := b.getAPIPath("/resourcelinks/", strconv.Itoa(i))
+	if err != nil {
+		return nil, err
+	}
 
 	res, err := get(url)
 	if err != nil {
@@ -1480,6 +1487,10 @@ func (b *Bridge) GetNewSensors() (*NewSensor, error) {
 	}
 
 	err = unmarshal(res, &n)
+	if err != nil {
+		return nil, err
+	}
+
 	sensors := make([]*Sensor, 0, len(n))
 
 	for i, l := range n {

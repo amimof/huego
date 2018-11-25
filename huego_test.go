@@ -18,12 +18,6 @@ func init() {
 	username = os.Getenv("HUE_USERNAME")
 }
 
-func TestDiscoverAndLoginLazy(t *testing.T) {
-	b, _ := huego.Discover()
-	b = b.Login(username)
-	t.Logf("Successfully logged in to bridge")
-}
-
 func TestDiscoverAndLogin(t *testing.T) {
 	bridge, err := huego.Discover()
 	if err != nil {

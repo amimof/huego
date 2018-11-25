@@ -209,7 +209,7 @@ func DiscoverAll() ([]Bridge, error) {
 // Discover uses DiscoverAll() but only returns the first instance in the array of bridges if any.
 func Discover() (*Bridge, error) {
 
-	var b *Bridge
+	b := &Bridge{}
 
 	bridges, err := DiscoverAll()
 	if err != nil {

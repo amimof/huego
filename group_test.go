@@ -244,7 +244,7 @@ func TestSetGroupXy(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Logf("Xy of group %d set to %d", group.ID, group.State.Xy)
+	t.Logf("Xy of group %d set to %v", group.ID, group.State.Xy)
 }
 
 func TestSetGroupCt(t *testing.T) {

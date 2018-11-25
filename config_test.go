@@ -103,5 +103,12 @@ func TestDeleteUser(t *testing.T) {
 			t.Logf("Deleted user '%s' (%s)", user.Name, user.Username)
 		}
 	}
+}
 
+func TestGetFullState(t *testing.T) {
+	b := huego.New(hostname, username)
+	_, err := b.GetFullState()
+	if err != nil {
+		t.Fatal(err)
+	}
 }
