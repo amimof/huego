@@ -1,6 +1,6 @@
 [![huego](https://godoc.org/github.com/amimof/huego?status.svg)](https://godoc.org/github.com/amimof/huego) 
 [![Go Report Card](https://goreportcard.com/badge/github.com/amimof/huego)](https://goreportcard.com/report/github.com/amimof/huego)
-[![cover.run](https://cover.run/go/github.com/amimof/huego.svg?style=flat&tag=golang-1.11)](https://cover.run/go?tag=golang-1.10&repo=github.com%2Famimof%2Fhuego)
+[![Coverage](http://gocover.io/_badge/github.com/amimof/huego)](http://gocover.io/github.com/amimof/huego)
 
 # Huego
 
