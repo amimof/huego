@@ -272,7 +272,7 @@ func init() {
 		{
 			method: "GET",
 			path:   "/capabilities",
-			data:   `{ "lights":{ "available": 10 }, "sensors":{ "availble": 60, "clip": { "available": 60 }, "zll": { "available": 60 }, "zgp": { "available": 60 } }, "groups": {}, "scenes": { "available": 100, "lightstates": { "available": 1500 } }, "rules": {}, "schedules": {}, "resourcelinks": {}, "whitelists": {}, "timezones": { "values":[ "Africa/Abidjan", "Africa/Accra", "Pacific/Wallis", "US/Pacific-New" ] } }`,
+			data:   `{ "lights":{ "available": 10 }, "sensors":{ "available": 60, "clip": { "available": 60 }, "zll": { "available": 60 }, "zgp": { "available": 60 } }, "groups": {}, "scenes": { "available": 100, "lightstates": { "available": 1500 } }, "rules": {}, "schedules": {}, "resourcelinks": {}, "whitelists": {}, "timezones": { "values":[ "Africa/Abidjan", "Africa/Accra", "Pacific/Wallis", "US/Pacific-New" ] } }`,
 		},
 
 		// RESOURCELINK

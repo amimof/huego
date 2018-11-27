@@ -1,6 +1,17 @@
 # Changelog
 
+## 1.0.2
+* Improved test coverage
+* Use of `httpmock` in tests
+
+## 1.0.1
+* Added `go.mod` for Go 1.11 module compatibility
+
+## 1,0.0
+Exiting beta and entering stable release
+
 ## 1.0.0-beta.2
+Much better error handling. Whenever the bridge API returns an error, huego will return that to the user accordingly through an error struct rather than just throwing a json.UnmarshalTypeError.
 
 ## 1.0.0-beta.1
 * `Sensor.State` and `Sensor.Config` is now `interface{}` since these varry depending on the type
