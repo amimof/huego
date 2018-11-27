@@ -186,9 +186,9 @@ func (b *Bridge) DeleteUser(n string) error {
 }
 
 // GetFullState returns the entire bridge configuration.
-func (b *Bridge) GetFullState() (*Datastore, error) {
+func (b *Bridge) GetFullState() (map[string]interface{}, error) {
 
-	var ds *Datastore
+	var n map[string]interface{}
 
 	url, err := b.getAPIPath("/")
 	if err != nil {
@@ -200,12 +200,12 @@ func (b *Bridge) GetFullState() (*Datastore, error) {
 		return nil, err
 	}
 
-	err = unmarshal(res, &ds)
+	err = unmarshal(res, &n)
 	if err != nil {
 		return nil, err
 	}
 
-	return ds, nil
+	return n, nil
 }
 
 /*
@@ -229,7 +229,6 @@ func (b *Bridge) GetGroups() ([]Group, error) {
 		return nil, err
 	}
 
-	//err = unmarshal(res, &m)
 	err = unmarshal(res, &m)
 	if err != nil {
 		return nil, err
@@ -562,7 +561,7 @@ func (b *Bridge) GetNewLights() (*NewLight, error) {
 		if k == "lastscan" {
 			lastscan = n[k].(string)
 		} else {
-			lights = append(lights, n[k].(string))
+			lights = append(lights, k)
 		}
 	}
 
@@ -1486,10 +1485,7 @@ func (b *Bridge) GetNewSensors() (*NewSensor, error) {
 		return nil, err
 	}
 
-	err = unmarshal(res, &n)
-	if err != nil {
-		return nil, err
-	}
+	_ = unmarshal(res, &n)
 
 	sensors := make([]*Sensor, 0, len(n))
 

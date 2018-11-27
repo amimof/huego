@@ -30,32 +30,24 @@ func TestGetScenes(t *testing.T) {
 
 func TestGetScene(t *testing.T) {
 	b := huego.New(hostname, username)
-	scenes, err := b.GetScenes()
+	s, err := b.GetScene("4e1c6b20e-on-0")
 	if err != nil {
 		t.Fatal(err)
 	}
-	for _, scene := range scenes {
-		t.Logf("Getting scene %s", scene.ID)
-		s, err := b.GetScene(scene.ID)
-		if err != nil {
-			t.Fatal(err)
-		}
-		t.Logf("  Name: %s", s.Name)
-		t.Logf("  Lights: %s", s.Lights)
-		t.Logf("  Owner: %s", s.Owner)
-		t.Logf("  Recycle: %t", s.Recycle)
-		t.Logf("  Locked: %t", s.Locked)
-		t.Logf("  AppData: %s", s.AppData)
-		t.Logf("  Picture: %s", s.Picture)
-		t.Logf("  LastUpdated: %s", s.LastUpdated)
-		t.Logf("  Version: %d", s.Version)
-		t.Logf("  StoreSceneState: %t", s.StoreSceneState)
-		t.Logf("  ID: %s", s.ID)
-		t.Logf("  LightStates: %d", len(s.LightStates))
-		for k := range s.LightStates {
-			t.Logf("    Light %d: %+v", k, s.LightStates[k])
-		}
-		break
+	t.Logf("  Name: %s", s.Name)
+	t.Logf("  Lights: %s", s.Lights)
+	t.Logf("  Owner: %s", s.Owner)
+	t.Logf("  Recycle: %t", s.Recycle)
+	t.Logf("  Locked: %t", s.Locked)
+	t.Logf("  AppData: %s", s.AppData)
+	t.Logf("  Picture: %s", s.Picture)
+	t.Logf("  LastUpdated: %s", s.LastUpdated)
+	t.Logf("  Version: %d", s.Version)
+	t.Logf("  StoreSceneState: %t", s.StoreSceneState)
+	t.Logf("  ID: %s", s.ID)
+	t.Logf("  LightStates: %d", len(s.LightStates))
+	for k := range s.LightStates {
+		t.Logf("    Light %d: %+v", k, s.LightStates[k])
 	}
 }
 
@@ -77,71 +69,60 @@ func TestCreateScene(t *testing.T) {
 
 func TestUpdateScene(t *testing.T) {
 	b := huego.New(hostname, username)
-	scenes, err := b.GetScenes()
+	scene, err := b.GetScene("4e1c6b20e-on-0")
 	if err != nil {
 		t.Fatal(err)
 	}
-	for _, scene := range scenes {
-		if scene.Name == "New Scene" {
-			resp, err := b.UpdateScene(scene.ID, &huego.Scene{
-				Name:   "New Scene",
-				Lights: []string{},
-			})
-			if err != nil {
-				t.Fatal(err)
-			}
-			t.Logf("Scene '%s' (%s) updated", scene.Name, scene.ID)
-			for k, v := range resp.Success {
-				t.Logf("%v: %s", k, v)
-			}
-		}
+	resp, err := b.UpdateScene(scene.ID, &huego.Scene{
+		Name:   "New Scene",
+		Lights: []string{},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Logf("Scene '%s' (%s) updated", scene.Name, scene.ID)
+	for k, v := range resp.Success {
+		t.Logf("%v: %s", k, v)
 	}
 }
 
 func TestSetSceneLightState(t *testing.T) {
 	b := huego.New(hostname, username)
-	scenes, err := b.GetScenes()
+	scene, err := b.GetScene("4e1c6b20e-on-0")
 	if err != nil {
 		t.Fatal(err)
 	}
-	for _, scene := range scenes {
-		if scene.Name == "New Scene" {
-			light := 4
-			t.Logf("Name: %s", scene.Name)
-			t.Logf("ID: %s", scene.ID)
-			t.Logf("LightStates: %+v", scene.LightStates)
-			_, err := b.SetSceneLightState(scene.ID, light, &huego.State{
-				On:  true,
-				Bri: 255,
-			})
-			if err != nil {
-				t.Fatal(err)
-			}
-			t.Logf("Successfully set the state of light %d of scene '%s'", light, scene.Name)
-		}
+	light := 1
+	t.Logf("Name: %s", scene.Name)
+	t.Logf("ID: %s", scene.ID)
+	t.Logf("LightStates: %+v", scene.LightStates)
+	_, err = b.SetSceneLightState(scene.ID, light, &huego.State{
+		On:  true,
+		Bri: 255,
+	})
+	if err != nil {
+		t.Fatal(err)
 	}
+	t.Logf("Successfully set the state of light %d of scene '%s'", light, scene.Name)
+
 }
 
 func TestDeleteScene(t *testing.T) {
 	b := huego.New(hostname, username)
-	scenes, err := b.GetScenes()
+	scene, err := b.GetScene("4e1c6b20e-on-0")
 	if err != nil {
 		t.Fatal(err)
 	}
-	for _, scene := range scenes {
-		if scene.Name == "New Scene" {
-			err := b.DeleteScene(scene.ID)
-			if err != nil {
-				t.Fatal(err)
-			}
-			t.Logf("Scene %s (%s) deleted", scene.Name, scene.ID)
-		}
+	err = b.DeleteScene(scene.ID)
+	if err != nil {
+		t.Fatal(err)
 	}
+	t.Logf("Scene %s (%s) deleted", scene.Name, scene.ID)
 }
 
 func TestRecallScene(t *testing.T) {
 	b := huego.New(hostname, username)
-	scene := "HcK1mEcgS7gcVcT"
+	scene := "4e1c6b20e-on-0"
 	group := 1
 	resp, err := b.RecallScene("HcK1mEcgS7gcVcT", group)
 	if err != nil {
@@ -156,16 +137,13 @@ func TestRecallScene(t *testing.T) {
 func TestRecallScene2(t *testing.T) {
 	b := huego.New(hostname, username)
 	group := 1
-	scenes, err := b.GetScenes()
+	scene, err := b.GetScene("4e1c6b20e-on-0")
 	if err != nil {
 		t.Fatal(err)
 	}
-	for _, scene := range scenes {
-		err = scene.Recall(group)
-		if err != nil {
-			t.Fatal(err)
-		}
-		t.Logf("Scene %s (%s) recalled in group %d", scene.Name, scene.ID, group)
-		break
+	err = scene.Recall(group)
+	if err != nil {
+		t.Fatal(err)
 	}
+	t.Logf("Scene %s (%s) recalled in group %d", scene.Name, scene.ID, group)
 }

@@ -27,49 +27,42 @@ func TestGetLights(t *testing.T) {
 
 func TestGetLight(t *testing.T) {
 	b := huego.New(hostname, username)
-	lights, err := b.GetLights()
+	l, err := b.GetLight(1)
 	if err != nil {
 		t.Fatal(err)
-	}
-	for _, light := range lights {
-		l, err := b.GetLight(light.ID)
-		if err != nil {
-			t.Fatal(err)
-		} else {
-			t.Logf("ID: %d", l.ID)
-			t.Logf("Type: %s", l.Type)
-			t.Logf("Name: %s", l.Name)
-			t.Logf("ModelID: %s", l.ModelID)
-			t.Logf("ManufacturerName: %s", l.ManufacturerName)
-			t.Logf("UniqueID: %s", l.UniqueID)
-			t.Logf("SwVersion: %s", l.SwVersion)
-			t.Logf("SwConfigID: %s", l.SwConfigID)
-			t.Logf("ProductID: %s", l.ProductID)
-			t.Logf("State:")
-			t.Logf("  On: %t", l.State.On)
-			t.Logf("  Bri: %d", l.State.Bri)
-			t.Logf("  Hue: %d", l.State.Hue)
-			t.Logf("  Sat: %d", l.State.Sat)
-			t.Logf("  Xy: %b", l.State.Xy)
-			t.Logf("  Ct: %d", l.State.Ct)
-			t.Logf("  Alert: %s", l.State.Alert)
-			t.Logf("  Effect: %s", l.State.Effect)
-			t.Logf("  TransitionTime: %d", l.State.TransitionTime)
-			t.Logf("  BriInc: %d", l.State.BriInc)
-			t.Logf("  SatInc: %d", l.State.SatInc)
-			t.Logf("  HueInc: %d", l.State.HueInc)
-			t.Logf("  CtInc: %d", l.State.CtInc)
-			t.Logf("  XyInc: %d", l.State.XyInc)
-			t.Logf("  ColorMode: %s", l.State.ColorMode)
-			t.Logf("  Reachable: %t", l.State.Reachable)
-		}
-		break
+	} else {
+		t.Logf("ID: %d", l.ID)
+		t.Logf("Type: %s", l.Type)
+		t.Logf("Name: %s", l.Name)
+		t.Logf("ModelID: %s", l.ModelID)
+		t.Logf("ManufacturerName: %s", l.ManufacturerName)
+		t.Logf("UniqueID: %s", l.UniqueID)
+		t.Logf("SwVersion: %s", l.SwVersion)
+		t.Logf("SwConfigID: %s", l.SwConfigID)
+		t.Logf("ProductID: %s", l.ProductID)
+		t.Logf("State:")
+		t.Logf("  On: %t", l.State.On)
+		t.Logf("  Bri: %d", l.State.Bri)
+		t.Logf("  Hue: %d", l.State.Hue)
+		t.Logf("  Sat: %d", l.State.Sat)
+		t.Logf("  Xy: %b", l.State.Xy)
+		t.Logf("  Ct: %d", l.State.Ct)
+		t.Logf("  Alert: %s", l.State.Alert)
+		t.Logf("  Effect: %s", l.State.Effect)
+		t.Logf("  TransitionTime: %d", l.State.TransitionTime)
+		t.Logf("  BriInc: %d", l.State.BriInc)
+		t.Logf("  SatInc: %d", l.State.SatInc)
+		t.Logf("  HueInc: %d", l.State.HueInc)
+		t.Logf("  CtInc: %d", l.State.CtInc)
+		t.Logf("  XyInc: %d", l.State.XyInc)
+		t.Logf("  ColorMode: %s", l.State.ColorMode)
+		t.Logf("  Reachable: %t", l.State.Reachable)
 	}
 }
 
 func TestSetLight(t *testing.T) {
 	b := huego.New(hostname, username)
-	id := 3
+	id := 1
 	resp, err := b.SetLightState(id, huego.State{
 		On:  true,
 		Bri: 254,
@@ -113,7 +106,7 @@ func TestGetNewLights(t *testing.T) {
 
 func TestUpdateLight(t *testing.T) {
 	b := huego.New(hostname, username)
-	id := 2
+	id := 1
 	resp, err := b.UpdateLight(id, huego.Light{
 		Name: "New Light",
 	})
@@ -129,7 +122,7 @@ func TestUpdateLight(t *testing.T) {
 
 func TestDeleteLight(t *testing.T) {
 	b := huego.New(hostname, username)
-	id := 3
+	id := 1
 	err := b.DeleteLight(id)
 	if err != nil {
 		t.Fatal(err)
@@ -140,7 +133,7 @@ func TestDeleteLight(t *testing.T) {
 
 func TestTurnOffLight(t *testing.T) {
 	b := huego.New(hostname, username)
-	id := 4
+	id := 1
 	light, err := b.GetLight(id)
 	if err != nil {
 		t.Fatal(err)
@@ -154,7 +147,7 @@ func TestTurnOffLight(t *testing.T) {
 
 func TestTurnOnLight(t *testing.T) {
 	b := huego.New(hostname, username)
-	id := 4
+	id := 1
 	light, err := b.GetLight(id)
 	if err != nil {
 		t.Fatal(err)
@@ -168,7 +161,7 @@ func TestTurnOnLight(t *testing.T) {
 
 func TestIfLightIsOn(t *testing.T) {
 	b := huego.New(hostname, username)
-	id := 4
+	id := 1
 	light, err := b.GetLight(id)
 	if err != nil {
 		t.Fatal(err)
@@ -178,7 +171,7 @@ func TestIfLightIsOn(t *testing.T) {
 
 func TestRenameLight(t *testing.T) {
 	b := huego.New(hostname, username)
-	id := 4
+	id := 1
 	light, err := b.GetLight(id)
 	if err != nil {
 		t.Fatal(err)
@@ -192,7 +185,7 @@ func TestRenameLight(t *testing.T) {
 
 func TestSetLightBri(t *testing.T) {
 	b := huego.New(hostname, username)
-	id := 4
+	id := 1
 	light, err := b.GetLight(id)
 	if err != nil {
 		t.Fatal(err)
@@ -206,7 +199,7 @@ func TestSetLightBri(t *testing.T) {
 
 func TestSetLightHue(t *testing.T) {
 	b := huego.New(hostname, username)
-	id := 4
+	id := 1
 	light, err := b.GetLight(id)
 	if err != nil {
 		t.Fatal(err)
@@ -220,7 +213,7 @@ func TestSetLightHue(t *testing.T) {
 
 func TestSetLightSat(t *testing.T) {
 	b := huego.New(hostname, username)
-	id := 4
+	id := 1
 	light, err := b.GetLight(id)
 	if err != nil {
 		t.Fatal(err)
@@ -234,7 +227,7 @@ func TestSetLightSat(t *testing.T) {
 
 func TestSetLightXy(t *testing.T) {
 	b := huego.New(hostname, username)
-	id := 4
+	id := 1
 	light, err := b.GetLight(id)
 	if err != nil {
 		t.Fatal(err)
@@ -248,7 +241,7 @@ func TestSetLightXy(t *testing.T) {
 
 func TestSetLightCt(t *testing.T) {
 	b := huego.New(hostname, username)
-	id := 4
+	id := 1
 	light, err := b.GetLight(id)
 	if err != nil {
 		t.Fatal(err)
@@ -262,7 +255,7 @@ func TestSetLightCt(t *testing.T) {
 
 func TestSetLightTransitionTime(t *testing.T) {
 	b := huego.New(hostname, username)
-	id := 4
+	id := 1
 	light, err := b.GetLight(id)
 	if err != nil {
 		t.Fatal(err)
@@ -276,7 +269,7 @@ func TestSetLightTransitionTime(t *testing.T) {
 
 func TestSetLightEffect(t *testing.T) {
 	b := huego.New(hostname, username)
-	id := 4
+	id := 1
 	light, err := b.GetLight(id)
 	if err != nil {
 		t.Fatal(err)
@@ -290,7 +283,7 @@ func TestSetLightEffect(t *testing.T) {
 
 func TestSetLightAlert(t *testing.T) {
 	b := huego.New(hostname, username)
-	id := 4
+	id := 1
 	light, err := b.GetLight(id)
 	if err != nil {
 		t.Fatal(err)
@@ -304,7 +297,7 @@ func TestSetLightAlert(t *testing.T) {
 
 func TestSetStateLight(t *testing.T) {
 	b := huego.New(hostname, username)
-	id := 4
+	id := 1
 	light, err := b.GetLight(id)
 	if err != nil {
 		t.Fatal(err)

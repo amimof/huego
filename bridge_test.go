@@ -28,3 +28,15 @@ func TestLoginUnauthorized(t *testing.T) {
 	t.Logf("Bridge: %s, Username: %s", b.Host, b.User)
 	t.Log("User logged in and authenticated which isn't what we want")
 }
+
+func TestUpdateBridgeConfig(t *testing.T) {
+	b := huego.New(hostname, username)
+	c, err := b.GetConfig()
+	if err != nil {
+		t.Fatal(err)
+	}
+	_, err = b.UpdateConfig(c)
+	if err != nil {
+		t.Fatal(err)
+	}
+}
