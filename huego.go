@@ -189,14 +189,27 @@ func delete(url string) ([]byte, error) {
 // DiscoverAll returns a list of Bridge objects.
 func DiscoverAll() ([]Bridge, error) {
 
-	res, err := get("https://www.meethue.com/api/nupnp")
+	req, err := http.NewRequest("GET", "https://discovery.meethue.com", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	client := http.Client{}
+	res, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+
+	defer res.Body.Close()
+
+	d, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		return nil, err
 	}
 
 	var bridges []Bridge
 
-	err = json.Unmarshal(res, &bridges)
+	err = json.Unmarshal(d, &bridges)
 	if err != nil {
 		return nil, err
 	}

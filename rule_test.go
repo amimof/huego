@@ -19,18 +19,11 @@ func TestGetRules(t *testing.T) {
 
 func TestGetRule(t *testing.T) {
 	b := huego.New(hostname, username)
-	rules, err := b.GetRules()
+	l, err := b.GetRule(1)
 	if err != nil {
 		t.Fatal(err)
-	}
-	for _, rule := range rules {
-		l, err := b.GetRule(rule.ID)
-		if err != nil {
-			t.Fatal(err)
-		} else {
-			t.Log(l)
-		}
-		break
+	} else {
+		t.Log(l)
 	}
 }
 
@@ -68,11 +61,11 @@ func TestCreateRule(t *testing.T) {
 
 func TestUpdateRule(t *testing.T) {
 	b := huego.New(hostname, username)
-	id := 3
+	id := 1
 	resp, err := b.UpdateRule(id, &huego.Rule{
 		Actions: []*huego.RuleAction{
 			{
-				Address: "/groups/3/action",
+				Address: "/groups/1/action",
 				Method:  "PUT",
 				Body:    &huego.State{On: true},
 			},
@@ -90,7 +83,7 @@ func TestUpdateRule(t *testing.T) {
 
 func TestDeleteRule(t *testing.T) {
 	b := huego.New(hostname, username)
-	id := 3
+	id := 1
 	err := b.DeleteRule(id)
 	if err != nil {
 		t.Fatal(err)

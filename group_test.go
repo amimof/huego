@@ -45,43 +45,36 @@ func TestGetGroups(t *testing.T) {
 
 func TestGetGroup(t *testing.T) {
 	b := huego.New(hostname, username)
-	groups, err := b.GetGroups()
+	g, err := b.GetGroup(1)
 	if err != nil {
 		t.Fatal(err)
 	}
-	for _, group := range groups {
-		g, err := b.GetGroup(group.ID)
-		if err != nil {
-			t.Fatal(err)
-		}
-		t.Logf("Name: %s", g.Name)
-		t.Logf("Lights: %s", g.Lights)
-		t.Logf("Type: %s", g.Type)
-		t.Logf("GroupState:")
-		t.Logf("  AllOn: %t", g.GroupState.AllOn)
-		t.Logf("  AnyOn: %t", g.GroupState.AnyOn)
-		t.Logf("Recycle: %t", g.Recycle)
-		t.Logf("Class: %s", g.Class)
-		t.Logf("State:")
-		t.Logf("  On: %t", g.State.On)
-		t.Logf("  Bri: %d", g.State.Bri)
-		t.Logf("  Hue: %d", g.State.Hue)
-		t.Logf("  Sat: %d", g.State.Sat)
-		t.Logf("  Xy: %b", g.State.Xy)
-		t.Logf("  Ct: %d", g.State.Ct)
-		t.Logf("  Alert: %s", g.State.Alert)
-		t.Logf("  Effect: %s", g.State.Effect)
-		t.Logf("  TransitionTime: %d", g.State.TransitionTime)
-		t.Logf("  BriInc: %d", g.State.BriInc)
-		t.Logf("  SatInc: %d", g.State.SatInc)
-		t.Logf("  HueInc: %d", g.State.HueInc)
-		t.Logf("  CtInc: %d", g.State.CtInc)
-		t.Logf("  XyInc: %d", g.State.XyInc)
-		t.Logf("  ColorMode: %s", g.State.ColorMode)
-		t.Logf("  Reachable: %t", g.State.Reachable)
-		t.Logf("ID: %d", g.ID)
-		break
-	}
+	t.Logf("Name: %s", g.Name)
+	t.Logf("Lights: %s", g.Lights)
+	t.Logf("Type: %s", g.Type)
+	t.Logf("GroupState:")
+	t.Logf("  AllOn: %t", g.GroupState.AllOn)
+	t.Logf("  AnyOn: %t", g.GroupState.AnyOn)
+	t.Logf("Recycle: %t", g.Recycle)
+	t.Logf("Class: %s", g.Class)
+	t.Logf("State:")
+	t.Logf("  On: %t", g.State.On)
+	t.Logf("  Bri: %d", g.State.Bri)
+	t.Logf("  Hue: %d", g.State.Hue)
+	t.Logf("  Sat: %d", g.State.Sat)
+	t.Logf("  Xy: %b", g.State.Xy)
+	t.Logf("  Ct: %d", g.State.Ct)
+	t.Logf("  Alert: %s", g.State.Alert)
+	t.Logf("  Effect: %s", g.State.Effect)
+	t.Logf("  TransitionTime: %d", g.State.TransitionTime)
+	t.Logf("  BriInc: %d", g.State.BriInc)
+	t.Logf("  SatInc: %d", g.State.SatInc)
+	t.Logf("  HueInc: %d", g.State.HueInc)
+	t.Logf("  CtInc: %d", g.State.CtInc)
+	t.Logf("  XyInc: %d", g.State.XyInc)
+	t.Logf("  ColorMode: %s", g.State.ColorMode)
+	t.Logf("  Reachable: %t", g.State.Reachable)
+	t.Logf("ID: %d", g.ID)
 }
 
 func TestCreateGroup(t *testing.T) {
@@ -104,7 +97,7 @@ func TestCreateGroup(t *testing.T) {
 
 func TestUpdateGroup(t *testing.T) {
 	b := huego.New(hostname, username)
-	id := 3
+	id := 1
 	resp, err := b.UpdateGroup(id, huego.Group{
 		Name:  "TestGroup (Updated)",
 		Class: "Office",
@@ -121,7 +114,7 @@ func TestUpdateGroup(t *testing.T) {
 
 func TestSetGroupState(t *testing.T) {
 	b := huego.New(hostname, username)
-	id := 3
+	id := 1
 	resp, err := b.SetGroupState(id, huego.State{
 		On:  true,
 		Bri: 150,
@@ -139,7 +132,7 @@ func TestSetGroupState(t *testing.T) {
 
 func TestRenameGroup(t *testing.T) {
 	bridge := huego.New(hostname, username)
-	id := 3
+	id := 1
 	group, err := bridge.GetGroup(id)
 	if err != nil {
 		t.Fatal(err)
@@ -336,7 +329,7 @@ func TestSetStateGroup(t *testing.T) {
 
 func TestDeleteGroup(t *testing.T) {
 	b := huego.New(hostname, username)
-	id := 3
+	id := 1
 	err := b.DeleteGroup(id)
 	if err != nil {
 		t.Fatal(err)

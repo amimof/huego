@@ -31,23 +31,16 @@ func TestGetSchedules(t *testing.T) {
 
 func TestGetSchedule(t *testing.T) {
 	b := huego.New(hostname, username)
-	schedules, err := b.GetSchedules()
+	s, err := b.GetSchedule(1)
 	if err != nil {
 		t.Fatal(err)
 	}
-	for _, schedule := range schedules {
-		s, err := b.GetSchedule(schedule.ID)
-		if err != nil {
-			t.Fatal(err)
-		}
-		t.Logf("Time: %s", s.Time)
-		t.Logf("LocalTime: %s", s.LocalTime)
-		t.Logf("StartTime: %s", s.StartTime)
-		t.Logf("Status: %s", s.Status)
-		t.Logf("AutoDelete: %t", s.AutoDelete)
-		t.Logf("ID: %d", s.ID)
-		break
-	}
+	t.Logf("Time: %s", s.Time)
+	t.Logf("LocalTime: %s", s.LocalTime)
+	t.Logf("StartTime: %s", s.StartTime)
+	t.Logf("Status: %s", s.Status)
+	t.Logf("AutoDelete: %t", s.AutoDelete)
+	t.Logf("ID: %d", s.ID)
 }
 
 func TestCreateSchedule(t *testing.T) {
@@ -80,7 +73,7 @@ func TestCreateSchedule(t *testing.T) {
 
 func TestUpdateSchedule(t *testing.T) {
 	b := huego.New(hostname, username)
-	id := 3
+	id := 1
 	resp, err := b.UpdateSchedule(id, &huego.Schedule{
 		Name:        "New Scehdule",
 		Description: "Updated parameter",
@@ -97,7 +90,7 @@ func TestUpdateSchedule(t *testing.T) {
 
 func TestDeleteSchedule(t *testing.T) {
 	b := huego.New(hostname, username)
-	id := 3
+	id := 1
 	err := b.DeleteSchedule(id)
 	if err != nil {
 		t.Fatal(err)

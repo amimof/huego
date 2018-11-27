@@ -90,19 +90,11 @@ func TestGetUsers(t *testing.T) {
 
 func TestDeleteUser(t *testing.T) {
 	b := huego.New(hostname, username)
-	users, err := b.GetUsers()
+	err := b.DeleteUser("ffffffffe0341b1b376a2389376a2389")
 	if err != nil {
 		t.Fatal(err)
 	}
-	for _, user := range users {
-		if user.Name == "github.com/amimof/huego#go test" {
-			err := b.DeleteUser(user.Username)
-			if err != nil {
-				t.Fatal(err)
-			}
-			t.Logf("Deleted user '%s' (%s)", user.Name, user.Username)
-		}
-	}
+	t.Logf("Deleted user '%s'", "ffffffffe0341b1b376a2389376a2389")
 }
 
 func TestGetFullState(t *testing.T) {

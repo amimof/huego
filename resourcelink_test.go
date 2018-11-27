@@ -26,24 +26,17 @@ func TestGetResourcelinks(t *testing.T) {
 
 func TestGetResourcelink(t *testing.T) {
 	b := huego.New(hostname, username)
-	resourcelinks, err := b.GetResourcelinks()
+	l, err := b.GetResourcelink(1)
 	if err != nil {
 		t.Fatal(err)
 	}
-	for _, resourcelink := range resourcelinks {
-		l, err := b.GetResourcelink(resourcelink.ID)
-		if err != nil {
-			t.Fatal(err)
-		}
-		t.Logf("Name: %s", l.Name)
-		t.Logf("Description: %s", l.Description)
-		t.Logf("Type: %s", l.Type)
-		t.Logf("ClassID: %d", l.ClassID)
-		t.Logf("Owner: %s", l.Owner)
-		t.Logf("Links: %s", l.Links)
-		t.Logf("ID: %d", l.ID)
-		break
-	}
+	t.Logf("Name: %s", l.Name)
+	t.Logf("Description: %s", l.Description)
+	t.Logf("Type: %s", l.Type)
+	t.Logf("ClassID: %d", l.ClassID)
+	t.Logf("Owner: %s", l.Owner)
+	t.Logf("Links: %s", l.Links)
+	t.Logf("ID: %d", l.ID)
 }
 
 func TestCreateResourcelink(t *testing.T) {
@@ -69,7 +62,7 @@ func TestCreateResourcelink(t *testing.T) {
 
 func TestUpdateResourcelink(t *testing.T) {
 	b := huego.New(hostname, username)
-	id := 3
+	id := 1
 	resp, err := b.UpdateResourcelink(id, &huego.Resourcelink{
 		Name:        "New Resourcelink",
 		Description: "Updated Attribute",
@@ -86,7 +79,7 @@ func TestUpdateResourcelink(t *testing.T) {
 
 func TestDeleteResourcelink(t *testing.T) {
 	b := huego.New(hostname, username)
-	id := 3
+	id := 1
 	err := b.DeleteResourcelink(1)
 	if err != nil {
 		t.Fatal(err)
