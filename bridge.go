@@ -46,7 +46,6 @@ func (b *Bridge) Login(u string) *Bridge {
 
 */
 
-
 // GetConfig returns the bridge configuration
 func (b *Bridge) GetConfig() (*Config, error) {
 

@@ -25,13 +25,13 @@ func init() {
 		method string
 		path   string
 		data   string
-		url		 string
+		url    string
 	}{
 		// DISCOVERY
 		{
 			method: "GET",
-			url: "https://discovery.meethue.com",
-			data: `[{"id":"001788fffe73ff19","internalipaddress":"192.168.13.112"}]`,
+			url:    "https://discovery.meethue.com",
+			data:   `[{"id":"001788fffe73ff19","internalipaddress":"192.168.13.112"}]`,
 		},
 
 		// CONFIG
@@ -171,137 +171,136 @@ func init() {
 		{
 			method: "GET",
 			path:   "/rules",
-			data: `{ "1": { "name": "Wall Switch Rule", "lasttriggered": "2013-10-17T01:23:20", "creationtime": "2013-10-10T21:11:45", "timestriggered": 27, "owner": "78H56B12BA", "status": "enabled", "conditions": [ { "address": "/sensors/2/state/buttonevent", "operator": "eq", "value": "16" }, { "address": "/sensors/2/state/lastupdated", "operator": "dx" } ], "actions": [ { "address": "/groups/0/action", "method": "PUT", "body": { "scene": "S3" } } ] }} `,
+			data:   `{ "1": { "name": "Wall Switch Rule", "lasttriggered": "2013-10-17T01:23:20", "creationtime": "2013-10-10T21:11:45", "timestriggered": 27, "owner": "78H56B12BA", "status": "enabled", "conditions": [ { "address": "/sensors/2/state/buttonevent", "operator": "eq", "value": "16" }, { "address": "/sensors/2/state/lastupdated", "operator": "dx" } ], "actions": [ { "address": "/groups/0/action", "method": "PUT", "body": { "scene": "S3" } } ] }} `,
 		},
 		{
 			method: "GET",
 			path:   "/rules/1",
-			data: `{ "name": "Wall Switch Rule", "owner": "ruleOwner", "created": "2014-07-23T15:02:56", "lasttriggered": "none", "timestriggered": 0, "status": "enabled", "conditions": [ { "address": "/sensors/2/state/buttonevent", "operator": "eq", "value": "16" }, { "address": "/sensors/2/state/lastupdated", "operator": "dx" } ], "actions": [ { "address": "/groups/0/action", "method": "PUT", "body": { "scene": "S3" } } ] }`,
+			data:   `{ "name": "Wall Switch Rule", "owner": "ruleOwner", "created": "2014-07-23T15:02:56", "lasttriggered": "none", "timestriggered": 0, "status": "enabled", "conditions": [ { "address": "/sensors/2/state/buttonevent", "operator": "eq", "value": "16" }, { "address": "/sensors/2/state/lastupdated", "operator": "dx" } ], "actions": [ { "address": "/groups/0/action", "method": "PUT", "body": { "scene": "S3" } } ] }`,
 		},
 		{
 			method: "POST",
 			path:   "/rules",
-			data: `[{"success":{"id": "3"}}]`,
+			data:   `[{"success":{"id": "3"}}]`,
 		},
 		{
 			method: "PUT",
 			path:   "/rules/1",
-			data: `[ { "success": { "/rules/1/actions": [ { "address": "/groups/0/action", "method": "PUT", "body": { "scene": "S3" } } ] } } ]`,
+			data:   `[ { "success": { "/rules/1/actions": [ { "address": "/groups/0/action", "method": "PUT", "body": { "scene": "S3" } } ] } } ]`,
 		},
 		{
 			method: "DELETE",
 			path:   "/rules/1",
-			data: `[{"success": "/rules/1 deleted."}]`,
+			data:   `[{"success": "/rules/1 deleted."}]`,
 		},
 
 		// SCHEDULE
 		{
 			method: "GET",
 			path:   "/schedules",
-			data: `{ "1": { "name": "Timer", "description": "", "command": { "address": "/api/s95jtYH8HUVWNkCO/groups/0/action", "body": { "scene": "02b12e930-off-0" }, "method": "PUT" }, "time": "PT00:01:00", "created": "2014-06-23T13:39:16", "status": "disabled", "autodelete": false, "starttime": "2014-06-23T13:39:16" }, "2": { "name": "Alarm", "description": "", "command": { "address": "/api/s95jtYH8HUVWNkCO/groups/0/action", "body": { "scene": "02b12e930-off-0" }, "method": "PUT" }, "localtime": "2014-06-23T19:52:00", "time": "2014-06-23T13:52:00", "created": "2014-06-23T13:38:57", "status": "disabled", "autodelete": false } }`,
+			data:   `{ "1": { "name": "Timer", "description": "", "command": { "address": "/api/s95jtYH8HUVWNkCO/groups/0/action", "body": { "scene": "02b12e930-off-0" }, "method": "PUT" }, "time": "PT00:01:00", "created": "2014-06-23T13:39:16", "status": "disabled", "autodelete": false, "starttime": "2014-06-23T13:39:16" }, "2": { "name": "Alarm", "description": "", "command": { "address": "/api/s95jtYH8HUVWNkCO/groups/0/action", "body": { "scene": "02b12e930-off-0" }, "method": "PUT" }, "localtime": "2014-06-23T19:52:00", "time": "2014-06-23T13:52:00", "created": "2014-06-23T13:38:57", "status": "disabled", "autodelete": false } }`,
 		},
 		{
 			method: "GET",
 			path:   "/schedules/1",
-			data: `{ "name": "Wake up", "description": "My wake up alarm", "command": { "address": "/api/<username>/groups/1/action", "method": "PUT", "body": { "on": true } }, "time": "W124/T06:00:00" }`,
+			data:   `{ "name": "Wake up", "description": "My wake up alarm", "command": { "address": "/api/<username>/groups/1/action", "method": "PUT", "body": { "on": true } }, "time": "W124/T06:00:00" }`,
 		},
 		{
 			method: "POST",
 			path:   "/schedules",
-			data: `[{"success":{"id": "2"}}]`,
+			data:   `[{"success":{"id": "2"}}]`,
 		},
 		{
 			method: "PUT",
 			path:   "/schedules/1",
-			data: `[{ "success": {"/schedules/1/name": "Wake up"}}]`,
+			data:   `[{ "success": {"/schedules/1/name": "Wake up"}}]`,
 		},
 		{
 			method: "DELETE",
 			path:   "/schedules/1",
-			data: `[{"success": "/schedules/1 deleted."}]`,
+			data:   `[{"success": "/schedules/1 deleted."}]`,
 		},
 
 		// SENSOR
 		{
 			method: "GET",
 			path:   "/sensors",
-			data: `{ "1": { "state": { "daylight": false, "lastupdated": "2014-06-27T07:38:51" }, "config": { "on": true, "long": "none", "lat": "none", "sunriseoffset": 50, "sunsetoffset": 50 }, "name": "Daylight", "type": "Daylight", "modelid": "PHDL00", "manufacturername": "Philips", "swversion": "1.0" }, "2": { "state": { "buttonevent": 0, "lastupdated": "none" }, "config": { "on": true }, "name": "Tap Switch 2", "type": "ZGPSwitch", "modelid": "ZGPSWITCH", "manufacturername": "Philips", "uniqueid": "00:00:00:00:00:40:03:50-f2" } }`,
+			data:   `{ "1": { "state": { "daylight": false, "lastupdated": "2014-06-27T07:38:51" }, "config": { "on": true, "long": "none", "lat": "none", "sunriseoffset": 50, "sunsetoffset": 50 }, "name": "Daylight", "type": "Daylight", "modelid": "PHDL00", "manufacturername": "Philips", "swversion": "1.0" }, "2": { "state": { "buttonevent": 0, "lastupdated": "none" }, "config": { "on": true }, "name": "Tap Switch 2", "type": "ZGPSwitch", "modelid": "ZGPSWITCH", "manufacturername": "Philips", "uniqueid": "00:00:00:00:00:40:03:50-f2" } }`,
 		},
 		{
 			method: "GET",
 			path:   "/sensors/1",
-			data: `{ "state":{ "buttonevent": 34, "lastupdated":"2013-03-25T13:32:34" }, "name": "Wall tap 1", "modelid":"ZGPSWITCH", "uniqueid":"01:23:45:67:89:AB-12", "manufacturername": "Philips", "swversion":"1.0", "type":  "ZGPSwitch" }`,
+			data:   `{ "state":{ "buttonevent": 34, "lastupdated":"2013-03-25T13:32:34" }, "name": "Wall tap 1", "modelid":"ZGPSWITCH", "uniqueid":"01:23:45:67:89:AB-12", "manufacturername": "Philips", "swversion":"1.0", "type":  "ZGPSwitch" }`,
 		},
 		{
 			method: "POST",
 			path:   "/sensors",
-			data: `[ { "success": { "/sensors": "Searching for new devices"}}]`,
+			data:   `[ { "success": { "/sensors": "Searching for new devices"}}]`,
 		},
 		{
 			method: "POST",
 			path:   "/sensors",
-			data: `[{"success":{"id": "4"}}]`,
+			data:   `[{"success":{"id": "4"}}]`,
 		},
 		{
 			method: "GET",
 			path:   "/sensors/new",
-			data: `{ "7": {"name": "Hue Tap 1"}, "8": {"name": " Button 3"}, "lastscan":"2013-05-22T10:24:00" }`,
+			data:   `{ "7": {"name": "Hue Tap 1"}, "8": {"name": " Button 3"}, "lastscan":"2013-05-22T10:24:00" }`,
 		},
 		{
 			method: "PUT",
 			path:   "/sensors/1",
-			data: `[{"success":{"/sensors/2/name":"Bedroom Tap"}}]`,
+			data:   `[{"success":{"/sensors/2/name":"Bedroom Tap"}}]`,
 		},
 		{
 			method: "DELETE",
 			path:   "/sensors/1",
-			data: `[{"success": "/sensors/1 deleted."}]`,
+			data:   `[{"success": "/sensors/1 deleted."}]`,
 		},
 		{
 			method: "PUT",
 			path:   "/sensors/1/config",
-			data: `[{"success":{"/sensors/2/config/on":true}}]`,
+			data:   `[{"success":{"/sensors/2/config/on":true}}]`,
 		},
 		{
 			method: "PUT",
 			path:   "/sensors/1/state",
-			data: `[{"success":{"/sensors/1/state/presence": false}}]`,
+			data:   `[{"success":{"/sensors/1/state/presence": false}}]`,
 		},
-	
+
 		// CAPABILITIES
 		{
 			method: "GET",
 			path:   "/capabilities",
-			data: `{ "lights":{ "available": 10 }, "sensors":{ "availble": 60, "clip": { "available": 60 }, "zll": { "available": 60 }, "zgp": { "available": 60 } }, "groups": {}, "scenes": { "available": 100, "lightstates": { "available": 1500 } }, "rules": {}, "schedules": {}, "resourcelinks": {}, "whitelists": {}, "timezones": { "values":[ "Africa/Abidjan", "Africa/Accra", "Pacific/Wallis", "US/Pacific-New" ] } }`,
+			data:   `{ "lights":{ "available": 10 }, "sensors":{ "availble": 60, "clip": { "available": 60 }, "zll": { "available": 60 }, "zgp": { "available": 60 } }, "groups": {}, "scenes": { "available": 100, "lightstates": { "available": 1500 } }, "rules": {}, "schedules": {}, "resourcelinks": {}, "whitelists": {}, "timezones": { "values":[ "Africa/Abidjan", "Africa/Accra", "Pacific/Wallis", "US/Pacific-New" ] } }`,
 		},
 
 		// RESOURCELINK
 		{
 			method: "GET",
 			path:   "/resourcelinks",
-			data: `{ "1": { "name": "Sunrise", "description": "Carla's wakeup experience", "class": 1, "owner": "78H56B12BAABCDEF", "links": ["/schedules/2", "/schedules/3", "/scenes/ABCD", "/scenes/EFGH", "/groups/8"] } }`,
+			data:   `{ "1": { "name": "Sunrise", "description": "Carla's wakeup experience", "class": 1, "owner": "78H56B12BAABCDEF", "links": ["/schedules/2", "/schedules/3", "/scenes/ABCD", "/scenes/EFGH", "/groups/8"] } }`,
 		},
 		{
 			method: "GET",
 			path:   "/resourcelinks/1",
-			data: `{ "name": "Sunrise", "description": "Carla's wakeup experience", "type":"Link", "class": 1, "owner": "78H56B12BAABCDEF", "links": ["/schedules/2", "/schedules/3", "/scenes/ABCD", "/scences/EFGH", "/groups/8"] }`,
+			data:   `{ "name": "Sunrise", "description": "Carla's wakeup experience", "type":"Link", "class": 1, "owner": "78H56B12BAABCDEF", "links": ["/schedules/2", "/schedules/3", "/scenes/ABCD", "/scences/EFGH", "/groups/8"] }`,
 		},
 		{
 			method: "POST",
 			path:   "/resourcelinks",
-			data: `[{"success":{"id": "3"}}]`,
+			data:   `[{"success":{"id": "3"}}]`,
 		},
 		{
 			method: "PUT",
 			path:   "/resourcelinks/1",
-			data: `[{ "success": { "/resourcelinks/1/name": "Sunrise" } }, { "success": { "/resourcelinks/1/description": "Carla's wakeup experience" } }]`,
+			data:   `[{ "success": { "/resourcelinks/1/name": "Sunrise" } }, { "success": { "/resourcelinks/1/description": "Carla's wakeup experience" } }]`,
 		},
 		{
 			method: "DELETE",
 			path:   "/resourcelinks/1",
-			data: `[{"success": "/resourcelinks/1 deleted."}]`,
+			data:   `[{"success": "/resourcelinks/1 deleted."}]`,
 		},
-
 	}
 
 	httpmock.Activate()
