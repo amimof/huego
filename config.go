@@ -30,6 +30,8 @@ type Config struct {
 	DatastoreVersion string               `json:"datastoreversion,omitempty"`
 	StarterKitID     string               `json:"starterkitid,omitempty"`
 	InternetService  InternetService      `json:"internetservices,omitempty"`
+	PortalConnection string               `json:"portalconnection,omitempty"`
+	Backup           Backup               `json:"backup,omitempty"`	
 }
 
 // SwUpdate contains information related to software updates. Deprecated in 1.20
@@ -55,9 +57,10 @@ type SwUpdate2 struct {
 
 // DeviceTypes details the type of updates available
 type DeviceTypes struct {
-	Bridge  bool     `json:"bridge,omitempty"`
-	Lights  []Light  `json:"lights,omitempty"`
-	Sensors []Sensor `json:"sensors,omitempty"`
+	Bridge  bool        `json:"bridge,omitempty"`
+	// interface{} -> huego.Light | string
+	Lights  []interface `json:"lights,omitempty"`
+	Sensors []Sensor    `json:"sensors,omitempty"`
 }
 
 // BridgeConfig holds information about software updates
