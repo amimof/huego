@@ -1,4 +1,4 @@
-[![huego](https://godoc.org/github.com/amimof/huego?status.svg)](https://godoc.org/github.com/amimof/huego) [![Go Report Card](https://goreportcard.com/badge/github.com/amimof/huego)](https://goreportcard.com/report/github.com/amimof/huego) [![Coverage](http://gocover.io/_badge/github.com/amimof/huego)](http://gocover.io/github.com/amimof/huego) [![Awesome](https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg)](https://github.com/avelino/awesome-go)
+[![Build Status](https://travis-ci.org/amimof/huego.svg?branch=master)](https://travis-ci.org/amimof/huego) [![huego](https://godoc.org/github.com/amimof/huego?status.svg)](https://godoc.org/github.com/amimof/huego) [![Go Report Card](https://goreportcard.com/badge/github.com/amimof/huego)](https://goreportcard.com/report/github.com/amimof/huego) [![Coverage](http://gocover.io/_badge/github.com/amimof/huego)](http://gocover.io/github.com/amimof/huego) [![Awesome](https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg)](https://github.com/avelino/awesome-go)
 
 # Huego
 
