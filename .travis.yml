@@ -14,7 +14,7 @@ before_install:
   - go get -u github.com/client9/misspell/cmd/misspell
 
 script:
-  - gofmt -s
+  - gofmt -s -d -e .
   - go vet
   - $GOPATH/bin/gocyclo .
   - $GOPATH/bin/golint .
