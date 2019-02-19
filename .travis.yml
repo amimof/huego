@@ -10,6 +10,6 @@ python:
 jobs:
   include:
     - stage: test
-      script: go test
+      script: go test -v
     - stage: build
       script: go build
