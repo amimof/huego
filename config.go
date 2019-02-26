@@ -56,8 +56,8 @@ type SwUpdate2 struct {
 // DeviceTypes details the type of updates available
 type DeviceTypes struct {
 	Bridge  bool     `json:"bridge,omitempty"`
-	Lights  []Light  `json:"lights,omitempty"`
-	Sensors []Sensor `json:"sensors,omitempty"`
+	Lights  []string  `json:"lights,omitempty"`
+	Sensors []string `json:"sensors,omitempty"`
 }
 
 // BridgeConfig holds information about software updates
@@ -100,15 +100,4 @@ type PortalState struct {
 	Incoming      bool   `json:"incoming,omitempty"`
 	Outgoing      bool   `json:"outgoing,omitempty"`
 	Communication string `json:"communication,omitempty"`
-}
-
-// Datastore combines all bridge resources into one struct
-type Datastore struct {
-	Lights    []Light    `json:"lights"`
-	Groups    []Group    `json:"groups"`
-	Config    Config     `json:"config"`
-	Schedules []Schedule `json:"schedules"`
-	Scenes    []Scene    `json:"scenes"`
-	Sensors   []Sensor   `json:"sensors"`
-	Rules     []Rule     `json:"rules"`
 }
