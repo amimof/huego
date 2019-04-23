@@ -7,7 +7,7 @@ import (
 	"fmt"
 )
 
-func ExampleBridge_CreateUser(t *testing.T) {
+func ExampleBridge_CreateUser() {
 	bridge, _ := huego.Discover()
 	user, err := bridge.CreateUser("my awesome hue app") // Link button needs to be pressed
 	if err != nil {
