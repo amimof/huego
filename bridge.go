@@ -78,7 +78,8 @@ func (b *Bridge) GetConfig() (*Config, error) {
 
 }
 
-// CreateUser creates a user by adding n to the list of whitelists in the bridge
+// CreateUser creates a user by adding n to the list of whitelists in the bridge.
+// The link button on the bridge must have been pressed before calling CreateUser.
 func (b *Bridge) CreateUser(n string) (string, error) {
 
 	var a []*APIResponse
