@@ -4,7 +4,19 @@ import (
 	"github.com/amimof/huego"
 	"strings"
 	"testing"
+	"fmt"
 )
+
+func ExampleBridge_CreateUser() {
+	bridge, _ := huego.Discover()
+	user, err := bridge.CreateUser("my awesome hue app") // Link button needs to be pressed
+	if err != nil {
+		fmt.Printf("Error creating user: %s", err.Error())
+	}
+  bridge = bridge.Login(user)
+	light, _ := bridge.GetLight(1)
+  light.Off()
+}
 
 func TestLogin(t *testing.T) {
 	b := huego.New(hostname, username)

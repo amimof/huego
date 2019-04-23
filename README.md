@@ -30,7 +30,7 @@ func main() {
   fmt.Printf("Found %d lights", len(l))
 }
 ```
-Or discover a bridge on your network with [`Discover()`](https://godoc.org/github.com/amimof/huego#Discover) and create a new user with [`CreateUser()`](https://godoc.org/github.com/amimof/huego#Bridge.CreateUser).
+Or discover a bridge on your network with [`Discover()`](https://godoc.org/github.com/amimof/huego#Discover) and create a new user with [`CreateUser()`](https://godoc.org/github.com/amimof/huego#Bridge.CreateUser). To successfully create a user, the link button on your bridge must have been pressed before calling `CreateUser()` in order to authorise the request.
 ```Go
 func main() {
   bridge, _ := huego.Discover()
