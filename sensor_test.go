@@ -21,6 +21,7 @@ func TestGetSensors(t *testing.T) {
 		t.Logf("Type: %s", sensor.Type)
 		t.Logf("ModelID: %s", sensor.ModelID)
 		t.Logf("ManufacturerName: %s", sensor.ManufacturerName)
+		t.Logf("UniqueID: %s", sensor.UniqueID)
 		t.Logf("SwVersion: %s", sensor.SwVersion)
 		t.Logf("ID: %d", sensor.ID)
 	}
@@ -40,6 +41,7 @@ func TestGetSensor(t *testing.T) {
 	t.Logf("Type: %s", sensor.Type)
 	t.Logf("ModelID: %s", sensor.ModelID)
 	t.Logf("ManufacturerName: %s", sensor.ManufacturerName)
+	t.Logf("UniqueID: %s", sensor.UniqueID)
 	t.Logf("SwVersion: %s", sensor.SwVersion)
 	t.Logf("ID: %d", sensor.ID)
 }
@@ -87,6 +89,7 @@ func TestGetNewSensors(t *testing.T) {
 		t.Logf("Type: %s", sensor.Type)
 		t.Logf("ModelID: %s", sensor.ModelID)
 		t.Logf("ManufacturerName: %s", sensor.ManufacturerName)
+		t.Logf("UniqueID: %s", sensor.UniqueID)
 		t.Logf("SwVersion: %s", sensor.SwVersion)
 		t.Logf("ID: %d", sensor.ID)
 	}

@@ -8,6 +8,7 @@ type Sensor struct {
 	Type             string                 `json:"type,omitempty"`
 	ModelID          string                 `json:"modelid,omitempty"`
 	ManufacturerName string                 `json:"manufacturername,omitempty"`
+	UniqueID         string                 `json:"uniqueid,omitempty"`
 	SwVersion        string                 `json:"swversion,omitemptyn"`
 	ID               int                    `json:",omitempty"`
 }
