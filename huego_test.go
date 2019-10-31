@@ -3,7 +3,7 @@ package huego_test
 import (
 	"fmt"
 	"github.com/amimof/huego"
-	"gopkg.in/jarcoal/httpmock.v1"
+	"github.com/jarcoal/httpmock"
 	"os"
 	"path"
 	"testing"
