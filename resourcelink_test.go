@@ -1,8 +1,10 @@
 package huego_test
 
 import (
-	"github.com/amimof/huego"
 	"testing"
+
+	"github.com/amimof/huego"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestGetResourcelinks(t *testing.T) {
@@ -22,6 +24,9 @@ func TestGetResourcelinks(t *testing.T) {
 		t.Logf("  Links: %s", resourcelink.Links)
 		t.Logf("  ID: %d", resourcelink.ID)
 	}
+
+	assert.Equal(t, "Sunrise", resourcelinks[0].Name)
+	assert.Equal(t, "Sunrise 2", resourcelinks[1].Name)
 }
 
 func TestGetResourcelink(t *testing.T) {

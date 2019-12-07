@@ -1,8 +1,10 @@
 package huego_test
 
 import (
-	"github.com/amimof/huego"
 	"testing"
+
+	"github.com/amimof/huego"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestGetRules(t *testing.T) {
@@ -15,6 +17,8 @@ func TestGetRules(t *testing.T) {
 	for _, rule := range rules {
 		t.Log(rule)
 	}
+	assert.Equal(t, "Wall Switch Rule", rules[0].Name)
+	assert.Equal(t, "Wall Switch Rule 2", rules[1].Name)
 }
 
 func TestGetRule(t *testing.T) {

@@ -1,8 +1,10 @@
 package huego_test
 
 import (
-	"github.com/amimof/huego"
 	"testing"
+
+	"github.com/amimof/huego"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestGetSchedules(t *testing.T) {
@@ -27,6 +29,8 @@ func TestGetSchedules(t *testing.T) {
 		t.Logf("  AutoDelete: %t", schedule.AutoDelete)
 		t.Logf("  ID: %d", schedule.ID)
 	}
+	assert.Equal(t, "Timer", schedules[0].Name)
+	assert.Equal(t, "Alarm", schedules[1].Name)
 }
 
 func TestGetSchedule(t *testing.T) {

@@ -1,8 +1,10 @@
 package huego_test
 
 import (
-	"github.com/amimof/huego"
 	"testing"
+
+	"github.com/amimof/huego"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestGetConfig(t *testing.T) {
@@ -86,6 +88,8 @@ func TestGetUsers(t *testing.T) {
 		t.Logf("  CreateDate: %s", u.CreateDate)
 		t.Logf("  LastUseDate: %s", u.LastUseDate)
 	}
+	assert.Equal(t, "PhilipsHueAndroidApp#TCTALCATELONETOU", users[0].Name)
+	assert.Equal(t, "MyApplication", users[1].Name)
 }
 
 func TestDeleteUser(t *testing.T) {

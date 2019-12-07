@@ -1,8 +1,10 @@
 package huego_test
 
 import (
-	"github.com/amimof/huego"
 	"testing"
+
+	"github.com/amimof/huego"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestGetScenes(t *testing.T) {
@@ -26,6 +28,9 @@ func TestGetScenes(t *testing.T) {
 		t.Logf("  StoreSceneState: %t", scene.StoreSceneState)
 		t.Logf("  ID: %s", scene.ID)
 	}
+	assert.Equal(t, "Kathyon1449133269486", scenes[0].Name)
+	assert.Equal(t, "Cozydinner", scenes[1].Name)
+
 }
 
 func TestGetScene(t *testing.T) {

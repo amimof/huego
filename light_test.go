@@ -1,8 +1,10 @@
 package huego_test
 
 import (
-	"github.com/amimof/huego"
 	"testing"
+
+	"github.com/amimof/huego"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestGetLights(t *testing.T) {
@@ -23,6 +25,8 @@ func TestGetLights(t *testing.T) {
 		t.Logf("  SwConfigID: %s", l.SwConfigID)
 		t.Logf("  ProductID: %s", l.ProductID)
 	}
+	assert.Equal(t, "Huecolorlamp7", lights[0].Name)
+	assert.Equal(t, "Huelightstripplus1", lights[1].Name)
 }
 
 func TestGetLight(t *testing.T) {

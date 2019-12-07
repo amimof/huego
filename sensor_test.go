@@ -1,8 +1,10 @@
 package huego_test
 
 import (
-	"github.com/amimof/huego"
 	"testing"
+
+	"github.com/amimof/huego"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestGetSensors(t *testing.T) {
@@ -25,6 +27,8 @@ func TestGetSensors(t *testing.T) {
 		t.Logf("SwVersion: %s", sensor.SwVersion)
 		t.Logf("ID: %d", sensor.ID)
 	}
+	assert.Equal(t, "Daylight", sensors[0].Name)
+	assert.Equal(t, "Tap Switch 2", sensors[1].Name)
 }
 
 func TestGetSensor(t *testing.T) {
@@ -93,6 +97,8 @@ func TestGetNewSensors(t *testing.T) {
 		t.Logf("SwVersion: %s", sensor.SwVersion)
 		t.Logf("ID: %d", sensor.ID)
 	}
+	assert.Equal(t, "Hue Tap 1", newSensors.Sensors[0].Name)
+	assert.Equal(t, "Button 3", newSensors.Sensors[1].Name)
 }
 
 func TestUpdateSensor(t *testing.T) {

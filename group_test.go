@@ -1,8 +1,10 @@
 package huego_test
 
 import (
-	"github.com/amimof/huego"
 	"testing"
+
+	"github.com/amimof/huego"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestGetGroups(t *testing.T) {
@@ -41,6 +43,8 @@ func TestGetGroups(t *testing.T) {
 		t.Logf("    Reachable: %t", g.State.Reachable)
 		t.Logf("  ID: %d", g.ID)
 	}
+	assert.Equal(t, "Group 1", groups[0].Name)
+	assert.Equal(t, "Group 2", groups[1].Name)
 }
 
 func TestGetGroup(t *testing.T) {

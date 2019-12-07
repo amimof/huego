@@ -2,11 +2,12 @@ package huego_test
 
 import (
 	"fmt"
-	"github.com/amimof/huego"
-	"github.com/jarcoal/httpmock"
 	"os"
 	"path"
 	"testing"
+
+	"github.com/amimof/huego"
+	"github.com/jarcoal/httpmock"
 )
 
 // I'm too lazy to have this elsewhere
@@ -171,7 +172,7 @@ func init() {
 		{
 			method: "GET",
 			path:   "/rules",
-			data:   `{ "1": { "name": "Wall Switch Rule", "lasttriggered": "2013-10-17T01:23:20", "creationtime": "2013-10-10T21:11:45", "timestriggered": 27, "owner": "78H56B12BA", "status": "enabled", "conditions": [ { "address": "/sensors/2/state/buttonevent", "operator": "eq", "value": "16" }, { "address": "/sensors/2/state/lastupdated", "operator": "dx" } ], "actions": [ { "address": "/groups/0/action", "method": "PUT", "body": { "scene": "S3" } } ] }} `,
+			data:   `{ "1": { "name": "Wall Switch Rule", "lasttriggered": "2013-10-17T01:23:20", "creationtime": "2013-10-10T21:11:45", "timestriggered": 27, "owner": "78H56B12BA", "status": "enabled", "conditions": [ { "address": "/sensors/2/state/buttonevent", "operator": "eq", "value": "16" }, { "address": "/sensors/2/state/lastupdated", "operator": "dx" } ], "actions": [ { "address": "/groups/0/action", "method": "PUT", "body": { "scene": "S3" } } ] }, "2": { "name": "Wall Switch Rule 2" }} `,
 		},
 		{
 			method: "GET",
@@ -245,7 +246,7 @@ func init() {
 		{
 			method: "GET",
 			path:   "/sensors/new",
-			data:   `{ "7": {"name": "Hue Tap 1"}, "8": {"name": " Button 3"}, "lastscan":"2013-05-22T10:24:00" }`,
+			data:   `{ "7": {"name": "Hue Tap 1"}, "8": {"name": "Button 3"}, "lastscan":"2013-05-22T10:24:00" }`,
 		},
 		{
 			method: "PUT",
@@ -279,7 +280,7 @@ func init() {
 		{
 			method: "GET",
 			path:   "/resourcelinks",
-			data:   `{ "1": { "name": "Sunrise", "description": "Carla's wakeup experience", "class": 1, "owner": "78H56B12BAABCDEF", "links": ["/schedules/2", "/schedules/3", "/scenes/ABCD", "/scenes/EFGH", "/groups/8"] } }`,
+			data:   `{ "1": { "name": "Sunrise", "description": "Carla's wakeup experience", "class": 1, "owner": "78H56B12BAABCDEF", "links": ["/schedules/2", "/schedules/3", "/scenes/ABCD", "/scenes/EFGH", "/groups/8"] }, "2": { "name": "Sunrise 2" } }`,
 		},
 		{
 			method: "GET",
