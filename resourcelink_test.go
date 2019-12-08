@@ -25,8 +25,17 @@ func TestGetResourcelinks(t *testing.T) {
 		t.Logf("  ID: %d", resourcelink.ID)
 	}
 
-	assert.Equal(t, "Sunrise", resourcelinks[0].Name)
-	assert.Equal(t, "Sunrise 2", resourcelinks[1].Name)
+	contains := func(name string, ss []*huego.Resourcelink) bool {
+		for _, s := range ss {
+			if s.Name == name {
+				return true
+			}
+		}
+		return false
+	}
+
+	assert.True(t, contains("Sunrise", resourcelinks))
+	assert.True(t, contains("Sunrise 2", resourcelinks))
 }
 
 func TestGetResourcelink(t *testing.T) {

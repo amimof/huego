@@ -28,8 +28,18 @@ func TestGetScenes(t *testing.T) {
 		t.Logf("  StoreSceneState: %t", scene.StoreSceneState)
 		t.Logf("  ID: %s", scene.ID)
 	}
-	assert.Equal(t, "Kathyon1449133269486", scenes[0].Name)
-	assert.Equal(t, "Cozydinner", scenes[1].Name)
+
+	contains := func(name string, ss []huego.Scene) bool {
+		for _, s := range ss {
+			if s.Name == name {
+				return true
+			}
+		}
+		return false
+	}
+
+	assert.True(t, contains("Kathyon1449133269486", scenes))
+	assert.True(t, contains("Cozydinner", scenes))
 
 }
 

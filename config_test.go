@@ -88,8 +88,17 @@ func TestGetUsers(t *testing.T) {
 		t.Logf("  CreateDate: %s", u.CreateDate)
 		t.Logf("  LastUseDate: %s", u.LastUseDate)
 	}
-	assert.Equal(t, "PhilipsHueAndroidApp#TCTALCATELONETOU", users[0].Name)
-	assert.Equal(t, "MyApplication", users[1].Name)
+	contains := func(name string, ss []huego.Whitelist) bool {
+		for _, s := range ss {
+			if s.Name == name {
+				return true
+			}
+		}
+		return false
+	}
+
+	assert.True(t, contains("PhilipsHueAndroidApp#TCTALCATELONETOU", users))
+	assert.True(t, contains("MyApplication", users))
 }
 
 func TestDeleteUser(t *testing.T) {

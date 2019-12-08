@@ -27,8 +27,17 @@ func TestGetSensors(t *testing.T) {
 		t.Logf("SwVersion: %s", sensor.SwVersion)
 		t.Logf("ID: %d", sensor.ID)
 	}
-	assert.Equal(t, "Daylight", sensors[0].Name)
-	assert.Equal(t, "Tap Switch 2", sensors[1].Name)
+	contains := func(name string, ss []huego.Sensor) bool {
+		for _, s := range ss {
+			if s.Name == name {
+				return true
+			}
+		}
+		return false
+	}
+
+	assert.True(t, contains("Daylight", sensors))
+	assert.True(t, contains("Tap Switch 2", sensors))
 }
 
 func TestGetSensor(t *testing.T) {
@@ -97,8 +106,18 @@ func TestGetNewSensors(t *testing.T) {
 		t.Logf("SwVersion: %s", sensor.SwVersion)
 		t.Logf("ID: %d", sensor.ID)
 	}
-	assert.Equal(t, "Hue Tap 1", newSensors.Sensors[0].Name)
-	assert.Equal(t, "Button 3", newSensors.Sensors[1].Name)
+
+	contains := func(name string, ss []*huego.Sensor) bool {
+		for _, s := range ss {
+			if s.Name == name {
+				return true
+			}
+		}
+		return false
+	}
+
+	assert.True(t, contains("Hue Tap 1", newSensors.Sensors))
+	assert.True(t, contains("Button 3", newSensors.Sensors))
 }
 
 func TestUpdateSensor(t *testing.T) {

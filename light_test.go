@@ -25,8 +25,17 @@ func TestGetLights(t *testing.T) {
 		t.Logf("  SwConfigID: %s", l.SwConfigID)
 		t.Logf("  ProductID: %s", l.ProductID)
 	}
-	assert.Equal(t, "Huecolorlamp7", lights[0].Name)
-	assert.Equal(t, "Huelightstripplus1", lights[1].Name)
+	contains := func(name string, ss []huego.Light) bool {
+		for _, s := range ss {
+			if s.Name == name {
+				return true
+			}
+		}
+		return false
+	}
+
+	assert.True(t, contains("Huecolorlamp7", lights))
+	assert.True(t, contains("Huelightstripplus1", lights))
 }
 
 func TestGetLight(t *testing.T) {

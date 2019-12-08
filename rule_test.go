@@ -17,8 +17,18 @@ func TestGetRules(t *testing.T) {
 	for _, rule := range rules {
 		t.Log(rule)
 	}
-	assert.Equal(t, "Wall Switch Rule", rules[0].Name)
-	assert.Equal(t, "Wall Switch Rule 2", rules[1].Name)
+
+	contains := func(name string, ss []*huego.Rule) bool {
+		for _, s := range ss {
+			if s.Name == name {
+				return true
+			}
+		}
+		return false
+	}
+
+	assert.True(t, contains("Wall Switch Rule", rules))
+	assert.True(t, contains("Wall Switch Rule 2", rules))
 }
 
 func TestGetRule(t *testing.T) {
