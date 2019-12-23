@@ -9,7 +9,7 @@ type Schedule struct {
 	LocalTime   string   `json:"localtime"`
 	StartTime   string   `json:"starttime,omitempty"`
 	Status      string   `json:"status,omitempty"`
-	AutoDelete  bool     `json:"autodelete"`
+	AutoDelete  bool     `json:"autodelete,omitempty"`
 	ID          int      `json:"-"`
 }
 
