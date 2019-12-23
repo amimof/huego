@@ -1208,14 +1208,15 @@ func (b *Bridge) GetSchedules() ([]*Schedule, error) {
 		return nil, err
 	}
 
-	schedules := make([]*Schedule, 0, len(r))
+	schedules := make([]*Schedule, len(r))
 
 	for i, s := range r {
 		s.ID, err = strconv.Atoi(i)
 		if err != nil {
 			return nil, err
 		}
-		schedules = append(schedules, &s)
+		s2 := s
+		schedules[s.ID-1] = &s2
 	}
 
 	return schedules, nil
