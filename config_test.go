@@ -1,8 +1,10 @@
 package huego_test
 
 import (
-	"github.com/amimof/huego"
 	"testing"
+
+	"github.com/amimof/huego"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestGetConfig(t *testing.T) {
@@ -86,6 +88,17 @@ func TestGetUsers(t *testing.T) {
 		t.Logf("  CreateDate: %s", u.CreateDate)
 		t.Logf("  LastUseDate: %s", u.LastUseDate)
 	}
+	contains := func(name string, ss []huego.Whitelist) bool {
+		for _, s := range ss {
+			if s.Name == name {
+				return true
+			}
+		}
+		return false
+	}
+
+	assert.True(t, contains("PhilipsHueAndroidApp#TCTALCATELONETOU", users))
+	assert.True(t, contains("MyApplication", users))
 }
 
 func TestDeleteUser(t *testing.T) {
