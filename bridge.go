@@ -669,7 +669,8 @@ func (b *Bridge) GetResourcelinks() ([]*Resourcelink, error) {
 		if err != nil {
 			return nil, err
 		}
-		resourcelinks = append(resourcelinks, &s)
+		sCopy := s
+		resourcelinks = append(resourcelinks, &sCopy)
 	}
 
 	return resourcelinks, nil
@@ -827,7 +828,8 @@ func (b *Bridge) GetRules() ([]*Rule, error) {
 		if err != nil {
 			return nil, err
 		}
-		rules = append(rules, &s)
+		sCopy := s
+		rules = append(rules, &sCopy)
 	}
 
 	return rules, nil
@@ -1215,7 +1217,8 @@ func (b *Bridge) GetSchedules() ([]*Schedule, error) {
 		if err != nil {
 			return nil, err
 		}
-		schedules = append(schedules, &s)
+		sCopy := s
+		schedules = append(schedules, &sCopy)
 	}
 
 	return schedules, nil
@@ -1496,7 +1499,8 @@ func (b *Bridge) GetNewSensors() (*NewSensor, error) {
 			if err != nil {
 				return nil, err
 			}
-			sensors = append(sensors, &l)
+			lCopy := l
+			sensors = append(sensors, &lCopy)
 		}
 	}
 

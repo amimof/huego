@@ -1,8 +1,10 @@
 package huego_test
 
 import (
-	"github.com/amimof/huego"
 	"testing"
+
+	"github.com/amimof/huego"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestGetResourcelinks(t *testing.T) {
@@ -22,6 +24,18 @@ func TestGetResourcelinks(t *testing.T) {
 		t.Logf("  Links: %s", resourcelink.Links)
 		t.Logf("  ID: %d", resourcelink.ID)
 	}
+
+	contains := func(name string, ss []*huego.Resourcelink) bool {
+		for _, s := range ss {
+			if s.Name == name {
+				return true
+			}
+		}
+		return false
+	}
+
+	assert.True(t, contains("Sunrise", resourcelinks))
+	assert.True(t, contains("Sunrise 2", resourcelinks))
 }
 
 func TestGetResourcelink(t *testing.T) {
