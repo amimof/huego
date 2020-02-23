@@ -5,7 +5,7 @@ type Group struct {
 	Name       string     `json:"name,omitempty"`
 	Lights     []string   `json:"lights,omitempty"`
 	Type       string     `json:"type,omitempty"`
-	GroupState GroupState `json:"state,omitempty"`
+	GroupState *GroupState `json:"state,omitempty"`
 	Recycle    bool       `json:"recycle,omitempty"`
 	Class      string     `json:"class,omitempty"`
 	State      *State     `json:"action,omitempty"`
