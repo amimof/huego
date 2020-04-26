@@ -1,6 +1,7 @@
 package huego
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/url"
@@ -48,6 +49,11 @@ func (b *Bridge) Login(u string) *Bridge {
 
 // GetConfig returns the bridge configuration
 func (b *Bridge) GetConfig() (*Config, error) {
+	return b.GetConfigWithContext(context.Background())
+}
+
+// GetConfigContext returns the bridge configuration
+func (b *Bridge) GetConfigWithContext(ctx context.Context) (*Config, error) {
 
 	var config *Config
 
@@ -56,7 +62,7 @@ func (b *Bridge) GetConfig() (*Config, error) {
 		return nil, err
 	}
 
-	res, err := get(url)
+	res, err := get(ctx, url)
 	if err != nil {
 		return nil, err
 	}
@@ -81,6 +87,12 @@ func (b *Bridge) GetConfig() (*Config, error) {
 // CreateUser creates a user by adding n to the list of whitelists in the bridge.
 // The link button on the bridge must have been pressed before calling CreateUser.
 func (b *Bridge) CreateUser(n string) (string, error) {
+	return b.CreateUserContext(context.Background(), n)
+}
+
+// CreateUserContext creates a user by adding n to the list of whitelists in the bridge.
+// The link button on the bridge must have been pressed before calling CreateUser.
+func (b *Bridge) CreateUserContext(ctx context.Context, n string) (string, error) {
 
 	var a []*APIResponse
 
@@ -99,7 +111,7 @@ func (b *Bridge) CreateUser(n string) (string, error) {
 		return "", err
 	}
 
-	res, err := post(url, data)
+	res, err := post(ctx, url, data)
 	if err != nil {
 		return "", err
 	}
@@ -129,6 +141,11 @@ func (b *Bridge) GetUsers() ([]Whitelist, error) {
 
 // UpdateConfig updates the bridge configuration with c
 func (b *Bridge) UpdateConfig(c *Config) (*Response, error) {
+	return b.UpdateConfigContext(context.Background(), c)
+}
+
+// UpdateConfigContext updates the bridge configuration with c
+func (b *Bridge) UpdateConfigContext(ctx context.Context, c *Config) (*Response, error) {
 
 	var a []*APIResponse
 
@@ -142,7 +159,7 @@ func (b *Bridge) UpdateConfig(c *Config) (*Response, error) {
 		return nil, err
 	}
 
-	res, err := put(url, data)
+	res, err := put(ctx, url, data)
 	if err != nil {
 		return nil, err
 	}
@@ -162,6 +179,11 @@ func (b *Bridge) UpdateConfig(c *Config) (*Response, error) {
 
 // DeleteUser removes a whitelist item from whitelists on the bridge
 func (b *Bridge) DeleteUser(n string) error {
+	return b.DeleteUserContext(context.Background(), n)
+}
+
+// DeleteUserContext removes a whitelist item from whitelists on the bridge
+func (b *Bridge) DeleteUserContext(ctx context.Context, n string) error {
 
 	var a []*APIResponse
 
@@ -170,7 +192,7 @@ func (b *Bridge) DeleteUser(n string) error {
 		return err
 	}
 
-	res, err := delete(url)
+	res, err := delete(ctx, url)
 	if err != nil {
 		return err
 	}
@@ -188,6 +210,11 @@ func (b *Bridge) DeleteUser(n string) error {
 
 // GetFullState returns the entire bridge configuration.
 func (b *Bridge) GetFullState() (map[string]interface{}, error) {
+	return b.GetFullStateContext(context.Background())
+}
+
+// GetFullStateContext returns the entire bridge configuration.
+func (b *Bridge) GetFullStateContext(ctx context.Context) (map[string]interface{}, error) {
 
 	var n map[string]interface{}
 
@@ -196,7 +223,7 @@ func (b *Bridge) GetFullState() (map[string]interface{}, error) {
 		return nil, err
 	}
 
-	res, err := get(url)
+	res, err := get(ctx, url)
 	if err != nil {
 		return nil, err
 	}
@@ -217,6 +244,11 @@ func (b *Bridge) GetFullState() (map[string]interface{}, error) {
 
 // GetGroups returns all groups known to the bridge
 func (b *Bridge) GetGroups() ([]Group, error) {
+	return b.GetGroupsContext(context.Background())
+}
+
+// GetGroupsContext returns all groups known to the bridge
+func (b *Bridge) GetGroupsContext(ctx context.Context) ([]Group, error) {
 
 	var m map[string]Group
 
@@ -225,7 +257,7 @@ func (b *Bridge) GetGroups() ([]Group, error) {
 		return nil, err
 	}
 
-	res, err := get(url)
+	res, err := get(ctx, url)
 	if err != nil {
 		return nil, err
 	}
@@ -252,6 +284,11 @@ func (b *Bridge) GetGroups() ([]Group, error) {
 
 // GetGroup returns one group known to the bridge by its id
 func (b *Bridge) GetGroup(i int) (*Group, error) {
+	return b.GetGroupContext(context.Background(), i)
+}
+
+// GetGroupContext returns one group known to the bridge by its id
+func (b *Bridge) GetGroupContext(ctx context.Context, i int) (*Group, error) {
 
 	g := &Group{
 		ID: i,
@@ -262,7 +299,7 @@ func (b *Bridge) GetGroup(i int) (*Group, error) {
 		return nil, err
 	}
 
-	res, err := get(url)
+	res, err := get(ctx, url)
 	if err != nil {
 		return nil, err
 	}
@@ -279,6 +316,11 @@ func (b *Bridge) GetGroup(i int) (*Group, error) {
 
 // SetGroupState allows for setting the state of one group, controlling the state of all lights in that group.
 func (b *Bridge) SetGroupState(i int, l State) (*Response, error) {
+	return b.SetGroupStateContext(context.Background(), i, l)
+}
+
+// SetGroupStateContext allows for setting the state of one group, controlling the state of all lights in that group.
+func (b *Bridge) SetGroupStateContext(ctx context.Context, i int, l State) (*Response, error) {
 
 	var a []*APIResponse
 
@@ -293,7 +335,7 @@ func (b *Bridge) SetGroupState(i int, l State) (*Response, error) {
 		return nil, err
 	}
 
-	res, err := put(url, data)
+	res, err := put(ctx, url, data)
 	if err != nil {
 		return nil, err
 	}
@@ -313,6 +355,11 @@ func (b *Bridge) SetGroupState(i int, l State) (*Response, error) {
 
 // UpdateGroup updates one group known to the bridge
 func (b *Bridge) UpdateGroup(i int, l Group) (*Response, error) {
+	return b.UpdateGroupContext(context.Background(), i, l)
+}
+
+// UpdateGroupContext updates one group known to the bridge
+func (b *Bridge) UpdateGroupContext(ctx context.Context, i int, l Group) (*Response, error) {
 
 	var a []*APIResponse
 
@@ -327,7 +374,7 @@ func (b *Bridge) UpdateGroup(i int, l Group) (*Response, error) {
 		return nil, err
 	}
 
-	res, err := put(url, data)
+	res, err := put(ctx, url, data)
 	if err != nil {
 		return nil, err
 	}
@@ -347,6 +394,11 @@ func (b *Bridge) UpdateGroup(i int, l Group) (*Response, error) {
 
 // CreateGroup creates one new group with attributes defined by g
 func (b *Bridge) CreateGroup(g Group) (*Response, error) {
+	return b.CreateGroupContext(context.Background(), g)
+}
+
+// CreateGroupContext creates one new group with attributes defined by g
+func (b *Bridge) CreateGroupContext(ctx context.Context, g Group) (*Response, error) {
 
 	var a []*APIResponse
 
@@ -360,7 +412,7 @@ func (b *Bridge) CreateGroup(g Group) (*Response, error) {
 		return nil, err
 	}
 
-	res, err := post(url, data)
+	res, err := post(ctx, url, data)
 	if err != nil {
 		return nil, err
 	}
@@ -380,6 +432,11 @@ func (b *Bridge) CreateGroup(g Group) (*Response, error) {
 
 // DeleteGroup deletes one group with the id of i
 func (b *Bridge) DeleteGroup(i int) error {
+	return b.DeleteGroupContext(context.Background(), i)
+}
+
+// DeleteGroupContext deletes one group with the id of i
+func (b *Bridge) DeleteGroupContext(ctx context.Context, i int) error {
 
 	var a []*APIResponse
 
@@ -389,7 +446,7 @@ func (b *Bridge) DeleteGroup(i int) error {
 		return err
 	}
 
-	res, err := delete(url)
+	res, err := delete(ctx, url)
 	if err != nil {
 		return err
 	}
@@ -412,6 +469,11 @@ func (b *Bridge) DeleteGroup(i int) error {
 
 // GetLights returns all lights known to the bridge
 func (b *Bridge) GetLights() ([]Light, error) {
+	return b.GetLightsContext(context.Background())
+}
+
+// GetLightsContext returns all lights known to the bridge
+func (b *Bridge) GetLightsContext(ctx context.Context) ([]Light, error) {
 
 	m := map[string]Light{}
 
@@ -420,7 +482,7 @@ func (b *Bridge) GetLights() ([]Light, error) {
 		return nil, err
 	}
 
-	res, err := get(url)
+	res, err := get(ctx, url)
 	if err != nil {
 		return nil, err
 	}
@@ -447,6 +509,11 @@ func (b *Bridge) GetLights() ([]Light, error) {
 
 // GetLight returns one light with the id of i
 func (b *Bridge) GetLight(i int) (*Light, error) {
+	return b.GetLightContext(context.Background(), i)
+}
+
+// GetLightContext returns one light with the id of i
+func (b *Bridge) GetLightContext(ctx context.Context, i int) (*Light, error) {
 
 	light := &Light{
 		ID: i,
@@ -457,7 +524,7 @@ func (b *Bridge) GetLight(i int) (*Light, error) {
 		return nil, err
 	}
 
-	res, err := get(url)
+	res, err := get(ctx, url)
 	if err != nil {
 		return light, err
 	}
@@ -474,6 +541,11 @@ func (b *Bridge) GetLight(i int) (*Light, error) {
 
 // SetLightState allows for controlling one light's state
 func (b *Bridge) SetLightState(i int, l State) (*Response, error) {
+	return b.SetLightStateContext(context.Background(), i, l)
+}
+
+// SetLightStateContext allows for controlling one light's state
+func (b *Bridge) SetLightStateContext(ctx context.Context, i int, l State) (*Response, error) {
 
 	var a []*APIResponse
 
@@ -489,7 +561,7 @@ func (b *Bridge) SetLightState(i int, l State) (*Response, error) {
 	if err != nil {
 		return nil, err
 	}
-	res, err := put(url, data)
+	res, err := put(ctx, url, data)
 	if err != nil {
 		return nil, err
 	}
@@ -511,6 +583,12 @@ func (b *Bridge) SetLightState(i int, l State) (*Response, error) {
 // FindLights starts a search for new lights on the bridge.
 // Use GetNewLights() verify if new lights have been detected.
 func (b *Bridge) FindLights() (*Response, error) {
+	return b.FindLightsContext(context.Background())
+}
+
+// FindLightsContext starts a search for new lights on the bridge.
+// Use GetNewLights() verify if new lights have been detected.
+func (b *Bridge) FindLightsContext(ctx context.Context) (*Response, error) {
 
 	var a []*APIResponse
 
@@ -519,7 +597,7 @@ func (b *Bridge) FindLights() (*Response, error) {
 		return nil, err
 	}
 
-	res, err := post(url, nil)
+	res, err := post(ctx, url, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -540,6 +618,11 @@ func (b *Bridge) FindLights() (*Response, error) {
 
 // GetNewLights returns a list of lights that were discovered last time FindLights() was executed.
 func (b *Bridge) GetNewLights() (*NewLight, error) {
+	return b.GetNewLightsContext(context.Background())
+}
+
+// GetNewLightsContext returns a list of lights that were discovered last time FindLights() was executed.
+func (b *Bridge) GetNewLightsContext(ctx context.Context) (*NewLight, error) {
 
 	var n map[string]interface{}
 
@@ -548,7 +631,7 @@ func (b *Bridge) GetNewLights() (*NewLight, error) {
 		return nil, err
 	}
 
-	res, err := get(url)
+	res, err := get(ctx, url)
 	if err != nil {
 		return nil, err
 	}
@@ -577,6 +660,11 @@ func (b *Bridge) GetNewLights() (*NewLight, error) {
 
 // DeleteLight deletes one lights from the bridge
 func (b *Bridge) DeleteLight(i int) error {
+	return b.DeleteLightContext(context.Background(), i)
+}
+
+// DeleteLightContext deletes one lights from the bridge
+func (b *Bridge) DeleteLightContext(ctx context.Context, i int) error {
 
 	var a []*APIResponse
 
@@ -586,7 +674,7 @@ func (b *Bridge) DeleteLight(i int) error {
 		return err
 	}
 
-	res, err := delete(url)
+	res, err := delete(ctx, url)
 	if err != nil {
 		return err
 	}
@@ -604,6 +692,11 @@ func (b *Bridge) DeleteLight(i int) error {
 
 // UpdateLight updates one light's attributes and state properties
 func (b *Bridge) UpdateLight(i int, light Light) (*Response, error) {
+	return b.UpdateLightContext(context.Background(), i, light)
+}
+
+// UpdateLightContext updates one light's attributes and state properties
+func (b *Bridge) UpdateLightContext(ctx context.Context, i int, light Light) (*Response, error) {
 
 	var a []*APIResponse
 
@@ -618,7 +711,7 @@ func (b *Bridge) UpdateLight(i int, light Light) (*Response, error) {
 		return nil, err
 	}
 
-	res, err := put(url, data)
+	res, err := put(ctx, url, data)
 	if err != nil {
 		return nil, err
 	}
@@ -644,6 +737,11 @@ func (b *Bridge) UpdateLight(i int, light Light) (*Response, error) {
 
 // GetResourcelinks returns all resourcelinks known to the bridge
 func (b *Bridge) GetResourcelinks() ([]*Resourcelink, error) {
+	return b.GetResourcelinksContext(context.Background())
+}
+
+// GetResourcelinksContext returns all resourcelinks known to the bridge
+func (b *Bridge) GetResourcelinksContext(ctx context.Context) ([]*Resourcelink, error) {
 
 	var r map[string]Resourcelink
 
@@ -652,7 +750,7 @@ func (b *Bridge) GetResourcelinks() ([]*Resourcelink, error) {
 		return nil, err
 	}
 
-	res, err := get(url)
+	res, err := get(ctx, url)
 	if err != nil {
 		return nil, err
 	}
@@ -679,6 +777,11 @@ func (b *Bridge) GetResourcelinks() ([]*Resourcelink, error) {
 
 // GetResourcelink returns one resourcelink by its id defined by i
 func (b *Bridge) GetResourcelink(i int) (*Resourcelink, error) {
+	return b.GetResourcelinkContext(context.Background(), i)
+}
+
+// GetResourcelinkContext returns one resourcelink by its id defined by i
+func (b *Bridge) GetResourcelinkContext(ctx context.Context, i int) (*Resourcelink, error) {
 
 	g := &Resourcelink{
 		ID: i,
@@ -689,7 +792,7 @@ func (b *Bridge) GetResourcelink(i int) (*Resourcelink, error) {
 		return nil, err
 	}
 
-	res, err := get(url)
+	res, err := get(ctx, url)
 	if err != nil {
 		return nil, err
 	}
@@ -705,6 +808,11 @@ func (b *Bridge) GetResourcelink(i int) (*Resourcelink, error) {
 
 // CreateResourcelink creates one new resourcelink on the bridge
 func (b *Bridge) CreateResourcelink(s *Resourcelink) (*Response, error) {
+	return b.CreateResourcelinkContext(context.Background(), s)
+}
+
+// CreateResourcelinkContext creates one new resourcelink on the bridge
+func (b *Bridge) CreateResourcelinkContext(ctx context.Context, s *Resourcelink) (*Response, error) {
 
 	var a []*APIResponse
 
@@ -718,7 +826,7 @@ func (b *Bridge) CreateResourcelink(s *Resourcelink) (*Response, error) {
 		return nil, err
 	}
 
-	res, err := post(url, data)
+	res, err := post(ctx, url, data)
 	if err != nil {
 		return nil, err
 	}
@@ -739,6 +847,11 @@ func (b *Bridge) CreateResourcelink(s *Resourcelink) (*Response, error) {
 
 // UpdateResourcelink updates one resourcelink with attributes defined by resourcelink
 func (b *Bridge) UpdateResourcelink(i int, resourcelink *Resourcelink) (*Response, error) {
+	return b.UpdateResourcelinkContext(context.Background(), i, resourcelink)
+}
+
+// UpdateResourcelinkContext updates one resourcelink with attributes defined by resourcelink
+func (b *Bridge) UpdateResourcelinkContext(ctx context.Context, i int, resourcelink *Resourcelink) (*Response, error) {
 	var a []*APIResponse
 
 	data, err := json.Marshal(&resourcelink)
@@ -751,7 +864,7 @@ func (b *Bridge) UpdateResourcelink(i int, resourcelink *Resourcelink) (*Respons
 		return nil, err
 	}
 
-	res, err := put(url, data)
+	res, err := put(ctx, url, data)
 	if err != nil {
 		return nil, err
 	}
@@ -771,6 +884,11 @@ func (b *Bridge) UpdateResourcelink(i int, resourcelink *Resourcelink) (*Respons
 
 // DeleteResourcelink deletes one resourcelink with the id of i
 func (b *Bridge) DeleteResourcelink(i int) error {
+	return b.DeleteResourcelinkContext(context.Background(), i)
+}
+
+// DeleteResourcelinkContext deletes one resourcelink with the id of i
+func (b *Bridge) DeleteResourcelinkContext(ctx context.Context, i int) error {
 
 	var a []*APIResponse
 
@@ -780,7 +898,7 @@ func (b *Bridge) DeleteResourcelink(i int) error {
 		return err
 	}
 
-	res, err := delete(url)
+	res, err := delete(ctx, url)
 	if err != nil {
 		return err
 	}
@@ -803,6 +921,11 @@ func (b *Bridge) DeleteResourcelink(i int) error {
 
 // GetRules returns all rules known to the bridge
 func (b *Bridge) GetRules() ([]*Rule, error) {
+	return b.GetRulesContext(context.Background())
+}
+
+// GetRulesContext returns all rules known to the bridge
+func (b *Bridge) GetRulesContext(ctx context.Context) ([]*Rule, error) {
 
 	var r map[string]Rule
 
@@ -811,7 +934,7 @@ func (b *Bridge) GetRules() ([]*Rule, error) {
 		return nil, err
 	}
 
-	res, err := get(url)
+	res, err := get(ctx, url)
 	if err != nil {
 		return nil, err
 	}
@@ -838,6 +961,11 @@ func (b *Bridge) GetRules() ([]*Rule, error) {
 
 // GetRule returns one rule by its id of i
 func (b *Bridge) GetRule(i int) (*Rule, error) {
+	return b.GetRuleContext(context.Background(), i)
+}
+
+// GetRuleContext returns one rule by its id of i
+func (b *Bridge) GetRuleContext(ctx context.Context, i int) (*Rule, error) {
 
 	g := &Rule{
 		ID: i,
@@ -848,7 +976,7 @@ func (b *Bridge) GetRule(i int) (*Rule, error) {
 		return nil, err
 	}
 
-	res, err := get(url)
+	res, err := get(ctx, url)
 	if err != nil {
 		return nil, err
 	}
@@ -864,6 +992,11 @@ func (b *Bridge) GetRule(i int) (*Rule, error) {
 
 // CreateRule creates one rule with attribues defined in s
 func (b *Bridge) CreateRule(s *Rule) (*Response, error) {
+	return b.CreateRuleContext(context.Background(), s)
+}
+
+// CreateRuleContext creates one rule with attribues defined in s
+func (b *Bridge) CreateRuleContext(ctx context.Context, s *Rule) (*Response, error) {
 
 	var a []*APIResponse
 
@@ -877,7 +1010,7 @@ func (b *Bridge) CreateRule(s *Rule) (*Response, error) {
 		return nil, err
 	}
 
-	res, err := post(url, data)
+	res, err := post(ctx, url, data)
 	if err != nil {
 		return nil, err
 	}
@@ -898,6 +1031,11 @@ func (b *Bridge) CreateRule(s *Rule) (*Response, error) {
 
 // UpdateRule updates one rule by its id of i and rule configuration of rule
 func (b *Bridge) UpdateRule(i int, rule *Rule) (*Response, error) {
+	return b.UpdateRuleContext(context.Background(), i, rule)
+}
+
+// UpdateRuleContext updates one rule by its id of i and rule configuration of rule
+func (b *Bridge) UpdateRuleContext(ctx context.Context, i int, rule *Rule) (*Response, error) {
 
 	var a []*APIResponse
 
@@ -911,7 +1049,7 @@ func (b *Bridge) UpdateRule(i int, rule *Rule) (*Response, error) {
 		return nil, err
 	}
 
-	res, err := put(url, data)
+	res, err := put(ctx, url, data)
 	if err != nil {
 		return nil, err
 	}
@@ -931,6 +1069,11 @@ func (b *Bridge) UpdateRule(i int, rule *Rule) (*Response, error) {
 
 // DeleteRule deletes one rule from the bridge
 func (b *Bridge) DeleteRule(i int) error {
+	return b.DeleteRuleContext(context.Background(), i)
+}
+
+// DeleteRuleContext deletes one rule from the bridge
+func (b *Bridge) DeleteRuleContext(ctx context.Context, i int) error {
 
 	var a []*APIResponse
 
@@ -940,7 +1083,7 @@ func (b *Bridge) DeleteRule(i int) error {
 		return err
 	}
 
-	res, err := delete(url)
+	res, err := delete(ctx, url)
 	if err != nil {
 		return err
 	}
@@ -963,6 +1106,11 @@ func (b *Bridge) DeleteRule(i int) error {
 
 // GetScenes returns all scenes known to the bridge
 func (b *Bridge) GetScenes() ([]Scene, error) {
+	return b.GetScenesContext(context.Background())
+}
+
+// GetScenesContext returns all scenes known to the bridge
+func (b *Bridge) GetScenesContext(ctx context.Context) ([]Scene, error) {
 
 	var m map[string]Scene
 
@@ -971,7 +1119,7 @@ func (b *Bridge) GetScenes() ([]Scene, error) {
 		return nil, err
 	}
 
-	res, err := get(url)
+	res, err := get(ctx, url)
 	if err != nil {
 		return nil, err
 	}
@@ -991,6 +1139,11 @@ func (b *Bridge) GetScenes() ([]Scene, error) {
 
 // GetScene returns one scene by its id of i
 func (b *Bridge) GetScene(i string) (*Scene, error) {
+	return b.GetSceneContext(context.Background(), i)
+}
+
+// GetSceneContext returns one scene by its id of i
+func (b *Bridge) GetSceneContext(ctx context.Context, i string) (*Scene, error) {
 
 	g := &Scene{ID: i}
 	l := struct {
@@ -1002,7 +1155,7 @@ func (b *Bridge) GetScene(i string) (*Scene, error) {
 		return nil, err
 	}
 
-	res, err := get(url)
+	res, err := get(ctx, url)
 	if err != nil {
 		return nil, err
 	}
@@ -1024,6 +1177,11 @@ func (b *Bridge) GetScene(i string) (*Scene, error) {
 
 // UpdateScene updates one scene and its attributes by id of i
 func (b *Bridge) UpdateScene(id string, s *Scene) (*Response, error) {
+	return b.UpdateSceneContext(context.Background(), id, s)
+}
+
+// UpdateSceneContext updates one scene and its attributes by id of i
+func (b *Bridge) UpdateSceneContext(ctx context.Context, id string, s *Scene) (*Response, error) {
 
 	var a []*APIResponse
 
@@ -1037,7 +1195,7 @@ func (b *Bridge) UpdateScene(id string, s *Scene) (*Response, error) {
 		return nil, err
 	}
 
-	res, err := put(url, data)
+	res, err := put(ctx, url, data)
 	if err != nil {
 		return nil, err
 	}
@@ -1058,6 +1216,12 @@ func (b *Bridge) UpdateScene(id string, s *Scene) (*Response, error) {
 // SetSceneLightState allows for setting the state of a light in a scene.
 // SetSceneLightState accepts the id of the scene, the id of a light associated with the scene and the state object.
 func (b *Bridge) SetSceneLightState(id string, iid int, l *State) (*Response, error) {
+	return b.SetSceneLightStateContext(context.Background(), id, iid, l)
+}
+
+// SetSceneLightStateContext allows for setting the state of a light in a scene.
+// SetSceneLightStateContext accepts the id of the scene, the id of a light associated with the scene and the state object.
+func (b *Bridge) SetSceneLightStateContext(ctx context.Context, id string, iid int, l *State) (*Response, error) {
 
 	var a []*APIResponse
 
@@ -1072,7 +1236,7 @@ func (b *Bridge) SetSceneLightState(id string, iid int, l *State) (*Response, er
 		return nil, err
 	}
 
-	res, err := put(url, data)
+	res, err := put(ctx, url, data)
 	if err != nil {
 		return nil, err
 	}
@@ -1092,6 +1256,11 @@ func (b *Bridge) SetSceneLightState(id string, iid int, l *State) (*Response, er
 
 // RecallScene will recall a scene in a group identified by both scene and group identifiers
 func (b *Bridge) RecallScene(id string, gid int) (*Response, error) {
+	return b.RecallSceneContext(context.Background(), id, gid)
+}
+
+// RecallSceneContext will recall a scene in a group identified by both scene and group identifiers
+func (b *Bridge) RecallSceneContext(ctx context.Context, id string, gid int) (*Response, error) {
 
 	var a []*APIResponse
 
@@ -1108,7 +1277,7 @@ func (b *Bridge) RecallScene(id string, gid int) (*Response, error) {
 		return nil, err
 	}
 
-	res, err := put(url, data)
+	res, err := put(ctx, url, data)
 	if err != nil {
 		return nil, err
 	}
@@ -1128,6 +1297,11 @@ func (b *Bridge) RecallScene(id string, gid int) (*Response, error) {
 
 // CreateScene creates one new scene with its attributes defined in s
 func (b *Bridge) CreateScene(s *Scene) (*Response, error) {
+	return b.CreateSceneContext(context.Background(), s)
+}
+
+// CreateSceneContext creates one new scene with its attributes defined in s
+func (b *Bridge) CreateSceneContext(ctx context.Context, s *Scene) (*Response, error) {
 
 	var a []*APIResponse
 
@@ -1141,7 +1315,7 @@ func (b *Bridge) CreateScene(s *Scene) (*Response, error) {
 		return nil, err
 	}
 
-	res, err := post(url, data)
+	res, err := post(ctx, url, data)
 	if err != nil {
 		return nil, err
 	}
@@ -1161,6 +1335,11 @@ func (b *Bridge) CreateScene(s *Scene) (*Response, error) {
 
 // DeleteScene deletes one scene from the bridge
 func (b *Bridge) DeleteScene(id string) error {
+	return b.DeleteSceneContext(context.Background(), id)
+}
+
+// DeleteSceneContext deletes one scene from the bridge
+func (b *Bridge) DeleteSceneContext(ctx context.Context, id string) error {
 
 	var a []*APIResponse
 
@@ -1169,7 +1348,7 @@ func (b *Bridge) DeleteScene(id string) error {
 		return err
 	}
 
-	res, err := delete(url)
+	res, err := delete(ctx, url)
 	if err != nil {
 		return err
 	}
@@ -1190,8 +1369,13 @@ func (b *Bridge) DeleteScene(id string) error {
 
 */
 
-// GetSchedules returns all scehdules known to the bridge
+// GetSchedules returns all schedules known to the bridge
 func (b *Bridge) GetSchedules() ([]*Schedule, error) {
+	return b.GetSchedulesContext(context.Background())
+}
+
+// GetSchedulesContext returns all schedules known to the bridge
+func (b *Bridge) GetSchedulesContext(ctx context.Context) ([]*Schedule, error) {
 
 	var r map[string]Schedule
 
@@ -1200,7 +1384,7 @@ func (b *Bridge) GetSchedules() ([]*Schedule, error) {
 		return nil, err
 	}
 
-	res, err := get(url)
+	res, err := get(ctx, url)
 	if err != nil {
 		return nil, err
 	}
@@ -1227,6 +1411,11 @@ func (b *Bridge) GetSchedules() ([]*Schedule, error) {
 
 // GetSchedule returns one schedule by id defined in i
 func (b *Bridge) GetSchedule(i int) (*Schedule, error) {
+	return b.GetScheduleContext(context.Background(), i)
+}
+
+// GetScheduleContext returns one schedule by id defined in i
+func (b *Bridge) GetScheduleContext(ctx context.Context, i int) (*Schedule, error) {
 
 	g := &Schedule{
 		ID: i,
@@ -1237,7 +1426,7 @@ func (b *Bridge) GetSchedule(i int) (*Schedule, error) {
 		return nil, err
 	}
 
-	res, err := get(url)
+	res, err := get(ctx, url)
 	if err != nil {
 		return nil, err
 	}
@@ -1253,6 +1442,11 @@ func (b *Bridge) GetSchedule(i int) (*Schedule, error) {
 
 // CreateSchedule creates one schedule and sets its attributes defined in s
 func (b *Bridge) CreateSchedule(s *Schedule) (*Response, error) {
+	return b.CreateScheduleContext(context.Background(), s)
+}
+
+// CreateScheduleContext creates one schedule and sets its attributes defined in s
+func (b *Bridge) CreateScheduleContext(ctx context.Context, s *Schedule) (*Response, error) {
 
 	var a []*APIResponse
 
@@ -1266,7 +1460,7 @@ func (b *Bridge) CreateSchedule(s *Schedule) (*Response, error) {
 		return nil, err
 	}
 
-	res, err := post(url, data)
+	res, err := post(ctx, url, data)
 	if err != nil {
 		return nil, err
 	}
@@ -1287,6 +1481,11 @@ func (b *Bridge) CreateSchedule(s *Schedule) (*Response, error) {
 
 // UpdateSchedule updates one schedule by its id of i and attributes by schedule
 func (b *Bridge) UpdateSchedule(i int, schedule *Schedule) (*Response, error) {
+	return b.UpdateScheduleContext(context.Background(), i, schedule)
+}
+
+// UpdateScheduleContext updates one schedule by its id of i and attributes by schedule
+func (b *Bridge) UpdateScheduleContext(ctx context.Context, i int, schedule *Schedule) (*Response, error) {
 
 	var a []*APIResponse
 
@@ -1300,7 +1499,7 @@ func (b *Bridge) UpdateSchedule(i int, schedule *Schedule) (*Response, error) {
 		return nil, err
 	}
 
-	res, err := put(url, data)
+	res, err := put(ctx, url, data)
 	if err != nil {
 		return nil, err
 	}
@@ -1320,6 +1519,11 @@ func (b *Bridge) UpdateSchedule(i int, schedule *Schedule) (*Response, error) {
 
 // DeleteSchedule deletes one schedule from the bridge by its id of i
 func (b *Bridge) DeleteSchedule(i int) error {
+	return b.DeleteScheduleContext(context.Background(), i)
+}
+
+// DeleteScheduleContext deletes one schedule from the bridge by its id of i
+func (b *Bridge) DeleteScheduleContext(ctx context.Context, i int) error {
 
 	var a []*APIResponse
 
@@ -1329,7 +1533,7 @@ func (b *Bridge) DeleteSchedule(i int) error {
 		return err
 	}
 
-	res, err := delete(url)
+	res, err := delete(ctx, url)
 	if err != nil {
 		return err
 	}
@@ -1352,6 +1556,11 @@ func (b *Bridge) DeleteSchedule(i int) error {
 
 // GetSensors returns all sensors known to the bridge
 func (b *Bridge) GetSensors() ([]Sensor, error) {
+	return b.GetSensorsContext(context.Background())
+}
+
+// GetSensorsContext returns all sensors known to the bridge
+func (b *Bridge) GetSensorsContext(ctx context.Context) ([]Sensor, error) {
 
 	s := map[string]Sensor{}
 
@@ -1360,7 +1569,7 @@ func (b *Bridge) GetSensors() ([]Sensor, error) {
 		return nil, err
 	}
 
-	res, err := get(url)
+	res, err := get(ctx, url)
 	if err != nil {
 		return nil, err
 	}
@@ -1384,6 +1593,11 @@ func (b *Bridge) GetSensors() ([]Sensor, error) {
 
 // GetSensor returns one sensor by its id of i
 func (b *Bridge) GetSensor(i int) (*Sensor, error) {
+	return b.GetSensorContext(context.Background(), i)
+}
+
+// GetSensorContext returns one sensor by its id of i
+func (b *Bridge) GetSensorContext(ctx context.Context, i int) (*Sensor, error) {
 
 	r := &Sensor{
 		ID: i,
@@ -1395,7 +1609,7 @@ func (b *Bridge) GetSensor(i int) (*Sensor, error) {
 		return nil, err
 	}
 
-	res, err := get(url)
+	res, err := get(ctx, url)
 	if err != nil {
 		return r, err
 	}
@@ -1411,6 +1625,11 @@ func (b *Bridge) GetSensor(i int) (*Sensor, error) {
 
 // CreateSensor creates one new sensor
 func (b *Bridge) CreateSensor(s *Sensor) (*Response, error) {
+	return b.CreateSensorContext(context.Background(), s)
+}
+
+// CreateSensorContext creates one new sensor
+func (b *Bridge) CreateSensorContext(ctx context.Context, s *Sensor) (*Response, error) {
 
 	var a []*APIResponse
 
@@ -1424,7 +1643,7 @@ func (b *Bridge) CreateSensor(s *Sensor) (*Response, error) {
 		return nil, err
 	}
 
-	res, err := post(url, data)
+	res, err := post(ctx, url, data)
 	if err != nil {
 		return nil, err
 	}
@@ -1446,6 +1665,12 @@ func (b *Bridge) CreateSensor(s *Sensor) (*Response, error) {
 // FindSensors starts a search for new sensors.
 // Use GetNewSensors() to verify if new sensors have been discovered in the bridge.
 func (b *Bridge) FindSensors() (*Response, error) {
+	return b.FindSensorsContext(context.Background())
+}
+
+// FindSensorsContext starts a search for new sensors.
+// Use GetNewSensorsContext() to verify if new sensors have been discovered in the bridge.
+func (b *Bridge) FindSensorsContext(ctx context.Context) (*Response, error) {
 
 	var a []*APIResponse
 
@@ -1454,7 +1679,7 @@ func (b *Bridge) FindSensors() (*Response, error) {
 		return nil, err
 	}
 
-	res, err := post(url, nil)
+	res, err := post(ctx, url, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -1475,6 +1700,11 @@ func (b *Bridge) FindSensors() (*Response, error) {
 
 // GetNewSensors returns a list of sensors that were discovered last time GetNewSensors() was executed.
 func (b *Bridge) GetNewSensors() (*NewSensor, error) {
+	return b.GetNewSensorsContext(context.Background())
+}
+
+// GetNewSensorsContext returns a list of sensors that were discovered last time GetNewSensors() was executed.
+func (b *Bridge) GetNewSensorsContext(ctx context.Context) (*NewSensor, error) {
 
 	var n map[string]Sensor
 	var result *NewSensor
@@ -1484,7 +1714,7 @@ func (b *Bridge) GetNewSensors() (*NewSensor, error) {
 		return nil, err
 	}
 
-	res, err := get(url)
+	res, err := get(ctx, url)
 	if err != nil {
 		return nil, err
 	}
@@ -1517,6 +1747,11 @@ func (b *Bridge) GetNewSensors() (*NewSensor, error) {
 
 // UpdateSensor updates one sensor by its id and attributes by sensor
 func (b *Bridge) UpdateSensor(i int, sensor *Sensor) (*Response, error) {
+	return b.UpdateSensorContext(context.Background(), i, sensor)
+}
+
+// UpdateSensorContext updates one sensor by its id and attributes by sensor
+func (b *Bridge) UpdateSensorContext(ctx context.Context, i int, sensor *Sensor) (*Response, error) {
 
 	var a []*APIResponse
 
@@ -1530,7 +1765,7 @@ func (b *Bridge) UpdateSensor(i int, sensor *Sensor) (*Response, error) {
 		return nil, err
 	}
 
-	res, err := put(url, data)
+	res, err := put(ctx, url, data)
 	if err != nil {
 		return nil, err
 	}
@@ -1550,6 +1785,11 @@ func (b *Bridge) UpdateSensor(i int, sensor *Sensor) (*Response, error) {
 
 // DeleteSensor deletes one sensor from the bridge
 func (b *Bridge) DeleteSensor(i int) error {
+	return b.DeleteSensorContext(context.Background(), i)
+}
+
+// DeleteSensorContext deletes one sensor from the bridge
+func (b *Bridge) DeleteSensorContext(ctx context.Context, i int) error {
 
 	var a []*APIResponse
 
@@ -1559,7 +1799,7 @@ func (b *Bridge) DeleteSensor(i int) error {
 		return err
 	}
 
-	res, err := delete(url)
+	res, err := delete(ctx, url)
 	if err != nil {
 		return err
 	}
@@ -1576,6 +1816,11 @@ func (b *Bridge) DeleteSensor(i int) error {
 
 // UpdateSensorConfig updates the configuration of one sensor. The allowed configuration parameters depend on the sensor type
 func (b *Bridge) UpdateSensorConfig(i int, c interface{}) (*Response, error) {
+	return b.UpdateSensorConfigContext(context.Background(), i, c)
+}
+
+// UpdateSensorConfigContext updates the configuration of one sensor. The allowed configuration parameters depend on the sensor type
+func (b *Bridge) UpdateSensorConfigContext(ctx context.Context, i int, c interface{}) (*Response, error) {
 	var a []*APIResponse
 
 	data, err := json.Marshal(&c)
@@ -1588,7 +1833,7 @@ func (b *Bridge) UpdateSensorConfig(i int, c interface{}) (*Response, error) {
 		return nil, err
 	}
 
-	res, err := put(url, data)
+	res, err := put(ctx, url, data)
 	if err != nil {
 		return nil, err
 	}
@@ -1614,6 +1859,11 @@ func (b *Bridge) UpdateSensorConfig(i int, c interface{}) (*Response, error) {
 
 // GetCapabilities returns a list of capabilities of resources supported in the bridge.
 func (b *Bridge) GetCapabilities() (*Capabilities, error) {
+	return b.GetCapabilitiesContext(context.Background())
+}
+
+// GetCapabilitiesContext returns a list of capabilities of resources supported in the bridge.
+func (b *Bridge) GetCapabilitiesContext(ctx context.Context) (*Capabilities, error) {
 
 	s := &Capabilities{}
 
@@ -1622,7 +1872,7 @@ func (b *Bridge) GetCapabilities() (*Capabilities, error) {
 		return nil, err
 	}
 
-	res, err := get(url)
+	res, err := get(ctx, url)
 	if err != nil {
 		return nil, err
 	}

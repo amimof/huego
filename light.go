@@ -1,5 +1,7 @@
 package huego
 
+import "context"
+
 // Light represents a bridge light https://developers.meethue.com/documentation/lights-api
 type Light struct {
 	State            *State `json:"state,omitempty"`
@@ -45,7 +47,12 @@ type NewLight struct {
 
 // SetState sets the state of the light to s.
 func (l *Light) SetState(s State) error {
-	_, err := l.bridge.SetLightState(l.ID, s)
+	return l.SetStateContext(context.Background(), s)
+}
+
+// SetStateContext sets the state of the light to s.
+func (l *Light) SetStateContext(ctx context.Context, s State) error {
+	_, err := l.bridge.SetLightStateContext(ctx, l.ID, s)
 	if err != nil {
 		return err
 	}
@@ -55,8 +62,13 @@ func (l *Light) SetState(s State) error {
 
 // Off sets the On state of one light to false, turning it off
 func (l *Light) Off() error {
+	return l.OffContext(context.Background())
+}
+
+// OffContext sets the On state of one light to false, turning it off
+func (l *Light) OffContext(ctx context.Context) error {
 	state := State{On: false}
-	_, err := l.bridge.SetLightState(l.ID, state)
+	_, err := l.bridge.SetLightStateContext(ctx, l.ID, state)
 	if err != nil {
 		return err
 	}
@@ -66,8 +78,13 @@ func (l *Light) Off() error {
 
 // On sets the On state of one light to true, turning it on
 func (l *Light) On() error {
+	return l.OnContext(context.Background())
+}
+
+// OnContext sets the On state of one light to true, turning it on
+func (l *Light) OnContext(ctx context.Context) error {
 	state := State{On: true}
-	_, err := l.bridge.SetLightState(l.ID, state)
+	_, err := l.bridge.SetLightStateContext(ctx, l.ID, state)
 	if err != nil {
 		return err
 	}
@@ -82,8 +99,13 @@ func (l *Light) IsOn() bool {
 
 // Rename sets the name property of the light
 func (l *Light) Rename(new string) error {
+	return l.RenameContext(context.Background(), new)
+}
+
+// RenameContext sets the name property of the light
+func (l *Light) RenameContext(ctx context.Context, new string) error {
 	update := Light{Name: new}
-	_, err := l.bridge.UpdateLight(l.ID, update)
+	_, err := l.bridge.UpdateLightContext(ctx, l.ID, update)
 	if err != nil {
 		return err
 	}
@@ -93,8 +115,13 @@ func (l *Light) Rename(new string) error {
 
 // Bri sets the light brightness state property
 func (l *Light) Bri(new uint8) error {
+	return l.BriContext(context.Background(), new)
+}
+
+// BriContext sets the light brightness state property
+func (l *Light) BriContext(ctx context.Context, new uint8) error {
 	update := State{On: true, Bri: new}
-	_, err := l.bridge.SetLightState(l.ID, update)
+	_, err := l.bridge.SetLightStateContext(ctx, l.ID, update)
 	if err != nil {
 		return err
 	}
@@ -104,8 +131,13 @@ func (l *Light) Bri(new uint8) error {
 
 // Hue sets the light hue state property (0-65535)
 func (l *Light) Hue(new uint16) error {
+	return l.HueContext(context.Background(), new)
+}
+
+// HueContext sets the light hue state property (0-65535)
+func (l *Light) HueContext(ctx context.Context, new uint16) error {
 	update := State{On: true, Hue: new}
-	_, err := l.bridge.SetLightState(l.ID, update)
+	_, err := l.bridge.SetLightStateContext(ctx, l.ID, update)
 	if err != nil {
 		return err
 	}
@@ -115,8 +147,13 @@ func (l *Light) Hue(new uint16) error {
 
 // Sat sets the light saturation state property (0-254)
 func (l *Light) Sat(new uint8) error {
+	return l.SatContext(context.Background(), new)
+}
+
+// SatContext sets the light saturation state property (0-254)
+func (l *Light) SatContext(ctx context.Context, new uint8) error {
 	update := State{On: true, Sat: new}
-	_, err := l.bridge.SetLightState(l.ID, update)
+	_, err := l.bridge.SetLightStateContext(ctx, l.ID, update)
 	if err != nil {
 		return err
 	}
@@ -126,8 +163,13 @@ func (l *Light) Sat(new uint8) error {
 
 // Xy sets the x and y coordinates of a color in CIE color space. (0-1 per value)
 func (l *Light) Xy(new []float32) error {
+	return l.XyContext(context.Background(), new)
+}
+
+// XyContext sets the x and y coordinates of a color in CIE color space. (0-1 per value)
+func (l *Light) XyContext(ctx context.Context, new []float32) error {
 	update := State{On: true, Xy: new}
-	_, err := l.bridge.SetLightState(l.ID, update)
+	_, err := l.bridge.SetLightStateContext(ctx, l.ID, update)
 	if err != nil {
 		return err
 	}
@@ -137,8 +179,13 @@ func (l *Light) Xy(new []float32) error {
 
 // Ct sets the light color temperature state property
 func (l *Light) Ct(new uint16) error {
+	return l.CtContext(context.Background(), new)
+}
+
+// CtContext sets the light color temperature state property
+func (l *Light) CtContext(ctx context.Context, new uint16) error {
 	update := State{On: true, Ct: new}
-	_, err := l.bridge.SetLightState(l.ID, update)
+	_, err := l.bridge.SetLightStateContext(ctx, l.ID, update)
 	if err != nil {
 		return err
 	}
@@ -148,8 +195,13 @@ func (l *Light) Ct(new uint16) error {
 
 // TransitionTime sets the duration of the transition from the light’s current state to the new state
 func (l *Light) TransitionTime(new uint16) error {
+	return l.TransitionTimeContext(context.Background(), new)
+}
+
+// TransitionTimeContext sets the duration of the transition from the light’s current state to the new state
+func (l *Light) TransitionTimeContext(ctx context.Context, new uint16) error {
 	update := State{On: l.State.On, TransitionTime: new}
-	_, err := l.bridge.SetLightState(l.ID, update)
+	_, err := l.bridge.SetLightStateContext(ctx, l.ID, update)
 	if err != nil {
 		return err
 	}
@@ -159,8 +211,13 @@ func (l *Light) TransitionTime(new uint16) error {
 
 // Effect the dynamic effect of the light, currently “none” and “colorloop” are supported
 func (l *Light) Effect(new string) error {
+	return l.EffectContext(context.Background(), new)
+}
+
+// EffectContext the dynamic effect of the light, currently “none” and “colorloop” are supported
+func (l *Light) EffectContext(ctx context.Context, new string) error {
 	update := State{On: true, Effect: new}
-	_, err := l.bridge.SetLightState(l.ID, update)
+	_, err := l.bridge.SetLightStateContext(ctx, l.ID, update)
 	if err != nil {
 		return err
 	}
@@ -173,8 +230,16 @@ func (l *Light) Effect(new string) error {
 // “select” – The light is performing one breathe cycle.
 // “lselect” – The light is performing breathe cycles for 15 seconds or until alert is set to "none".
 func (l *Light) Alert(new string) error {
+	return l.AlertContext(context.Background(), new)
+}
+
+// AlertContext makes the light blink in its current color. Supported values are:
+// “none” – The light is not performing an alert effect.
+// “select” – The light is performing one breathe cycle.
+// “lselect” – The light is performing breathe cycles for 15 seconds or until alert is set to "none".
+func (l *Light) AlertContext(ctx context.Context, new string) error {
 	update := State{On: true, Alert: new}
-	_, err := l.bridge.SetLightState(l.ID, update)
+	_, err := l.bridge.SetLightStateContext(ctx, l.ID, update)
 	if err != nil {
 		return err
 	}
