@@ -2,36 +2,20 @@ sudo: false
 dist: xenial
 language: go
 go:
-  - "1.8"
-  - "1.9"
-  - "1.10"
-  - "1.11"
-  - "1.12"
-  - "1.13"
-
-stages:
-- test
-- build
-- deploy
-
-
-jobs:
-  include:
-  - stage: test
-    name: "Verify"
-    script: 
-    - make checkfmt
-    - make fmt  
-    - make vet 
-    - make race
-    - make gocyclo
-    - make lint 
-    - make ineffassign
-    - make misspell
-
-  - name: "Unit Test"
-    script:
-    - make test
-    - make benchmark
-    - make coverage
-    - bash <(curl -s https://codecov.io/bash)
+  - 1.10.x
+  - 1.11.x
+  - 1.12.x
+  - 1.13.x
+script: 
+- make checkfmt
+- make fmt  
+- make vet 
+- make race
+- make gocyclo
+- make lint 
+- make ineffassign
+- make misspell
+- make test
+- make benchmark
+- make coverage
+- bash <(curl -s https://codecov.io/bash)
