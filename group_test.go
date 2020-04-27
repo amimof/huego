@@ -1,14 +1,12 @@
-package huego_test
+package huego
 
 import (
-	"testing"
-
-	"github.com/amimof/huego"
 	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
 func TestGetGroups(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	groups, err := b.GetGroups()
 	if err != nil {
 		t.Fatal(err)
@@ -44,7 +42,7 @@ func TestGetGroups(t *testing.T) {
 		t.Logf("  ID: %d", g.ID)
 	}
 
-	contains := func(name string, ss []huego.Group) bool {
+	contains := func(name string, ss []Group) bool {
 		for _, s := range ss {
 			if s.Name == name {
 				return true
@@ -58,7 +56,7 @@ func TestGetGroups(t *testing.T) {
 }
 
 func TestGetGroup(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	g, err := b.GetGroup(1)
 	if err != nil {
 		t.Fatal(err)
@@ -92,8 +90,8 @@ func TestGetGroup(t *testing.T) {
 }
 
 func TestCreateGroup(t *testing.T) {
-	b := huego.New(hostname, username)
-	resp, err := b.CreateGroup(huego.Group{
+	b := New(hostname, username)
+	resp, err := b.CreateGroup(Group{
 		Name:   "TestGroup",
 		Type:   "Room",
 		Class:  "Office",
@@ -110,9 +108,9 @@ func TestCreateGroup(t *testing.T) {
 }
 
 func TestUpdateGroup(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	id := 1
-	resp, err := b.UpdateGroup(id, huego.Group{
+	resp, err := b.UpdateGroup(id, Group{
 		Name:  "TestGroup (Updated)",
 		Class: "Office",
 	})
@@ -127,9 +125,9 @@ func TestUpdateGroup(t *testing.T) {
 }
 
 func TestSetGroupState(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	id := 1
-	resp, err := b.SetGroupState(id, huego.State{
+	resp, err := b.SetGroupState(id, State{
 		On:  true,
 		Bri: 150,
 		Sat: 210,
@@ -145,7 +143,7 @@ func TestSetGroupState(t *testing.T) {
 }
 
 func TestRenameGroup(t *testing.T) {
-	bridge := huego.New(hostname, username)
+	bridge := New(hostname, username)
 	id := 1
 	group, err := bridge.GetGroup(id)
 	if err != nil {
@@ -159,7 +157,7 @@ func TestRenameGroup(t *testing.T) {
 }
 
 func TestTurnOffGroup(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	id := 1
 	group, err := b.GetGroup(id)
 	if err != nil {
@@ -174,7 +172,7 @@ func TestTurnOffGroup(t *testing.T) {
 }
 
 func TestTurnOnGroup(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	id := 1
 	group, err := b.GetGroup(id)
 	if err != nil {
@@ -189,7 +187,7 @@ func TestTurnOnGroup(t *testing.T) {
 }
 
 func TestIfGroupIsOn(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	id := 1
 	group, err := b.GetGroup(id)
 	if err != nil {
@@ -199,7 +197,7 @@ func TestIfGroupIsOn(t *testing.T) {
 }
 
 func TestSetGroupBri(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	id := 1
 	group, err := b.GetGroup(id)
 	if err != nil {
@@ -213,7 +211,7 @@ func TestSetGroupBri(t *testing.T) {
 }
 
 func TestSetGroupHue(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	id := 1
 	group, err := b.GetGroup(id)
 	if err != nil {
@@ -227,7 +225,7 @@ func TestSetGroupHue(t *testing.T) {
 }
 
 func TestSetGroupSat(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	id := 1
 	group, err := b.GetGroup(id)
 	if err != nil {
@@ -241,7 +239,7 @@ func TestSetGroupSat(t *testing.T) {
 }
 
 func TestSetGroupXy(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	id := 1
 	group, err := b.GetGroup(id)
 	if err != nil {
@@ -255,7 +253,7 @@ func TestSetGroupXy(t *testing.T) {
 }
 
 func TestSetGroupCt(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	id := 1
 	group, err := b.GetGroup(id)
 	if err != nil {
@@ -269,7 +267,7 @@ func TestSetGroupCt(t *testing.T) {
 }
 
 func TestSetGroupScene(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	id := 1
 	group, err := b.GetGroup(id)
 	if err != nil {
@@ -283,7 +281,7 @@ func TestSetGroupScene(t *testing.T) {
 }
 
 func TestSetGroupTransitionTime(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	id := 1
 	group, err := b.GetGroup(id)
 	if err != nil {
@@ -297,7 +295,7 @@ func TestSetGroupTransitionTime(t *testing.T) {
 }
 
 func TestSetGroupEffect(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	id := 1
 	group, err := b.GetGroup(id)
 	if err != nil {
@@ -311,7 +309,7 @@ func TestSetGroupEffect(t *testing.T) {
 }
 
 func TestSetGroupAlert(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	id := 1
 	group, err := b.GetGroup(id)
 	if err != nil {
@@ -325,13 +323,13 @@ func TestSetGroupAlert(t *testing.T) {
 }
 
 func TestSetStateGroup(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	id := 1
 	group, err := b.GetGroup(id)
 	if err != nil {
 		t.Fatal(err)
 	}
-	err = group.SetState(huego.State{
+	err = group.SetState(State{
 		On:  true,
 		Bri: 254,
 	})
@@ -342,7 +340,7 @@ func TestSetStateGroup(t *testing.T) {
 }
 
 func TestDeleteGroup(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	id := 1
 	err := b.DeleteGroup(id)
 	if err != nil {

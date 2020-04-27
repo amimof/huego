@@ -1,14 +1,12 @@
-package huego_test
+package huego
 
 import (
-	"testing"
-
-	"github.com/amimof/huego"
 	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
 func TestGetResourcelinks(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	resourcelinks, err := b.GetResourcelinks()
 	if err != nil {
 		t.Fatal(err)
@@ -25,7 +23,7 @@ func TestGetResourcelinks(t *testing.T) {
 		t.Logf("  ID: %d", resourcelink.ID)
 	}
 
-	contains := func(name string, ss []*huego.Resourcelink) bool {
+	contains := func(name string, ss []*Resourcelink) bool {
 		for _, s := range ss {
 			if s.Name == name {
 				return true
@@ -39,7 +37,7 @@ func TestGetResourcelinks(t *testing.T) {
 }
 
 func TestGetResourcelink(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	l, err := b.GetResourcelink(1)
 	if err != nil {
 		t.Fatal(err)
@@ -54,8 +52,8 @@ func TestGetResourcelink(t *testing.T) {
 }
 
 func TestCreateResourcelink(t *testing.T) {
-	b := huego.New(hostname, username)
-	resourcelink := &huego.Resourcelink{
+	b := New(hostname, username)
+	resourcelink := &Resourcelink{
 		Name:        "Huego Test Resourcelink",
 		Description: "Amir's wakeup experience",
 		Type:        "Link",
@@ -75,9 +73,9 @@ func TestCreateResourcelink(t *testing.T) {
 }
 
 func TestUpdateResourcelink(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	id := 1
-	resp, err := b.UpdateResourcelink(id, &huego.Resourcelink{
+	resp, err := b.UpdateResourcelink(id, &Resourcelink{
 		Name:        "New Resourcelink",
 		Description: "Updated Attribute",
 	})
@@ -92,7 +90,7 @@ func TestUpdateResourcelink(t *testing.T) {
 }
 
 func TestDeleteResourcelink(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	id := 1
 	err := b.DeleteResourcelink(1)
 	if err != nil {

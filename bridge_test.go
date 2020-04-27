@@ -1,14 +1,13 @@
-package huego_test
+package huego
 
 import (
 	"fmt"
-	"github.com/amimof/huego"
 	"strings"
 	"testing"
 )
 
 func ExampleBridge_CreateUser() {
-	bridge, _ := huego.Discover()
+	bridge, _ := Discover()
 	user, err := bridge.CreateUser("my awesome hue app") // Link button needs to be pressed
 	if err != nil {
 		fmt.Printf("Error creating user: %s", err.Error())
@@ -19,7 +18,7 @@ func ExampleBridge_CreateUser() {
 }
 
 func TestLogin(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	c, err := b.GetConfig()
 	if err != nil {
 		t.Fatal(err)
@@ -29,7 +28,7 @@ func TestLogin(t *testing.T) {
 }
 
 func TestLoginUnauthorized(t *testing.T) {
-	b := huego.New(hostname, "")
+	b := New(hostname, "")
 	b = b.Login("invalid_password")
 	_, err := b.GetLights()
 	if err != nil {
@@ -42,7 +41,7 @@ func TestLoginUnauthorized(t *testing.T) {
 }
 
 func TestUpdateBridgeConfig(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	c, err := b.GetConfig()
 	if err != nil {
 		t.Fatal(err)

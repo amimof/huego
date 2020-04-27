@@ -1,14 +1,12 @@
-package huego_test
+package huego
 
 import (
-	"testing"
-
-	"github.com/amimof/huego"
 	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
 func TestGetScenes(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	scenes, err := b.GetScenes()
 	if err != nil {
 		t.Fatal(err)
@@ -29,7 +27,7 @@ func TestGetScenes(t *testing.T) {
 		t.Logf("  ID: %s", scene.ID)
 	}
 
-	contains := func(name string, ss []huego.Scene) bool {
+	contains := func(name string, ss []Scene) bool {
 		for _, s := range ss {
 			if s.Name == name {
 				return true
@@ -44,7 +42,7 @@ func TestGetScenes(t *testing.T) {
 }
 
 func TestGetScene(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	s, err := b.GetScene("4e1c6b20e-on-0")
 	if err != nil {
 		t.Fatal(err)
@@ -67,8 +65,8 @@ func TestGetScene(t *testing.T) {
 }
 
 func TestCreateScene(t *testing.T) {
-	b := huego.New(hostname, username)
-	resp, err := b.CreateScene(&huego.Scene{
+	b := New(hostname, username)
+	resp, err := b.CreateScene(&Scene{
 		Name:    "New Scene",
 		Lights:  []string{"4", "5"},
 		Recycle: true,
@@ -83,12 +81,12 @@ func TestCreateScene(t *testing.T) {
 }
 
 func TestUpdateScene(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	scene, err := b.GetScene("4e1c6b20e-on-0")
 	if err != nil {
 		t.Fatal(err)
 	}
-	resp, err := b.UpdateScene(scene.ID, &huego.Scene{
+	resp, err := b.UpdateScene(scene.ID, &Scene{
 		Name:   "New Scene",
 		Lights: []string{},
 	})
@@ -102,7 +100,7 @@ func TestUpdateScene(t *testing.T) {
 }
 
 func TestSetSceneLightState(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	scene, err := b.GetScene("4e1c6b20e-on-0")
 	if err != nil {
 		t.Fatal(err)
@@ -111,7 +109,7 @@ func TestSetSceneLightState(t *testing.T) {
 	t.Logf("Name: %s", scene.Name)
 	t.Logf("ID: %s", scene.ID)
 	t.Logf("LightStates: %+v", scene.LightStates)
-	_, err = b.SetSceneLightState(scene.ID, light, &huego.State{
+	_, err = b.SetSceneLightState(scene.ID, light, &State{
 		On:  true,
 		Bri: 255,
 	})
@@ -123,7 +121,7 @@ func TestSetSceneLightState(t *testing.T) {
 }
 
 func TestDeleteScene(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	scene, err := b.GetScene("4e1c6b20e-on-0")
 	if err != nil {
 		t.Fatal(err)
@@ -136,7 +134,7 @@ func TestDeleteScene(t *testing.T) {
 }
 
 func TestRecallScene(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	scene := "4e1c6b20e-on-0"
 	group := 1
 	resp, err := b.RecallScene("HcK1mEcgS7gcVcT", group)
@@ -150,7 +148,7 @@ func TestRecallScene(t *testing.T) {
 }
 
 func TestRecallScene2(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	group := 1
 	scene, err := b.GetScene("4e1c6b20e-on-0")
 	if err != nil {

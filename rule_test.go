@@ -1,14 +1,12 @@
-package huego_test
+package huego
 
 import (
-	"testing"
-
-	"github.com/amimof/huego"
 	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
 func TestGetRules(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	rules, err := b.GetRules()
 	if err != nil {
 		t.Fatal(err)
@@ -18,7 +16,7 @@ func TestGetRules(t *testing.T) {
 		t.Log(rule)
 	}
 
-	contains := func(name string, ss []*huego.Rule) bool {
+	contains := func(name string, ss []*Rule) bool {
 		for _, s := range ss {
 			if s.Name == name {
 				return true
@@ -32,7 +30,7 @@ func TestGetRules(t *testing.T) {
 }
 
 func TestGetRule(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	l, err := b.GetRule(1)
 	if err != nil {
 		t.Fatal(err)
@@ -42,22 +40,22 @@ func TestGetRule(t *testing.T) {
 }
 
 func TestCreateRule(t *testing.T) {
-	b := huego.New(hostname, username)
-	conditions := []*huego.Condition{
+	b := New(hostname, username)
+	conditions := []*Condition{
 		{
 			Address:  "/sensors/2/state/buttonevent",
 			Operator: "eq",
 			Value:    "16",
 		},
 	}
-	actions := []*huego.RuleAction{
+	actions := []*RuleAction{
 		{
 			Address: "/groups/0/action",
 			Method:  "PUT",
-			Body:    &huego.State{On: true},
+			Body:    &State{On: true},
 		},
 	}
-	rule := &huego.Rule{
+	rule := &Rule{
 		Name:       "Huego Test Rule",
 		Conditions: conditions,
 		Actions:    actions,
@@ -74,14 +72,14 @@ func TestCreateRule(t *testing.T) {
 }
 
 func TestUpdateRule(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	id := 1
-	resp, err := b.UpdateRule(id, &huego.Rule{
-		Actions: []*huego.RuleAction{
+	resp, err := b.UpdateRule(id, &Rule{
+		Actions: []*RuleAction{
 			{
 				Address: "/groups/1/action",
 				Method:  "PUT",
-				Body:    &huego.State{On: true},
+				Body:    &State{On: true},
 			},
 		},
 	})
@@ -96,7 +94,7 @@ func TestUpdateRule(t *testing.T) {
 }
 
 func TestDeleteRule(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	id := 1
 	err := b.DeleteRule(id)
 	if err != nil {

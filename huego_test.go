@@ -1,13 +1,11 @@
-package huego_test
+package huego
 
 import (
 	"fmt"
+	"github.com/jarcoal/httpmock"
 	"os"
 	"path"
 	"testing"
-
-	"github.com/amimof/huego"
-	"github.com/jarcoal/httpmock"
 )
 
 // I'm too lazy to have this elsewhere
@@ -316,7 +314,7 @@ func init() {
 }
 
 func TestDiscoverAndLogin(t *testing.T) {
-	bridge, err := huego.Discover()
+	bridge, err := Discover()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -325,7 +323,7 @@ func TestDiscoverAndLogin(t *testing.T) {
 }
 
 func TestDiscoverAllBridges(t *testing.T) {
-	bridges, err := huego.DiscoverAll()
+	bridges, err := DiscoverAll()
 	if err != nil {
 		t.Fatal(err)
 	}

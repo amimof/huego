@@ -1,12 +1,11 @@
-package huego_test
+package huego
 
 import (
-	"github.com/amimof/huego"
 	"testing"
 )
 
 func TestGetCapabilities(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	c, err := b.GetCapabilities()
 	if err != nil {
 		t.Fatal(c)

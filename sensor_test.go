@@ -1,14 +1,12 @@
-package huego_test
+package huego
 
 import (
-	"testing"
-
-	"github.com/amimof/huego"
 	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
 func TestGetSensors(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	sensors, err := b.GetSensors()
 	if err != nil {
 		t.Fatal(err)
@@ -27,7 +25,7 @@ func TestGetSensors(t *testing.T) {
 		t.Logf("SwVersion: %s", sensor.SwVersion)
 		t.Logf("ID: %d", sensor.ID)
 	}
-	contains := func(name string, ss []huego.Sensor) bool {
+	contains := func(name string, ss []Sensor) bool {
 		for _, s := range ss {
 			if s.Name == name {
 				return true
@@ -41,7 +39,7 @@ func TestGetSensors(t *testing.T) {
 }
 
 func TestGetSensor(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	sensor, err := b.GetSensor(1)
 	if err != nil {
 		t.Fatal(err)
@@ -60,8 +58,8 @@ func TestGetSensor(t *testing.T) {
 }
 
 func TestCreateSensor(t *testing.T) {
-	b := huego.New(hostname, username)
-	resp, err := b.CreateSensor(&huego.Sensor{
+	b := New(hostname, username)
+	resp, err := b.CreateSensor(&Sensor{
 		Name: "New Sensor",
 	})
 	if err != nil {
@@ -75,7 +73,7 @@ func TestCreateSensor(t *testing.T) {
 }
 
 func TestFindSensors(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	resp, err := b.FindSensors()
 	if err != nil {
 		t.Fatal(err)
@@ -87,7 +85,7 @@ func TestFindSensors(t *testing.T) {
 }
 
 func TestGetNewSensors(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	newSensors, err := b.GetNewSensors()
 	if err != nil {
 		t.Fatal(err)
@@ -107,7 +105,7 @@ func TestGetNewSensors(t *testing.T) {
 		t.Logf("ID: %d", sensor.ID)
 	}
 
-	contains := func(name string, ss []*huego.Sensor) bool {
+	contains := func(name string, ss []*Sensor) bool {
 		for _, s := range ss {
 			if s.Name == name {
 				return true
@@ -121,9 +119,9 @@ func TestGetNewSensors(t *testing.T) {
 }
 
 func TestUpdateSensor(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	id := 1
-	resp, err := b.UpdateSensor(id, &huego.Sensor{
+	resp, err := b.UpdateSensor(id, &Sensor{
 		Name: "New Sensor",
 	})
 	if err != nil {
@@ -135,7 +133,7 @@ func TestUpdateSensor(t *testing.T) {
 }
 
 func TestUpdateSensorConfig(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	id := 1
 	resp, err := b.UpdateSensorConfig(id, "test")
 	if err != nil {
@@ -148,7 +146,7 @@ func TestUpdateSensorConfig(t *testing.T) {
 }
 
 func TestDeleteSensor(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	id := 1
 	err := b.DeleteSensor(id)
 	if err != nil {

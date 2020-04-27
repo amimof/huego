@@ -1,14 +1,12 @@
-package huego_test
+package huego
 
 import (
-	"testing"
-
-	"github.com/amimof/huego"
 	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
 func TestGetConfig(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	config, err := b.GetConfig()
 	if err != nil {
 		t.Fatal(err)
@@ -66,7 +64,7 @@ func TestGetConfig(t *testing.T) {
 }
 
 func TestCreateUser(t *testing.T) {
-	b := huego.New(hostname, "")
+	b := New(hostname, "")
 	u, err := b.CreateUser("github.com/amimof/huego#go test")
 	if err != nil {
 		t.Fatal(err)
@@ -76,7 +74,7 @@ func TestCreateUser(t *testing.T) {
 }
 
 func TestGetUsers(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	users, err := b.GetUsers()
 	if err != nil {
 		t.Fatal(err)
@@ -88,7 +86,7 @@ func TestGetUsers(t *testing.T) {
 		t.Logf("  CreateDate: %s", u.CreateDate)
 		t.Logf("  LastUseDate: %s", u.LastUseDate)
 	}
-	contains := func(name string, ss []huego.Whitelist) bool {
+	contains := func(name string, ss []Whitelist) bool {
 		for _, s := range ss {
 			if s.Name == name {
 				return true
@@ -102,7 +100,7 @@ func TestGetUsers(t *testing.T) {
 }
 
 func TestDeleteUser(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	err := b.DeleteUser("ffffffffe0341b1b376a2389376a2389")
 	if err != nil {
 		t.Fatal(err)
@@ -111,7 +109,7 @@ func TestDeleteUser(t *testing.T) {
 }
 
 func TestGetFullState(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	_, err := b.GetFullState()
 	if err != nil {
 		t.Fatal(err)
