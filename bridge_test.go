@@ -1,10 +1,10 @@
 package huego_test
 
 import (
+	"fmt"
 	"github.com/amimof/huego"
 	"strings"
 	"testing"
-	"fmt"
 )
 
 func ExampleBridge_CreateUser() {
@@ -13,9 +13,9 @@ func ExampleBridge_CreateUser() {
 	if err != nil {
 		fmt.Printf("Error creating user: %s", err.Error())
 	}
-  bridge = bridge.Login(user)
+	bridge = bridge.Login(user)
 	light, _ := bridge.GetLight(1)
-  light.Off()
+	light.Off()
 }
 
 func TestLogin(t *testing.T) {

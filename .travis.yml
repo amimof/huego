@@ -1,24 +1,37 @@
-sudo: required
-dist: stretch
+sudo: false
+dist: xenial
 language: go
-python:
+go:
   - "1.8"
   - "1.9"
   - "1.10"
   - "1.11"
+  - "1.12"
+  - "1.13"
 
-before_install:
-  - go get github.com/fzipp/gocyclo
-  - go get -u golang.org/x/lint/golint
-  - go get github.com/gordonklaus/ineffassign
-  - go get -u github.com/client9/misspell/cmd/misspell
+stages:
+- test
+- build
+- deploy
 
-script:
-  - gofmt -s -d -e .
-  - go vet
-  - $GOPATH/bin/gocyclo .
-  - $GOPATH/bin/golint .
-  - $GOPATH/bin/ineffassign .
-  - find . -type f -not -path "./vendor/*" -not -path "./.git/*" -print0 | xargs -0 $GOPATH/bin/misspell
-  - go test -v
-  - go build
+
+jobs:
+  include:
+  - stage: test
+    name: "Verify"
+    script: 
+    - make checkfmt
+    - make fmt  
+    - make vet 
+    - make race
+    - make gocyclo
+    - make lint 
+    - make ineffassign
+    - make misspell
+
+  - name: "Unit Test"
+    script:
+    - make test
+    - make benchmark
+    - make coverage
+    - bash <(curl -s https://codecov.io/bash)
