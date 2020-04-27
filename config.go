@@ -56,7 +56,7 @@ type SwUpdate2 struct {
 // DeviceTypes details the type of updates available
 type DeviceTypes struct {
 	Bridge  bool     `json:"bridge,omitempty"`
-	Lights  []string  `json:"lights,omitempty"`
+	Lights  []string `json:"lights,omitempty"`
 	Sensors []string `json:"sensors,omitempty"`
 }
 
