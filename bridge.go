@@ -49,11 +49,11 @@ func (b *Bridge) Login(u string) *Bridge {
 
 // GetConfig returns the bridge configuration
 func (b *Bridge) GetConfig() (*Config, error) {
-	return b.GetConfigWithContext(context.Background())
+	return b.GetConfigContext(context.Background())
 }
 
 // GetConfigContext returns the bridge configuration
-func (b *Bridge) GetConfigWithContext(ctx context.Context) (*Config, error) {
+func (b *Bridge) GetConfigContext(ctx context.Context) (*Config, error) {
 
 	var config *Config
 
