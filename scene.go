@@ -3,6 +3,8 @@ package huego
 // Scene represents a bridge scene https://developers.meethue.com/documentation/scenes-api
 type Scene struct {
 	Name            string        `json:"name,omitempty"`
+	Type            string        `json:"type,omitempty"`
+	Group           string        `json:"group,omitempty"`
 	Lights          []string      `json:"lights,omitempty"`
 	Owner           string        `json:"owner,omitempty"`
 	Recycle         bool          `json:"recycle,omitempty"`
