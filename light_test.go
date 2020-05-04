@@ -1,14 +1,12 @@
-package huego_test
+package huego
 
 import (
-	"testing"
-
-	"github.com/amimof/huego"
 	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
 func TestGetLights(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	lights, err := b.GetLights()
 	if err != nil {
 		t.Fatal(err)
@@ -25,7 +23,7 @@ func TestGetLights(t *testing.T) {
 		t.Logf("  SwConfigID: %s", l.SwConfigID)
 		t.Logf("  ProductID: %s", l.ProductID)
 	}
-	contains := func(name string, ss []huego.Light) bool {
+	contains := func(name string, ss []Light) bool {
 		for _, s := range ss {
 			if s.Name == name {
 				return true
@@ -36,10 +34,14 @@ func TestGetLights(t *testing.T) {
 
 	assert.True(t, contains("Huecolorlamp7", lights))
 	assert.True(t, contains("Huelightstripplus1", lights))
+
+	b.Host = badHostname
+	_, err = b.GetLights()
+	assert.NotNil(t, err)
 }
 
 func TestGetLight(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	l, err := b.GetLight(1)
 	if err != nil {
 		t.Fatal(err)
@@ -71,15 +73,21 @@ func TestGetLight(t *testing.T) {
 		t.Logf("  ColorMode: %s", l.State.ColorMode)
 		t.Logf("  Reachable: %t", l.State.Reachable)
 	}
+
+	b.Host = badHostname
+	_, err = b.GetLight(1)
+	assert.NotNil(t, err)
+
 }
 
 func TestSetLight(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	id := 1
-	resp, err := b.SetLightState(id, huego.State{
+	state := State{
 		On:  true,
 		Bri: 254,
-	})
+	}
+	resp, err := b.SetLightState(id, state)
 	if err != nil {
 		t.Fatal(err)
 	} else {
@@ -88,10 +96,14 @@ func TestSetLight(t *testing.T) {
 			t.Logf("%v: %s", k, v)
 		}
 	}
+
+	b.Host = badHostname
+	_, err = b.SetLightState(id, state)
+	assert.NotNil(t, err)
 }
 
 func TestFindLights(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	resp, err := b.FindLights()
 	if err != nil {
 		t.Fatal(err)
@@ -101,28 +113,18 @@ func TestFindLights(t *testing.T) {
 		}
 	}
 
-}
-
-func TestGetNewLights(t *testing.T) {
-	b := huego.New(hostname, username)
-	newlights, err := b.GetNewLights()
-	if err != nil {
-		t.Fatal(err)
-	}
-	t.Logf("Found %d new lights", len(newlights.Lights))
-	t.Logf("LastScan: %s", newlights.LastScan)
-	for _, light := range newlights.Lights {
-		t.Log(light)
-	}
-
+	b.Host = badHostname
+	_, err = b.FindLights()
+	assert.NotNil(t, err)
 }
 
 func TestUpdateLight(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	id := 1
-	resp, err := b.UpdateLight(id, huego.Light{
+	light := Light{
 		Name: "New Light",
-	})
+	}
+	resp, err := b.UpdateLight(id, light)
 	if err != nil {
 		t.Fatal(err)
 	} else {
@@ -131,21 +133,13 @@ func TestUpdateLight(t *testing.T) {
 			t.Logf("%v: %s", k, v)
 		}
 	}
-}
-
-func TestDeleteLight(t *testing.T) {
-	b := huego.New(hostname, username)
-	id := 1
-	err := b.DeleteLight(id)
-	if err != nil {
-		t.Fatal(err)
-	} else {
-		t.Logf("Light %d deleted", id)
-	}
+	b.Host = badHostname
+	_, err = b.UpdateLight(id, light)
+	assert.NotNil(t, err)
 }
 
 func TestTurnOffLight(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	id := 1
 	light, err := b.GetLight(id)
 	if err != nil {
@@ -156,10 +150,14 @@ func TestTurnOffLight(t *testing.T) {
 		t.Fatal(err)
 	}
 	t.Logf("Turned off light with id %d", light.ID)
+
+	b.Host = badHostname
+	err = light.Off()
+	assert.NotNil(t, err)
 }
 
 func TestTurnOnLight(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	id := 1
 	light, err := b.GetLight(id)
 	if err != nil {
@@ -170,10 +168,14 @@ func TestTurnOnLight(t *testing.T) {
 		t.Fatal(err)
 	}
 	t.Logf("Turned on light with id %d", light.ID)
+
+	b.Host = badHostname
+	err = light.On()
+	assert.NotNil(t, err)
 }
 
 func TestIfLightIsOn(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	id := 1
 	light, err := b.GetLight(id)
 	if err != nil {
@@ -183,21 +185,26 @@ func TestIfLightIsOn(t *testing.T) {
 }
 
 func TestRenameLight(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	id := 1
 	light, err := b.GetLight(id)
 	if err != nil {
 		t.Fatal(err)
 	}
-	err = light.Rename("Color Lamp 1")
+	name := "Color Lamp 1"
+	err = light.Rename(name)
 	if err != nil {
 		t.Fatal(err)
 	}
 	t.Logf("Renamed light to '%s'", light.Name)
+
+	b.Host = badHostname
+	err = light.Rename(name)
+	assert.NotNil(t, err)
 }
 
 func TestSetLightBri(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	id := 1
 	light, err := b.GetLight(id)
 	if err != nil {
@@ -208,10 +215,14 @@ func TestSetLightBri(t *testing.T) {
 		t.Fatal(err)
 	}
 	t.Logf("Brightness of light %d set to %d", light.ID, light.State.Bri)
+
+	b.Host = badHostname
+	err = light.Bri(254)
+	assert.NotNil(t, err)
 }
 
 func TestSetLightHue(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	id := 1
 	light, err := b.GetLight(id)
 	if err != nil {
@@ -222,10 +233,14 @@ func TestSetLightHue(t *testing.T) {
 		t.Fatal(err)
 	}
 	t.Logf("Hue of light %d set to %d", light.ID, light.State.Hue)
+
+	b.Host = badHostname
+	err = light.Hue(65535)
+	assert.NotNil(t, err)
 }
 
 func TestSetLightSat(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	id := 1
 	light, err := b.GetLight(id)
 	if err != nil {
@@ -236,24 +251,33 @@ func TestSetLightSat(t *testing.T) {
 		t.Fatal(err)
 	}
 	t.Logf("Sat of light %d set to %d", light.ID, light.State.Sat)
+
+	b.Host = badHostname
+	err = light.Sat(254)
+	assert.NotNil(t, err)
 }
 
 func TestSetLightXy(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	id := 1
 	light, err := b.GetLight(id)
 	if err != nil {
 		t.Fatal(err)
 	}
-	err = light.Xy([]float32{0.1, 0.5})
+	xy := []float32{0.1, 0.5}
+	err = light.Xy(xy)
 	if err != nil {
 		t.Fatal(err)
 	}
 	t.Logf("Xy of light %d set to %+v", light.ID, light.State.Xy)
+
+	b.Host = badHostname
+	err = light.Xy(xy)
+	assert.NotNil(t, err)
 }
 
 func TestSetLightCt(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	id := 1
 	light, err := b.GetLight(id)
 	if err != nil {
@@ -264,10 +288,14 @@ func TestSetLightCt(t *testing.T) {
 		t.Fatal(err)
 	}
 	t.Logf("Ct of light %d set to %d", light.ID, light.State.Ct)
+
+	b.Host = badHostname
+	err = light.Ct(16)
+	assert.NotNil(t, err)
 }
 
 func TestSetLightTransitionTime(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	id := 1
 	light, err := b.GetLight(id)
 	if err != nil {
@@ -278,10 +306,14 @@ func TestSetLightTransitionTime(t *testing.T) {
 		t.Fatal(err)
 	}
 	t.Logf("TransitionTime of light %d set to %d", light.ID, light.State.TransitionTime)
+
+	b.Host = badHostname
+	err = light.TransitionTime(10)
+	assert.NotNil(t, err)
 }
 
 func TestSetLightEffect(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	id := 1
 	light, err := b.GetLight(id)
 	if err != nil {
@@ -292,10 +324,14 @@ func TestSetLightEffect(t *testing.T) {
 		t.Fatal(err)
 	}
 	t.Logf("Effect of light %d set to %s", light.ID, light.State.Effect)
+
+	b.Host = badHostname
+	err = light.Effect("colorloop")
+	assert.NotNil(t, err)
 }
 
 func TestSetLightAlert(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	id := 1
 	light, err := b.GetLight(id)
 	if err != nil {
@@ -306,21 +342,30 @@ func TestSetLightAlert(t *testing.T) {
 		t.Fatal(err)
 	}
 	t.Logf("Alert of light %d set to %s", light.ID, light.State.Alert)
+
+	b.Host = badHostname
+	err = light.Alert("lselect")
+	assert.NotNil(t, err)
 }
 
 func TestSetStateLight(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	id := 1
 	light, err := b.GetLight(id)
 	if err != nil {
 		t.Fatal(err)
 	}
-	err = light.SetState(huego.State{
+	state := State{
 		On:  true,
 		Bri: 254,
-	})
+	}
+	err = light.SetState(state)
 	if err != nil {
 		t.Fatal(err)
 	}
 	t.Logf("State set successfully on light %d", id)
+
+	b.Host = badHostname
+	err = light.SetState(state)
+	assert.NotNil(t, err)
 }

@@ -1,14 +1,12 @@
-package huego_test
+package huego
 
 import (
-	"testing"
-
-	"github.com/amimof/huego"
 	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
 func TestGetResourcelinks(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	resourcelinks, err := b.GetResourcelinks()
 	if err != nil {
 		t.Fatal(err)
@@ -25,7 +23,7 @@ func TestGetResourcelinks(t *testing.T) {
 		t.Logf("  ID: %d", resourcelink.ID)
 	}
 
-	contains := func(name string, ss []*huego.Resourcelink) bool {
+	contains := func(name string, ss []*Resourcelink) bool {
 		for _, s := range ss {
 			if s.Name == name {
 				return true
@@ -36,10 +34,14 @@ func TestGetResourcelinks(t *testing.T) {
 
 	assert.True(t, contains("Sunrise", resourcelinks))
 	assert.True(t, contains("Sunrise 2", resourcelinks))
+
+	b.Host = badHostname
+	_, err = b.GetResourcelinks()
+	assert.NotNil(t, err)
 }
 
 func TestGetResourcelink(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	l, err := b.GetResourcelink(1)
 	if err != nil {
 		t.Fatal(err)
@@ -51,11 +53,15 @@ func TestGetResourcelink(t *testing.T) {
 	t.Logf("Owner: %s", l.Owner)
 	t.Logf("Links: %s", l.Links)
 	t.Logf("ID: %d", l.ID)
+
+	b.Host = badHostname
+	_, err = b.GetResourcelink(1)
+	assert.NotNil(t, err)
 }
 
 func TestCreateResourcelink(t *testing.T) {
-	b := huego.New(hostname, username)
-	resourcelink := &huego.Resourcelink{
+	b := New(hostname, username)
+	resourcelink := &Resourcelink{
 		Name:        "Huego Test Resourcelink",
 		Description: "Amir's wakeup experience",
 		Type:        "Link",
@@ -72,15 +78,19 @@ func TestCreateResourcelink(t *testing.T) {
 		t.Logf("%v: %s", k, v)
 	}
 
+	b.Host = badHostname
+	_, err = b.CreateResourcelink(resourcelink)
+	assert.NotNil(t, err)
 }
 
 func TestUpdateResourcelink(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	id := 1
-	resp, err := b.UpdateResourcelink(id, &huego.Resourcelink{
+	rl := &Resourcelink{
 		Name:        "New Resourcelink",
 		Description: "Updated Attribute",
-	})
+	}
+	resp, err := b.UpdateResourcelink(id, rl)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -89,10 +99,13 @@ func TestUpdateResourcelink(t *testing.T) {
 		t.Logf("%v: %s", k, v)
 	}
 
+	b.Host = badHostname
+	_, err = b.UpdateResourcelink(id, rl)
+	assert.NotNil(t, err)
 }
 
 func TestDeleteResourcelink(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	id := 1
 	err := b.DeleteResourcelink(1)
 	if err != nil {

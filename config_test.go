@@ -1,14 +1,12 @@
-package huego_test
+package huego
 
 import (
-	"testing"
-
-	"github.com/amimof/huego"
 	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
 func TestGetConfig(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	config, err := b.GetConfig()
 	if err != nil {
 		t.Fatal(err)
@@ -65,8 +63,16 @@ func TestGetConfig(t *testing.T) {
 	t.Logf("StarterKitID: %s", config.StarterKitID)
 }
 
+func TestGetConfigError(t *testing.T) {
+	b := New(badHostname, username)
+	_, err := b.GetConfig()
+	if err == nil {
+		t.Fatal("Expected error not to be nil")
+	}
+}
+
 func TestCreateUser(t *testing.T) {
-	b := huego.New(hostname, "")
+	b := New(hostname, "")
 	u, err := b.CreateUser("github.com/amimof/huego#go test")
 	if err != nil {
 		t.Fatal(err)
@@ -75,8 +81,16 @@ func TestCreateUser(t *testing.T) {
 	}
 }
 
+func TestCreateUserError(t *testing.T) {
+	b := New(badHostname, username)
+	_, err := b.CreateUser("github.com/amimof/huego#go test")
+	if err == nil {
+		t.Fatal("Expected error not to be nil")
+	}
+}
+
 func TestGetUsers(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	users, err := b.GetUsers()
 	if err != nil {
 		t.Fatal(err)
@@ -88,7 +102,7 @@ func TestGetUsers(t *testing.T) {
 		t.Logf("  CreateDate: %s", u.CreateDate)
 		t.Logf("  LastUseDate: %s", u.LastUseDate)
 	}
-	contains := func(name string, ss []huego.Whitelist) bool {
+	contains := func(name string, ss []Whitelist) bool {
 		for _, s := range ss {
 			if s.Name == name {
 				return true
@@ -101,8 +115,16 @@ func TestGetUsers(t *testing.T) {
 	assert.True(t, contains("MyApplication", users))
 }
 
+func TestGetUsersError(t *testing.T) {
+	b := New(badHostname, username)
+	_, err := b.GetUsers()
+	if err == nil {
+		t.Fatal("Expected error not to be nil")
+	}
+}
+
 func TestDeleteUser(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	err := b.DeleteUser("ffffffffe0341b1b376a2389376a2389")
 	if err != nil {
 		t.Fatal(err)
@@ -111,9 +133,17 @@ func TestDeleteUser(t *testing.T) {
 }
 
 func TestGetFullState(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	_, err := b.GetFullState()
 	if err != nil {
 		t.Fatal(err)
+	}
+}
+
+func TestGetFullStateError(t *testing.T) {
+	b := New(badHostname, username)
+	_, err := b.GetFullState()
+	if err == nil {
+		t.Fatal("Expected error not to be nil")
 	}
 }

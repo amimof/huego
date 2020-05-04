@@ -1,13 +1,11 @@
-package huego_test
+package huego
 
 import (
 	"testing"
-
-	"github.com/amimof/huego"
 )
 
 func TestGetCapabilities(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	c, err := b.GetCapabilities()
 	if err != nil {
 		t.Fatal(c)
@@ -29,4 +27,12 @@ func TestGetCapabilities(t *testing.T) {
 	t.Logf("    Available: %d", c.Sensors.Available)
 	t.Log("  Streaming")
 	t.Logf("    Available: %d", c.Streaming.Available)
+}
+
+func TestGetCapabilitiesError(t *testing.T) {
+	b := New(badHostname, username)
+	_, err := b.GetCapabilities()
+	if err == nil {
+		t.Fatal("Expected error not to be nil")
+	}
 }

@@ -1,13 +1,12 @@
-package huego_test
+package huego
 
 import (
 	"fmt"
+	"github.com/jarcoal/httpmock"
+	"github.com/stretchr/testify/assert"
 	"os"
 	"path"
 	"testing"
-
-	"github.com/amimof/huego"
-	"github.com/jarcoal/httpmock"
 )
 
 // I'm too lazy to have this elsewhere
@@ -16,6 +15,7 @@ import (
 
 var username string
 var hostname string
+var badHostname = "bad-hue-config"
 
 func init() {
 
@@ -313,10 +313,73 @@ func init() {
 		httpmock.RegisterResponder(test.method, test.url, httpmock.NewStringResponder(200, test.data))
 	}
 
+	// Register a responder for bad requests
+	paths := []string{
+		"",
+		"config",
+		"/config",
+		"/config",
+		"/config/whitelist/ffffffffe0341b1b376a2389376a2389",
+		path.Join("/invalid_password", "/lights"),
+		path.Join(username, "/lights"),
+		path.Join(username, "/lights/1"),
+		path.Join(username, "/lights/new"),
+		path.Join(username, "/lights"),
+		path.Join(username, "/lights/1/state"),
+		path.Join(username, "/lights/1"),
+		path.Join(username, "/lights/1"),
+		"/groups",
+		"/groups/1",
+		"/groups/1",
+		"/groups/1/action",
+		"/groups",
+		"/groups/1",
+		"/scenes",
+		"/scenes/4e1c6b20e-on-0",
+		"/scenes",
+		"/scenes/4e1c6b20e-on-0",
+		"/scenes/4e1c6b20e-on-0/lightstates/1",
+		"/scenes/4e1c6b20e-on-0",
+		"/rules",
+		"/rules/1",
+		"/rules",
+		"/rules/1",
+		"/rules/1",
+		"/schedules",
+		"/schedules/1",
+		"/schedules",
+		"/schedules/1",
+		"/schedules/1",
+		"/sensors",
+		"/sensors/1",
+		"/sensors",
+		"/sensors",
+		"/sensors/new",
+		"/sensors/1",
+		"/sensors/1",
+		"/sensors/1/config",
+		"/sensors/1/state",
+		"/capabilities",
+		"/resourcelinks",
+		"/resourcelinks/1",
+		"/resourcelinks",
+		"/resourcelinks/1",
+		"/resourcelinks/1",
+	}
+
+	// Register responder for errors
+	for _, p := range paths {
+		response := []byte("not json")
+		httpmock.RegisterResponder("GET", fmt.Sprintf("http://%s/api%s", badHostname, p), httpmock.NewBytesResponder(200, response))
+		httpmock.RegisterResponder("POST", fmt.Sprintf("http://%s/api%s", badHostname, p), httpmock.NewBytesResponder(200, response))
+		httpmock.RegisterResponder("PUT", fmt.Sprintf("http://%s/api%s", badHostname, p), httpmock.NewBytesResponder(200, response))
+		httpmock.RegisterResponder("DELETE", fmt.Sprintf("http://%s/api%s", badHostname, p), httpmock.NewBytesResponder(200, response))
+	}
+
 }
 
 func TestDiscoverAndLogin(t *testing.T) {
-	bridge, err := huego.Discover()
+	bridge, err := Discover()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -325,7 +388,7 @@ func TestDiscoverAndLogin(t *testing.T) {
 }
 
 func TestDiscoverAllBridges(t *testing.T) {
-	bridges, err := huego.DiscoverAll()
+	bridges, err := DiscoverAll()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -336,4 +399,14 @@ func TestDiscoverAllBridges(t *testing.T) {
 		t.Logf("  User: %s", bridge.User)
 		t.Logf("  ID: %s", bridge.ID)
 	}
+}
+
+func Test_unmarshalError(t *testing.T) {
+	s := struct {
+		Name string `json:"name"`
+	}{
+		Name: "amimof",
+	}
+	err := unmarshal([]byte(`not json`), s)
+	assert.NotNil(t, err)
 }

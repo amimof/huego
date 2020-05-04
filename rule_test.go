@@ -1,14 +1,12 @@
-package huego_test
+package huego
 
 import (
-	"testing"
-
-	"github.com/amimof/huego"
 	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
 func TestGetRules(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	rules, err := b.GetRules()
 	if err != nil {
 		t.Fatal(err)
@@ -18,7 +16,7 @@ func TestGetRules(t *testing.T) {
 		t.Log(rule)
 	}
 
-	contains := func(name string, ss []*huego.Rule) bool {
+	contains := func(name string, ss []*Rule) bool {
 		for _, s := range ss {
 			if s.Name == name {
 				return true
@@ -29,35 +27,43 @@ func TestGetRules(t *testing.T) {
 
 	assert.True(t, contains("Wall Switch Rule", rules))
 	assert.True(t, contains("Wall Switch Rule 2", rules))
+
+	b.Host = badHostname
+	_, err = b.GetRules()
+	assert.NotNil(t, err)
 }
 
 func TestGetRule(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	l, err := b.GetRule(1)
 	if err != nil {
 		t.Fatal(err)
 	} else {
 		t.Log(l)
 	}
+
+	b.Host = badHostname
+	_, err = b.GetRule(1)
+	assert.NotNil(t, err)
 }
 
 func TestCreateRule(t *testing.T) {
-	b := huego.New(hostname, username)
-	conditions := []*huego.Condition{
+	b := New(hostname, username)
+	conditions := []*Condition{
 		{
 			Address:  "/sensors/2/state/buttonevent",
 			Operator: "eq",
 			Value:    "16",
 		},
 	}
-	actions := []*huego.RuleAction{
+	actions := []*RuleAction{
 		{
 			Address: "/groups/0/action",
 			Method:  "PUT",
-			Body:    &huego.State{On: true},
+			Body:    &State{On: true},
 		},
 	}
-	rule := &huego.Rule{
+	rule := &Rule{
 		Name:       "Huego Test Rule",
 		Conditions: conditions,
 		Actions:    actions,
@@ -71,20 +77,25 @@ func TestCreateRule(t *testing.T) {
 			t.Logf("%v: %s", k, v)
 		}
 	}
+
+	b.Host = badHostname
+	_, err = b.CreateRule(rule)
+	assert.NotNil(t, err)
 }
 
 func TestUpdateRule(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	id := 1
-	resp, err := b.UpdateRule(id, &huego.Rule{
-		Actions: []*huego.RuleAction{
+	rule := &Rule{
+		Actions: []*RuleAction{
 			{
 				Address: "/groups/1/action",
 				Method:  "PUT",
-				Body:    &huego.State{On: true},
+				Body:    &State{On: true},
 			},
 		},
-	})
+	}
+	resp, err := b.UpdateRule(id, rule)
 	if err != nil {
 		t.Fatal(err)
 	} else {
@@ -93,10 +104,13 @@ func TestUpdateRule(t *testing.T) {
 			t.Logf("%v: %s", k, v)
 		}
 	}
+	b.Host = badHostname
+	_, err = b.UpdateRule(id, rule)
+	assert.NotNil(t, err)
 }
 
 func TestDeleteRule(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	id := 1
 	err := b.DeleteRule(id)
 	if err != nil {

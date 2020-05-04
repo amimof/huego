@@ -1,14 +1,12 @@
-package huego_test
+package huego
 
 import (
-	"testing"
-
-	"github.com/amimof/huego"
 	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
 func TestGetSchedules(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	schedules, err := b.GetSchedules()
 	if err != nil {
 		t.Fatal(err)
@@ -30,7 +28,7 @@ func TestGetSchedules(t *testing.T) {
 		t.Logf("  ID: %d", schedule.ID)
 	}
 
-	contains := func(name string, ss []*huego.Schedule) bool {
+	contains := func(name string, ss []*Schedule) bool {
 		for _, s := range ss {
 			if s.Name == name {
 				return true
@@ -42,10 +40,13 @@ func TestGetSchedules(t *testing.T) {
 	assert.True(t, contains("Timer", schedules))
 	assert.True(t, contains("Alarm", schedules))
 
+	b.Host = badHostname
+	_, err = b.GetSchedules()
+	assert.NotNil(t, err)
 }
 
 func TestGetSchedule(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	s, err := b.GetSchedule(1)
 	if err != nil {
 		t.Fatal(err)
@@ -56,11 +57,15 @@ func TestGetSchedule(t *testing.T) {
 	t.Logf("Status: %s", s.Status)
 	t.Logf("AutoDelete: %t", s.AutoDelete)
 	t.Logf("ID: %d", s.ID)
+
+	b.Host = badHostname
+	_, err = b.GetSchedule(1)
+	assert.NotNil(t, err)
 }
 
 func TestCreateSchedule(t *testing.T) {
-	b := huego.New(hostname, username)
-	command := &huego.Command{
+	b := New(hostname, username)
+	command := &Command{
 		Address: "/api/" + username + "/lights/0",
 		Body: &struct {
 			on bool
@@ -69,7 +74,7 @@ func TestCreateSchedule(t *testing.T) {
 		},
 		Method: "PUT",
 	}
-	schedule := &huego.Schedule{
+	schedule := &Schedule{
 		Name:        "TestSchedule",
 		Description: "Huego test schedule",
 		Command:     command,
@@ -84,15 +89,20 @@ func TestCreateSchedule(t *testing.T) {
 			t.Logf("%v: %s", k, v)
 		}
 	}
+
+	b.Host = badHostname
+	_, err = b.CreateSchedule(schedule)
+	assert.NotNil(t, err)
 }
 
 func TestUpdateSchedule(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	id := 1
-	resp, err := b.UpdateSchedule(id, &huego.Schedule{
+	schedule := &Schedule{
 		Name:        "New Scehdule",
 		Description: "Updated parameter",
-	})
+	}
+	resp, err := b.UpdateSchedule(id, schedule)
 	if err != nil {
 		t.Fatal(err)
 	} else {
@@ -101,10 +111,14 @@ func TestUpdateSchedule(t *testing.T) {
 			t.Logf("%v: %s", k, v)
 		}
 	}
+
+	b.Host = badHostname
+	_, err = b.UpdateSchedule(id, schedule)
+	assert.NotNil(t, err)
 }
 
 func TestDeleteSchedule(t *testing.T) {
-	b := huego.New(hostname, username)
+	b := New(hostname, username)
 	id := 1
 	err := b.DeleteSchedule(id)
 	if err != nil {
