@@ -63,6 +63,14 @@ func TestGetConfig(t *testing.T) {
 	t.Logf("StarterKitID: %s", config.StarterKitID)
 }
 
+func TestGetConfigError(t *testing.T) {
+	b := New("http://bad-hue-config", username)
+	_, err := b.GetConfig()
+	if err == nil {
+		t.Fatal("Expected error not to be nil")
+	}
+}
+
 func TestCreateUser(t *testing.T) {
 	b := New(hostname, "")
 	u, err := b.CreateUser("github.com/amimof/huego#go test")

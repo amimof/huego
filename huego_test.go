@@ -20,6 +20,19 @@ func init() {
 	hostname = os.Getenv("HUE_HOSTNAME")
 	username = os.Getenv("HUE_USERNAME")
 
+	testsError := []struct {
+		method string
+		path string
+		data []byte
+		url string
+	}{
+		{
+			method: "GET",
+			path: "/config",
+			data: []byte("this is not json"),
+		},
+	}
+
 	tests := []struct {
 		method string
 		path   string
@@ -311,6 +324,12 @@ func init() {
 		httpmock.RegisterResponder(test.method, test.url, httpmock.NewStringResponder(200, test.data))
 	}
 
+	for _, test := range testsError {
+		if test.url == "" {
+			test.url = fmt.Sprintf("http://%s/api%s", "bad-hue-config", test.path)
+		}
+		httpmock.RegisterResponder(test.method, test.url, httpmock.NewBytesResponder(200, test.data))
+	}
 }
 
 func TestDiscoverAndLogin(t *testing.T) {
