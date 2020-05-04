@@ -64,7 +64,7 @@ func TestGetConfig(t *testing.T) {
 }
 
 func TestGetConfigError(t *testing.T) {
-	b := New("http://bad-hue-config", username)
+	b := New(badHostname, username)
 	_, err := b.GetConfig()
 	if err == nil {
 		t.Fatal("Expected error not to be nil")
@@ -78,6 +78,14 @@ func TestCreateUser(t *testing.T) {
 		t.Fatal(err)
 	} else {
 		t.Logf("User created with username: %s", u)
+	}
+}
+
+func TestCreateUserError(t *testing.T) {
+	b := New(badHostname, username)
+	_, err := b.CreateUser("github.com/amimof/huego#go test")
+	if err == nil {
+		t.Fatal("Expected error not to be nil")
 	}
 }
 
@@ -107,6 +115,14 @@ func TestGetUsers(t *testing.T) {
 	assert.True(t, contains("MyApplication", users))
 }
 
+func TestGetUsersError(t *testing.T) {
+	b := New(badHostname, username)
+	_, err := b.GetUsers()
+	if err == nil {
+		t.Fatal("Expected error not to be nil")
+	}
+}
+
 func TestDeleteUser(t *testing.T) {
 	b := New(hostname, username)
 	err := b.DeleteUser("ffffffffe0341b1b376a2389376a2389")
@@ -116,10 +132,19 @@ func TestDeleteUser(t *testing.T) {
 	t.Logf("Deleted user '%s'", "ffffffffe0341b1b376a2389376a2389")
 }
 
+
 func TestGetFullState(t *testing.T) {
 	b := New(hostname, username)
 	_, err := b.GetFullState()
 	if err != nil {
 		t.Fatal(err)
+	}
+}
+
+func TestGetFullStateError(t *testing.T) {
+	b := New(badHostname, username)
+	_, err := b.GetFullState()
+	if err == nil {
+		t.Fatal("Expected error not to be nil")
 	}
 }

@@ -54,6 +54,14 @@ func TestUpdateBridgeConfig(t *testing.T) {
 	}
 }
 
+func TestUpdateBridgeConfigError(t *testing.T) {
+	b := New(badHostname, username)
+	_, err := b.GetConfig()
+	if err == nil {
+		t.Fatal("Expected error not to be nil")
+	}
+}
+
 func TestBridge_getAPIPathError(t *testing.T) {
 	b := New("invalid hostname", "")
 	expected := "parse http://invalid hostname: invalid character \" \" in host name"

@@ -28,3 +28,11 @@ func TestGetCapabilities(t *testing.T) {
 	t.Log("  Streaming")
 	t.Logf("    Available: %d", c.Streaming.Available)
 }
+
+func TestGetCapabilitiesError(t *testing.T) {
+	b := New(badHostname, username)
+	_, err := b.GetCapabilities()
+	if err == nil {
+		t.Fatal("Expected error not to be nil")
+	}
+}
