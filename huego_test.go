@@ -138,12 +138,12 @@ func init() {
 		{
 			method: "GET",
 			path:   "/scenes",
-			data:   `{"4e1c6b20e-on-0":{"name":"Kathyon1449133269486","lights":["2","3"],"owner":"ffffffffe0341b1b376a2389376a2389","recycle":true,"locked":false,"appdata":{},"picture":"","lastupdated":"2015-12-03T08:57:13","version":1},"3T2SvsxvwteNNys":{"name":"Cozydinner","lights":["1","2"],"owner":"ffffffffe0341b1b376a2389376a2389","recycle":true,"locked":false,"appdata":{"version":1,"data":"myAppData"},"picture":"","lastupdated":"2015-12-03T10:09:22","version":2}}`,
+			data:   `{"4e1c6b20e-on-0":{"name":"Kathyon1449133269486","lights":["2","3"],"owner":"ffffffffe0341b1b376a2389376a2389","recycle":true,"locked":false,"appdata":{},"picture":"","lastupdated":"2015-12-03T08:57:13","version":1},"3T2SvsxvwteNNys":{"name":"Cozydinner","type":"GroupScene","group":"1","lights":["1","2"],"owner":"ffffffffe0341b1b376a2389376a2389","recycle":true,"locked":false,"appdata":{"version":1,"data":"myAppData"},"picture":"","lastupdated":"2015-12-03T10:09:22","version":2}}`,
 		},
 		{
 			method: "GET",
 			path:   "/scenes/4e1c6b20e-on-0",
-			data:   `{"name":"Cozy dinner","lights":["1"],"owner":"newdeveloper","recycle":true,"locked":false,"appdata":{},"picture":"","lastupdated":"2015-12-03T10:09:22","version":2,"lightstates":{"1":{"on":true,"bri":237,"xy":[0.5806,0.3903]}}}`,
+			data:   `{"name":"Cozy dinner","type":"GroupScene","group":"1","lights":["1"],"owner":"newdeveloper","recycle":true,"locked":false,"appdata":{},"picture":"","lastupdated":"2015-12-03T10:09:22","version":2,"lightstates":{"1":{"on":true,"bri":237,"xy":[0.5806,0.3903]}}}`,
 		},
 		{
 			method: "POST",

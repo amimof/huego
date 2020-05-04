@@ -15,6 +15,8 @@ func TestGetScenes(t *testing.T) {
 	for i, scene := range scenes {
 		t.Logf("%d", i)
 		t.Logf("  Name: %s", scene.Name)
+		t.Logf("  Type: %s", scene.Type)
+		t.Logf("  Group: %s", scene.Group)
 		t.Logf("  Lights: %s", scene.Lights)
 		t.Logf("  Owner: %s", scene.Owner)
 		t.Logf("  Recycle: %t", scene.Recycle)
@@ -48,6 +50,8 @@ func TestGetScene(t *testing.T) {
 		t.Fatal(err)
 	}
 	t.Logf("  Name: %s", s.Name)
+	t.Logf("  Type: %s", s.Type)
+	t.Logf("  Group: %s", s.Group)
 	t.Logf("  Lights: %s", s.Lights)
 	t.Logf("  Owner: %s", s.Owner)
 	t.Logf("  Recycle: %t", s.Recycle)
