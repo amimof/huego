@@ -2,8 +2,6 @@ package huego
 
 import (
 	"testing"
-
-	"github.com/amimof/huego"
 )
 
 func TestGetCapabilities(t *testing.T) {
