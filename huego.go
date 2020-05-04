@@ -2,6 +2,7 @@
 package huego
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -79,12 +80,14 @@ func unmarshal(data []byte, v interface{}) error {
 	return nil
 }
 
-func get(url string) ([]byte, error) {
+func get(ctx context.Context, url string) ([]byte, error) {
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return nil, err
 	}
+
+	req = req.WithContext(ctx)
 
 	client := http.Client{}
 	res, err := client.Do(req)
@@ -103,7 +106,7 @@ func get(url string) ([]byte, error) {
 	return body, nil
 }
 
-func put(url string, data []byte) ([]byte, error) {
+func put(ctx context.Context, url string, data []byte) ([]byte, error) {
 
 	body := strings.NewReader(string(data))
 
@@ -112,6 +115,8 @@ func put(url string, data []byte) ([]byte, error) {
 		return nil, err
 	}
 
+	req = req.WithContext(ctx)
+
 	req.Header.Set("Content-Type", "application/json")
 
 	client := http.Client{}
@@ -131,7 +136,7 @@ func put(url string, data []byte) ([]byte, error) {
 
 }
 
-func post(url string, data []byte) ([]byte, error) {
+func post(ctx context.Context, url string, data []byte) ([]byte, error) {
 
 	body := strings.NewReader(string(data))
 
@@ -140,6 +145,8 @@ func post(url string, data []byte) ([]byte, error) {
 		return nil, err
 	}
 
+	req = req.WithContext(ctx)
+
 	req.Header.Set("Content-Type", "application/json")
 
 	client := http.Client{}
@@ -159,12 +166,14 @@ func post(url string, data []byte) ([]byte, error) {
 
 }
 
-func delete(url string) ([]byte, error) {
+func delete(ctx context.Context, url string) ([]byte, error) {
 
 	req, err := http.NewRequest("DELETE", url, nil)
 	if err != nil {
 		return nil, err
 	}
+
+	req = req.WithContext(ctx)
 
 	req.Header.Set("Content-Type", "application/json")
 
@@ -188,11 +197,19 @@ func delete(url string) ([]byte, error) {
 // DiscoverAll performs a discovery on the network looking for bridges using https://www.meethue.com/api/nupnp service.
 // DiscoverAll returns a list of Bridge objects.
 func DiscoverAll() ([]Bridge, error) {
+	return DiscoverAllContext(context.Background())
+}
+
+// DiscoverAllContext performs a discovery on the network looking for bridges using https://www.meethue.com/api/nupnp service.
+// DiscoverAllContext returns a list of Bridge objects.
+func DiscoverAllContext(ctx context.Context) ([]Bridge, error) {
 
 	req, err := http.NewRequest("GET", "https://discovery.meethue.com", nil)
 	if err != nil {
 		return nil, err
 	}
+
+	req = req.WithContext(ctx)
 
 	client := http.Client{}
 	res, err := client.Do(req)
@@ -221,10 +238,16 @@ func DiscoverAll() ([]Bridge, error) {
 // Discover performs a discovery on the network looking for bridges using https://www.meethue.com/api/nupnp service.
 // Discover uses DiscoverAll() but only returns the first instance in the array of bridges if any.
 func Discover() (*Bridge, error) {
+	return DiscoverContext(context.Background())
+}
+
+// DiscoverContext performs a discovery on the network looking for bridges using https://www.meethue.com/api/nupnp service.
+// DiscoverContext uses DiscoverAllContext() but only returns the first instance in the array of bridges if any.
+func DiscoverContext(ctx context.Context) (*Bridge, error) {
 
 	b := &Bridge{}
 
-	bridges, err := DiscoverAll()
+	bridges, err := DiscoverAllContext(ctx)
 	if err != nil {
 		return nil, err
 	}
