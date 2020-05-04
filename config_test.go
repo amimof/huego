@@ -132,7 +132,6 @@ func TestDeleteUser(t *testing.T) {
 	t.Logf("Deleted user '%s'", "ffffffffe0341b1b376a2389376a2389")
 }
 
-
 func TestGetFullState(t *testing.T) {
 	b := New(hostname, username)
 	_, err := b.GetFullState()

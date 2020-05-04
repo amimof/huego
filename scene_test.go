@@ -41,11 +41,16 @@ func TestGetScenes(t *testing.T) {
 	assert.True(t, contains("Kathyon1449133269486", scenes))
 	assert.True(t, contains("Cozydinner", scenes))
 
+	b.Host = badHostname
+	_, err = b.GetScenes()
+	assert.NotNil(t, err)
+
 }
 
 func TestGetScene(t *testing.T) {
 	b := New(hostname, username)
-	s, err := b.GetScene("4e1c6b20e-on-0")
+	id := "4e1c6b20e-on-0"
+	s, err := b.GetScene(id)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -66,15 +71,20 @@ func TestGetScene(t *testing.T) {
 	for k := range s.LightStates {
 		t.Logf("    Light %d: %+v", k, s.LightStates[k])
 	}
+
+	b.Host = badHostname
+	_, err = b.GetScene(id)
+	assert.NotNil(t, err)
 }
 
 func TestCreateScene(t *testing.T) {
 	b := New(hostname, username)
-	resp, err := b.CreateScene(&Scene{
+	scene := &Scene{
 		Name:    "New Scene",
 		Lights:  []string{"4", "5"},
 		Recycle: true,
-	})
+	}
+	resp, err := b.CreateScene(scene)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -82,6 +92,10 @@ func TestCreateScene(t *testing.T) {
 	for k, v := range resp.Success {
 		t.Logf("%v: %s", k, v)
 	}
+
+	b.Host = badHostname
+	_, err = b.CreateScene(scene)
+	assert.NotNil(t, err)
 }
 
 func TestUpdateScene(t *testing.T) {
@@ -90,10 +104,11 @@ func TestUpdateScene(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	resp, err := b.UpdateScene(scene.ID, &Scene{
+	newscene := &Scene{
 		Name:   "New Scene",
 		Lights: []string{},
-	})
+	}
+	resp, err := b.UpdateScene(scene.ID, newscene)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -101,6 +116,10 @@ func TestUpdateScene(t *testing.T) {
 	for k, v := range resp.Success {
 		t.Logf("%v: %s", k, v)
 	}
+
+	b.Host = badHostname
+	_, err = b.UpdateScene(scene.ID, newscene)
+	assert.NotNil(t, err)
 }
 
 func TestSetSceneLightState(t *testing.T) {
@@ -110,17 +129,22 @@ func TestSetSceneLightState(t *testing.T) {
 		t.Fatal(err)
 	}
 	light := 1
+	state := &State{
+		On:  true,
+		Bri: 255,
+	}
 	t.Logf("Name: %s", scene.Name)
 	t.Logf("ID: %s", scene.ID)
 	t.Logf("LightStates: %+v", scene.LightStates)
-	_, err = b.SetSceneLightState(scene.ID, light, &State{
-		On:  true,
-		Bri: 255,
-	})
+	_, err = b.SetSceneLightState(scene.ID, light, state)
 	if err != nil {
 		t.Fatal(err)
 	}
 	t.Logf("Successfully set the state of light %d of scene '%s'", light, scene.Name)
+
+	b.Host = badHostname
+	_, err = b.SetSceneLightState(scene.ID, light, state)
+	assert.NotNil(t, err)
 
 }
 
@@ -149,6 +173,10 @@ func TestRecallScene(t *testing.T) {
 	for k, v := range resp.Success {
 		t.Logf("%v: %s", k, v)
 	}
+
+	b.Host = badHostname
+	_, err = b.RecallScene("HcK1mEcgS7gcVcT", group)
+	assert.NotNil(t, err)
 }
 
 func TestRecallScene2(t *testing.T) {
@@ -163,4 +191,8 @@ func TestRecallScene2(t *testing.T) {
 		t.Fatal(err)
 	}
 	t.Logf("Scene %s (%s) recalled in group %d", scene.Name, scene.ID, group)
+
+	b.Host = badHostname
+	err = scene.Recall(group)
+	assert.NotNil(t, err)
 }

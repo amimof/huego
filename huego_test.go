@@ -2,8 +2,8 @@ package huego
 
 import (
 	"fmt"
-	"github.com/stretchr/testify/assert"
 	"github.com/jarcoal/httpmock"
+	"github.com/stretchr/testify/assert"
 	"os"
 	"path"
 	"testing"
@@ -365,7 +365,7 @@ func init() {
 		"/resourcelinks",
 		"/resourcelinks/1",
 		"/resourcelinks/1",
-		}
+	}
 
 	// Register responder for errors
 	for _, p := range paths {
@@ -375,7 +375,7 @@ func init() {
 		httpmock.RegisterResponder("PUT", fmt.Sprintf("http://%s/api%s", badHostname, p), httpmock.NewBytesResponder(200, response))
 		httpmock.RegisterResponder("DELETE", fmt.Sprintf("http://%s/api%s", badHostname, p), httpmock.NewBytesResponder(200, response))
 	}
-	
+
 }
 
 func TestDiscoverAndLogin(t *testing.T) {
@@ -403,9 +403,9 @@ func TestDiscoverAllBridges(t *testing.T) {
 
 func Test_unmarshalError(t *testing.T) {
 	s := struct {
-		name string "json:`string`"
+		Name string `json:"name"`
 	}{
-		name: "amimof",
+		Name: "amimof",
 	}
 	err := unmarshal([]byte(`not json`), s)
 	assert.NotNil(t, err)

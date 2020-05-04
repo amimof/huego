@@ -40,6 +40,9 @@ func TestGetSchedules(t *testing.T) {
 	assert.True(t, contains("Timer", schedules))
 	assert.True(t, contains("Alarm", schedules))
 
+	b.Host = badHostname
+	_, err = b.GetSchedules()
+	assert.NotNil(t, err)
 }
 
 func TestGetSchedule(t *testing.T) {
@@ -54,6 +57,10 @@ func TestGetSchedule(t *testing.T) {
 	t.Logf("Status: %s", s.Status)
 	t.Logf("AutoDelete: %t", s.AutoDelete)
 	t.Logf("ID: %d", s.ID)
+
+	b.Host = badHostname
+	_, err = b.GetSchedule(1)
+	assert.NotNil(t, err)
 }
 
 func TestCreateSchedule(t *testing.T) {
@@ -82,15 +89,20 @@ func TestCreateSchedule(t *testing.T) {
 			t.Logf("%v: %s", k, v)
 		}
 	}
+
+	b.Host = badHostname
+	_, err = b.CreateSchedule(schedule)
+	assert.NotNil(t, err)
 }
 
 func TestUpdateSchedule(t *testing.T) {
 	b := New(hostname, username)
 	id := 1
-	resp, err := b.UpdateSchedule(id, &Schedule{
+	schedule := &Schedule{
 		Name:        "New Scehdule",
 		Description: "Updated parameter",
-	})
+	}
+	resp, err := b.UpdateSchedule(id, schedule)
 	if err != nil {
 		t.Fatal(err)
 	} else {
@@ -99,6 +111,10 @@ func TestUpdateSchedule(t *testing.T) {
 			t.Logf("%v: %s", k, v)
 		}
 	}
+
+	b.Host = badHostname
+	_, err = b.UpdateSchedule(id, schedule)
+	assert.NotNil(t, err)
 }
 
 func TestDeleteSchedule(t *testing.T) {

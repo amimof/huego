@@ -36,6 +36,10 @@ func TestGetSensors(t *testing.T) {
 
 	assert.True(t, contains("Daylight", sensors))
 	assert.True(t, contains("Tap Switch 2", sensors))
+
+	b.Host = badHostname
+	_, err = b.GetSensors()
+	assert.NotNil(t, err)
 }
 
 func TestGetSensor(t *testing.T) {
@@ -55,13 +59,18 @@ func TestGetSensor(t *testing.T) {
 	t.Logf("UniqueID: %s", sensor.UniqueID)
 	t.Logf("SwVersion: %s", sensor.SwVersion)
 	t.Logf("ID: %d", sensor.ID)
+
+	b.Host = badHostname
+	_, err = b.GetSensor(1)
+	assert.NotNil(t, err)
 }
 
 func TestCreateSensor(t *testing.T) {
 	b := New(hostname, username)
-	resp, err := b.CreateSensor(&Sensor{
+	sensor := &Sensor{
 		Name: "New Sensor",
-	})
+	}
+	resp, err := b.CreateSensor(sensor)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -70,6 +79,9 @@ func TestCreateSensor(t *testing.T) {
 		t.Logf("%v: %s", k, v)
 	}
 
+	b.Host = badHostname
+	_, err = b.CreateSensor(sensor)
+	assert.NotNil(t, err)
 }
 
 func TestFindSensors(t *testing.T) {
@@ -82,6 +94,9 @@ func TestFindSensors(t *testing.T) {
 		t.Logf("%v: %s", k, v)
 	}
 
+	b.Host = badHostname
+	_, err = b.FindSensors()
+	assert.NotNil(t, err)
 }
 
 func TestGetNewSensors(t *testing.T) {
@@ -121,15 +136,20 @@ func TestGetNewSensors(t *testing.T) {
 func TestUpdateSensor(t *testing.T) {
 	b := New(hostname, username)
 	id := 1
-	resp, err := b.UpdateSensor(id, &Sensor{
+	sensor := &Sensor{
 		Name: "New Sensor",
-	})
+	}
+	resp, err := b.UpdateSensor(id, sensor)
 	if err != nil {
 		t.Fatal(err)
 	}
 	for k, v := range resp.Success {
 		t.Logf("%v: %s", k, v)
 	}
+
+	b.Host = badHostname
+	_, err = b.UpdateSensor(id, sensor)
+	assert.NotNil(t, err)
 }
 
 func TestUpdateSensorConfig(t *testing.T) {
@@ -143,6 +163,9 @@ func TestUpdateSensorConfig(t *testing.T) {
 		t.Logf("%v: %s", k, v)
 	}
 
+	b.Host = badHostname
+	_, err = b.UpdateSensorConfig(id, "test")
+	assert.NotNil(t, err)
 }
 
 func TestDeleteSensor(t *testing.T) {

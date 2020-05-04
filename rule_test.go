@@ -27,6 +27,10 @@ func TestGetRules(t *testing.T) {
 
 	assert.True(t, contains("Wall Switch Rule", rules))
 	assert.True(t, contains("Wall Switch Rule 2", rules))
+
+	b.Host = badHostname
+	_, err = b.GetRules()
+	assert.NotNil(t, err)
 }
 
 func TestGetRule(t *testing.T) {
@@ -37,6 +41,10 @@ func TestGetRule(t *testing.T) {
 	} else {
 		t.Log(l)
 	}
+
+	b.Host = badHostname
+	_, err = b.GetRule(1)
+	assert.NotNil(t, err)
 }
 
 func TestCreateRule(t *testing.T) {
@@ -69,12 +77,16 @@ func TestCreateRule(t *testing.T) {
 			t.Logf("%v: %s", k, v)
 		}
 	}
+
+	b.Host = badHostname
+	_, err = b.CreateRule(rule)
+	assert.NotNil(t, err)
 }
 
 func TestUpdateRule(t *testing.T) {
 	b := New(hostname, username)
 	id := 1
-	resp, err := b.UpdateRule(id, &Rule{
+	rule := &Rule{
 		Actions: []*RuleAction{
 			{
 				Address: "/groups/1/action",
@@ -82,7 +94,8 @@ func TestUpdateRule(t *testing.T) {
 				Body:    &State{On: true},
 			},
 		},
-	})
+	}
+	resp, err := b.UpdateRule(id, rule)
 	if err != nil {
 		t.Fatal(err)
 	} else {
@@ -91,6 +104,9 @@ func TestUpdateRule(t *testing.T) {
 			t.Logf("%v: %s", k, v)
 		}
 	}
+	b.Host = badHostname
+	_, err = b.UpdateRule(id, rule)
+	assert.NotNil(t, err)
 }
 
 func TestDeleteRule(t *testing.T) {

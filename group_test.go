@@ -220,6 +220,10 @@ func TestTurnOnGroup(t *testing.T) {
 	}
 	t.Logf("Turned on group with id %d", group.ID)
 	t.Logf("Group IsOn: %t", group.State.On)
+
+	b.Host = badHostname
+	err = group.On()
+	assert.NotNil(t, err)
 }
 
 func TestIfGroupIsOn(t *testing.T) {
