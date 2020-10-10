@@ -1,8 +1,9 @@
 package huego
 
 import (
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestGetConfig(t *testing.T) {
@@ -84,6 +85,24 @@ func TestCreateUser(t *testing.T) {
 func TestCreateUserError(t *testing.T) {
 	b := New(badHostname, username)
 	_, err := b.CreateUser("github.com/amimof/huego#go test")
+	if err == nil {
+		t.Fatal("Expected error not to be nil")
+	}
+}
+
+func TestCreateUserWithClientKey(t *testing.T) {
+	b := New(hostname, "")
+	u, err := b.CreateUserWithClientKey("github.com/amimof/huego#go test")
+	if err != nil {
+		t.Fatal(err)
+	} else {
+		t.Logf("User created with username: %s", u)
+	}
+}
+
+func TestCreateUserWithClientKeyError(t *testing.T) {
+	b := New(badHostname, username)
+	_, err := b.CreateUserWithClientKey("github.com/amimof/huego#go test")
 	if err == nil {
 		t.Fatal("Expected error not to be nil")
 	}
