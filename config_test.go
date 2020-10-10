@@ -90,6 +90,24 @@ func TestCreateUserError(t *testing.T) {
 	}
 }
 
+func TestCreateUser2(t *testing.T) {
+	b := New(hostname, "")
+	u, err := b.CreateUser2("github.com/amimof/huego#go test", true)
+	if err != nil {
+		t.Fatal(err)
+	} else {
+		t.Logf("User created with username: %s", u)
+	}
+}
+
+func TestCreateUser2Error(t *testing.T) {
+	b := New(badHostname, username)
+	_, err := b.CreateUser2("github.com/amimof/huego#go test", true)
+	if err == nil {
+		t.Fatal("Expected error not to be nil")
+	}
+}
+
 func TestGetUsers(t *testing.T) {
 	b := New(hostname, username)
 	users, err := b.GetUsers()
