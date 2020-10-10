@@ -17,6 +17,12 @@ type Bridge struct {
 	ID   string `json:"id,omitempty"`
 }
 
+// CreatedUser represents a created user from the Configuration API
+type CreatedUser struct {
+	Username  string `json:"username,omitempty"`
+	ClientKey string `json:"clientkey,omitempty"`
+}
+
 func (b *Bridge) getAPIPath(str ...string) (string, error) {
 
 	if strings.Index(strings.ToLower(b.Host), "http://") <= -1 && strings.Index(strings.ToLower(b.Host), "https://") <= -1 {
@@ -128,6 +134,60 @@ func (b *Bridge) CreateUserContext(ctx context.Context, deviceType string) (stri
 	}
 
 	return resp.Success["username"].(string), nil
+
+}
+
+// CreateUser2 creates a user by adding deviceType to the list of whitelisted users on the bridge.
+// The link button on the bridge must have been pressed before calling CreateUser.
+func (b *Bridge) CreateUser2(deviceType string, generateClientKey bool) (*CreatedUser, error) {
+	return b.CreateUser2yContext(context.Background(), deviceType, generateClientKey)
+}
+
+// CreateUser2yContext creates a user by adding deviceType to the list of whitelisted users on the bridge
+// The link button on the bridge must have been pressed before calling CreateUser.
+func (b *Bridge) CreateUser2yContext(ctx context.Context, deviceType string, generateClientKey bool) (*CreatedUser, error) {
+
+	var a []*APIResponse
+
+	body := struct {
+		DeviceType        string `json:"devicetype,omitempty"`
+		GenerateClientKey bool   `json:"generateclientkey,omitempty"`
+	}{deviceType, generateClientKey}
+
+	url, err := b.getAPIPath("/")
+	if err != nil {
+		return nil, err
+	}
+
+	data, err := json.Marshal(&body)
+	if err != nil {
+		return nil, err
+	}
+
+	res, err := post(ctx, url, data)
+	if err != nil {
+		return nil, err
+	}
+
+	err = unmarshal(res, &a)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := handleResponse(a)
+	if err != nil {
+		return nil, err
+	}
+
+	ce := CreatedUser{
+		Username: resp.Success["username"].(string),
+	}
+
+	if ck, ok := resp.Success["clientkey"]; ok {
+		ce.ClientKey = ck.(string)
+	}
+
+	return &ce, nil
 
 }
 
