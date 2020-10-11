@@ -4,15 +4,16 @@ import "context"
 
 // Group represents a bridge group https://developers.meethue.com/documentation/groups-api
 type Group struct {
-	Name       string      `json:"name,omitempty"`
-	Lights     []string    `json:"lights,omitempty"`
-	Type       string      `json:"type,omitempty"`
-	GroupState *GroupState `json:"state,omitempty"`
-	Recycle    bool        `json:"recycle,omitempty"`
-	Class      string      `json:"class,omitempty"`
-	Stream     *Stream     `json:"stream,omitempty"`
-	State      *State      `json:"action,omitempty"`
-	ID         int         `json:"-"`
+	Name       string               `json:"name,omitempty"`
+	Lights     []string             `json:"lights,omitempty"`
+	Type       string               `json:"type,omitempty"`
+	GroupState *GroupState          `json:"state,omitempty"`
+	Recycle    bool                 `json:"recycle,omitempty"`
+	Class      string               `json:"class,omitempty"`
+	Stream     *Stream              `json:"stream,omitempty"`
+	Locations  map[string][]float64 `json:"locations,omitempty"`
+	State      *State               `json:"action,omitempty"`
+	ID         int                  `json:"-"`
 	bridge     *Bridge
 }
 
