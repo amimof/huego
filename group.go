@@ -10,6 +10,7 @@ type Group struct {
 	GroupState *GroupState `json:"state,omitempty"`
 	Recycle    bool        `json:"recycle,omitempty"`
 	Class      string      `json:"class,omitempty"`
+	Stream     *Stream     `json:"stream,omitempty"`
 	State      *State      `json:"action,omitempty"`
 	ID         int         `json:"-"`
 	bridge     *Bridge
@@ -20,6 +21,14 @@ type Group struct {
 type GroupState struct {
 	AllOn bool `json:"all_on,omitempty"`
 	AnyOn bool `json:"any_on,omitempty"`
+}
+
+// Stream define the stream status of a group
+type Stream struct {
+	ProxyMode string  `json:"proxymode,omitempty"`
+	ProxyNode string  `json:"proxynode,omitempty"`
+	Active    bool    `json:"active,omitempty"`
+	Owner     *string `json:"owner,omitempty"`
 }
 
 // SetState sets the state of the group to s.
