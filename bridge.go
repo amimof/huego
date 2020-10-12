@@ -17,12 +17,6 @@ type Bridge struct {
 	ID   string `json:"id,omitempty"`
 }
 
-// CreatedUser represents a created user from the Configuration API
-type CreatedUser struct {
-	Username  string `json:"username,omitempty"`
-	ClientKey string `json:"clientkey,omitempty"`
-}
-
 func (b *Bridge) getAPIPath(str ...string) (string, error) {
 
 	if strings.Index(strings.ToLower(b.Host), "http://") <= -1 && strings.Index(strings.ToLower(b.Host), "https://") <= -1 {
@@ -137,22 +131,22 @@ func (b *Bridge) CreateUserContext(ctx context.Context, deviceType string) (stri
 
 }
 
-// CreateUser2 creates a user by adding deviceType to the list of whitelisted users on the bridge.
+// CreateUserWithClientKey creates a user by adding deviceType to the list of whitelisted users on the bridge.
 // The link button on the bridge must have been pressed before calling CreateUser.
-func (b *Bridge) CreateUser2(deviceType string, generateClientKey bool) (*CreatedUser, error) {
-	return b.CreateUser2yContext(context.Background(), deviceType, generateClientKey)
+func (b *Bridge) CreateUserWithClientKey(deviceType string) (*Whitelist, error) {
+	return b.CreateUserWithClientKeyContext(context.Background(), deviceType)
 }
 
-// CreateUser2yContext creates a user by adding deviceType to the list of whitelisted users on the bridge
+// CreateUserWithClientKeyContext creates a user by adding deviceType to the list of whitelisted users on the bridge
 // The link button on the bridge must have been pressed before calling CreateUser.
-func (b *Bridge) CreateUser2yContext(ctx context.Context, deviceType string, generateClientKey bool) (*CreatedUser, error) {
+func (b *Bridge) CreateUserWithClientKeyContext(ctx context.Context, deviceType string) (*Whitelist, error) {
 
 	var a []*APIResponse
 
 	body := struct {
 		DeviceType        string `json:"devicetype,omitempty"`
 		GenerateClientKey bool   `json:"generateclientkey,omitempty"`
-	}{deviceType, generateClientKey}
+	}{deviceType, true}
 
 	url, err := b.getAPIPath("/")
 	if err != nil {
@@ -179,16 +173,16 @@ func (b *Bridge) CreateUser2yContext(ctx context.Context, deviceType string, gen
 		return nil, err
 	}
 
-	ce := CreatedUser{
+	wl := Whitelist{
+		Name:     deviceType,
 		Username: resp.Success["username"].(string),
 	}
 
 	if ck, ok := resp.Success["clientkey"]; ok {
-		ce.ClientKey = ck.(string)
+		wl.ClientKey = ck.(string)
 	}
 
-	return &ce, nil
-
+	return &wl, nil
 }
 
 // GetUsers returns a list of whitelists from the bridge

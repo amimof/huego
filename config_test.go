@@ -90,9 +90,9 @@ func TestCreateUserError(t *testing.T) {
 	}
 }
 
-func TestCreateUser2(t *testing.T) {
+func TestCreateUserWithClientKey(t *testing.T) {
 	b := New(hostname, "")
-	u, err := b.CreateUser2("github.com/amimof/huego#go test", true)
+	u, err := b.CreateUserWithClientKey("github.com/amimof/huego#go test")
 	if err != nil {
 		t.Fatal(err)
 	} else {
@@ -100,9 +100,9 @@ func TestCreateUser2(t *testing.T) {
 	}
 }
 
-func TestCreateUser2Error(t *testing.T) {
+func TestCreateUserWithClientKeyError(t *testing.T) {
 	b := New(badHostname, username)
-	_, err := b.CreateUser2("github.com/amimof/huego#go test", true)
+	_, err := b.CreateUserWithClientKey("github.com/amimof/huego#go test")
 	if err == nil {
 		t.Fatal("Expected error not to be nil")
 	}
