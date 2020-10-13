@@ -84,23 +84,22 @@ func (b *Bridge) GetConfigContext(ctx context.Context) (*Config, error) {
 
 }
 
-// CreateUser creates a user by adding deviceType to the list of whitelisted users on the bridge.
+// CreateUser creates a user by adding n to the list of whitelists in the bridge.
 // The link button on the bridge must have been pressed before calling CreateUser.
-// Note: A client key is not generated with this method
-func (b *Bridge) CreateUser(deviceType string) (string, error) {
-	return b.CreateUserContext(context.Background(), deviceType)
+func (b *Bridge) CreateUser(n string) (string, error) {
+	return b.CreateUserContext(context.Background(), n)
 }
 
-// CreateUserContext creates a user by adding deviceType to the list of whitelisted users on the bridge.
+// CreateUserContext creates a user by adding n to the list of whitelists in the bridge.
 // The link button on the bridge must have been pressed before calling CreateUser.
-// Note: A client key is not generated with this method
-func (b *Bridge) CreateUserContext(ctx context.Context, deviceType string) (string, error) {
+func (b *Bridge) CreateUserContext(ctx context.Context, n string) (string, error) {
 
 	var a []*APIResponse
 
 	body := struct {
-		DeviceType string `json:"devicetype,omitempty"`
-	}{deviceType}
+		DeviceType        string `json:"devicetype,omitempty"`
+		GenerateClientKey bool   `json:"generateclientkey,omitempty"`
+	}{n, true}
 
 	url, err := b.getAPIPath("/")
 	if err != nil {
