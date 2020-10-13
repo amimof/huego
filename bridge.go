@@ -3,6 +3,7 @@ package huego
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/url"
 	"path"
@@ -93,59 +94,34 @@ func (b *Bridge) CreateUser(n string) (string, error) {
 // CreateUserContext creates a user by adding n to the list of whitelists in the bridge.
 // The link button on the bridge must have been pressed before calling CreateUser.
 func (b *Bridge) CreateUserContext(ctx context.Context, n string) (string, error) {
-
-	var a []*APIResponse
-
-	body := struct {
-		DeviceType        string `json:"devicetype,omitempty"`
-		GenerateClientKey bool   `json:"generateclientkey,omitempty"`
-	}{n, true}
-
-	url, err := b.getAPIPath("/")
+	wl, err := b.createUserWithContext(ctx, n, false)
 	if err != nil {
 		return "", err
 	}
 
-	data, err := json.Marshal(&body)
-	if err != nil {
-		return "", err
-	}
-
-	res, err := post(ctx, url, data)
-	if err != nil {
-		return "", err
-	}
-
-	err = unmarshal(res, &a)
-	if err != nil {
-		return "", err
-	}
-
-	resp, err := handleResponse(a)
-	if err != nil {
-		return "", err
-	}
-
-	return resp.Success["username"].(string), nil
-
+	return wl.Username, nil
 }
 
 // CreateUserWithClientKey creates a user by adding deviceType to the list of whitelisted users on the bridge.
 // The link button on the bridge must have been pressed before calling CreateUser.
 func (b *Bridge) CreateUserWithClientKey(deviceType string) (*Whitelist, error) {
-	return b.CreateUserWithClientKeyContext(context.Background(), deviceType)
+	return b.createUserWithContext(context.Background(), deviceType, true)
 }
 
 // CreateUserWithClientKeyContext creates a user by adding deviceType to the list of whitelisted users on the bridge
 // The link button on the bridge must have been pressed before calling CreateUser.
 func (b *Bridge) CreateUserWithClientKeyContext(ctx context.Context, deviceType string) (*Whitelist, error) {
+	return b.createUserWithContext(ctx, deviceType, true)
+}
+
+func (b *Bridge) createUserWithContext(ctx context.Context, deviceType string, generateClientKey bool) (*Whitelist, error) {
 
 	var a []*APIResponse
 
 	body := struct {
 		DeviceType        string `json:"devicetype,omitempty"`
 		GenerateClientKey bool   `json:"generateclientkey,omitempty"`
-	}{deviceType, true}
+	}{deviceType, generateClientKey}
 
 	url, err := b.getAPIPath("/")
 	if err != nil {
@@ -179,6 +155,8 @@ func (b *Bridge) CreateUserWithClientKeyContext(ctx context.Context, deviceType 
 
 	if ck, ok := resp.Success["clientkey"]; ok {
 		wl.ClientKey = ck.(string)
+	} else if generateClientKey {
+		return nil, errors.New("no client key was returned when requested to generate")
 	}
 
 	return &wl, nil

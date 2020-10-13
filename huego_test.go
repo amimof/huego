@@ -2,11 +2,12 @@ package huego
 
 import (
 	"fmt"
-	"github.com/jarcoal/httpmock"
-	"github.com/stretchr/testify/assert"
 	"os"
 	"path"
 	"testing"
+
+	"github.com/jarcoal/httpmock"
+	"github.com/stretchr/testify/assert"
 )
 
 // I'm too lazy to have this elsewhere
@@ -59,7 +60,7 @@ func init() {
 		{
 			method: "POST",
 			path:   "",
-			data:   `[{"success":{"username": "83b7780291a6ceffbe0bd049104df"}}]`,
+			data:   `[{"success":{"username": "83b7780291a6ceffbe0bd049104df", "clientkey": "33DDF493992908E3D97AAAA5A6F189E1"}}]`,
 		},
 		{
 			method: "DELETE",
