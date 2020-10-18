@@ -3,9 +3,10 @@ package huego
 import (
 	"context"
 	"fmt"
-	"github.com/jarcoal/httpmock"
 	"strings"
 	"testing"
+
+	"github.com/jarcoal/httpmock"
 )
 
 func ExampleBridge_CreateUser() {

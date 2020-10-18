@@ -92,6 +92,7 @@ type Whitelist struct {
 	Username    string
 	CreateDate  string `json:"create date"`
 	LastUseDate string `json:"last use date"`
+	ClientKey   string
 }
 
 // PortalState is a struct representing the portal state
