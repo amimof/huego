@@ -35,7 +35,7 @@ GOLINT = $(TBIN)/golint
 $(BIN)/golint: PACKAGE=golang.org/x/lint/golint
 
 GOCYCLO = $(TBIN)/gocyclo
-$(TBIN)/gocyclo: PACKAGE=github.com/fzipp/gocyclo
+$(TBIN)/gocyclo: PACKAGE=github.com/fzipp/gocyclo/cmd/gocyclo
 
 INEFFASSIGN = $(TBIN)/ineffassign
 $(TBIN)/ineffassign: PACKAGE=github.com/gordonklaus/ineffassign
