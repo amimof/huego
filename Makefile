@@ -69,7 +69,7 @@ misspell: | $(MISSPELL) ; $(info $(M) running misspell) @ ## Finds commonly miss
 
 .PHONY: test
 test: ; $(info $(M) running go test) @ ## Runs unit tests
-	$Q $(GO) test -v ${PKGS}
+	$Q $(GO) test ${PKGS}
 
 .PHONY: fmt
 fmt: ; $(info $(M) running gofmt) @ ## Formats Go code
