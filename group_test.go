@@ -1,8 +1,9 @@
 package huego
 
 import (
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestGetGroups(t *testing.T) {
@@ -430,5 +431,18 @@ func TestDeleteGroup(t *testing.T) {
 		t.Fatal(err)
 	} else {
 		t.Logf("Deleted group with id: %d", id)
+	}
+}
+
+func TestSetStreamGroup(t *testing.T) {
+	bridge := New(hostname, username)
+	id := 1
+	group, err := bridge.GetGroup(id)
+	if err != nil {
+		t.Fatal(err)
+	}
+	err = group.SetStream(true)
+	if err != nil {
+		t.Fatal(err)
 	}
 }

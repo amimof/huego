@@ -249,3 +249,31 @@ func (g *Group) AlertContext(ctx context.Context, new string) error {
 	g.State.Effect = new
 	return nil
 }
+
+// SetStream sets the name property of the group
+func (g *Group) SetStream(active bool) error {
+	return g.SetStreamContext(context.Background(), active)
+}
+
+// SetStreamContext sets the active property of the group Stream
+func (g *Group) SetStreamContext(ctx context.Context, active bool) error {
+	update := Group{
+		Stream: &Stream{
+			Active: active,
+		},
+	}
+	_, err := g.bridge.UpdateGroupContext(ctx, g.ID, update)
+	if err != nil {
+		return err
+	}
+
+	if g.Stream != nil {
+		g.Stream.Active = active
+	} else {
+		g.Stream = &Stream{
+			Active: active,
+		}
+	}
+
+	return nil
+}
