@@ -43,7 +43,7 @@ func (s *Stream) Active() bool {
 
 // Owner returns the stream Owner, and will return an empty string if OwnerRaw is nil
 func (s *Stream) Owner() string {
-	if s.ActiveRaw == nil {
+	if s.OwnerRaw == nil {
 		return ""
 	}
 
