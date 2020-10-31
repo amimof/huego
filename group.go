@@ -269,6 +269,7 @@ func (g *Group) EnableStreamingContext(ctx context.Context) error {
 
 	if g.Stream != nil {
 		g.Stream.Active = true
+		g.Stream.Owner = &g.bridge.User
 	} else {
 		g.Stream = &Stream{
 			Active: true,
