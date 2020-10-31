@@ -434,14 +434,27 @@ func TestDeleteGroup(t *testing.T) {
 	}
 }
 
-func TestSetStreamGroup(t *testing.T) {
+func TestEnableStreamingGroup(t *testing.T) {
 	bridge := New(hostname, username)
 	id := 1
 	group, err := bridge.GetGroup(id)
 	if err != nil {
 		t.Fatal(err)
 	}
-	err = group.SetStream(true)
+	err = group.EnableStreaming()
+	if err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestDisableStreamingGroup(t *testing.T) {
+	bridge := New(hostname, username)
+	id := 1
+	group, err := bridge.GetGroup(id)
+	if err != nil {
+		t.Fatal(err)
+	}
+	err = group.DisableStreaming()
 	if err != nil {
 		t.Fatal(err)
 	}

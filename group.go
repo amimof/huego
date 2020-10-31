@@ -250,16 +250,16 @@ func (g *Group) AlertContext(ctx context.Context, new string) error {
 	return nil
 }
 
-// SetStream sets the name property of the group
-func (g *Group) SetStream(active bool) error {
-	return g.SetStreamContext(context.Background(), active)
+// EnableStreaming enables streaming for the group by setting the Stream Active property to true
+func (g *Group) EnableStreaming() error {
+	return g.EnableStreamingContext(context.Background())
 }
 
-// SetStreamContext sets the active property of the group Stream
-func (g *Group) SetStreamContext(ctx context.Context, active bool) error {
+// EnableStreamingContext enables streaming for the group by setting the Stream Active property to true
+func (g *Group) EnableStreamingContext(ctx context.Context) error {
 	update := Group{
 		Stream: &Stream{
-			Active: active,
+			Active: true,
 		},
 	}
 	_, err := g.bridge.UpdateGroupContext(ctx, g.ID, update)
@@ -268,11 +268,37 @@ func (g *Group) SetStreamContext(ctx context.Context, active bool) error {
 	}
 
 	if g.Stream != nil {
-		g.Stream.Active = active
+		g.Stream.Active = true
 	} else {
 		g.Stream = &Stream{
-			Active: active,
+			Active: true,
+			Owner:  &g.bridge.User,
 		}
+	}
+
+	return nil
+}
+
+// DisableStreaming disabled streaming for the group by setting the Stream Active property to false
+func (g *Group) DisableStreaming() error {
+	return g.EnableStreamingContext(context.Background())
+}
+
+// DisableStreamingContext disabled streaming for the group by setting the Stream Active property to false
+func (g *Group) DisableStreamingContext(ctx context.Context) error {
+	update := Group{
+		Stream: &Stream{
+			Active: false,
+		},
+	}
+	_, err := g.bridge.UpdateGroupContext(ctx, g.ID, update)
+	if err != nil {
+		return err
+	}
+
+	if g.Stream != nil {
+		g.Stream.Active = false
+		g.Stream.Owner = nil
 	}
 
 	return nil
