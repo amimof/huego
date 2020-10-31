@@ -28,8 +28,26 @@ type GroupState struct {
 type Stream struct {
 	ProxyMode string  `json:"proxymode,omitempty"`
 	ProxyNode string  `json:"proxynode,omitempty"`
-	Active    bool    `json:"active,omitempty"`
-	Owner     *string `json:"owner,omitempty"`
+	ActiveRaw *bool   `json:"active,omitempty"`
+	OwnerRaw  *string `json:"owner,omitempty"`
+}
+
+// Active returns the stream active state, and will return false if ActiveRaw is nil
+func (s *Stream) Active() bool {
+	if s.ActiveRaw == nil {
+		return false
+	}
+
+	return *s.ActiveRaw
+}
+
+// Owner returns the stream Owner, and will return an empty string if OwnerRaw is nil
+func (s *Stream) Owner() string {
+	if s.ActiveRaw == nil {
+		return ""
+	}
+
+	return *s.OwnerRaw
 }
 
 // SetState sets the state of the group to s.
@@ -257,9 +275,10 @@ func (g *Group) EnableStreaming() error {
 
 // EnableStreamingContext enables streaming for the group by setting the Stream Active property to true
 func (g *Group) EnableStreamingContext(ctx context.Context) error {
+	active := true
 	update := Group{
 		Stream: &Stream{
-			Active: true,
+			ActiveRaw: &active,
 		},
 	}
 	_, err := g.bridge.UpdateGroupContext(ctx, g.ID, update)
@@ -268,12 +287,12 @@ func (g *Group) EnableStreamingContext(ctx context.Context) error {
 	}
 
 	if g.Stream != nil {
-		g.Stream.Active = true
-		g.Stream.Owner = &g.bridge.User
+		g.Stream.ActiveRaw = &active
+		g.Stream.OwnerRaw = &g.bridge.User
 	} else {
 		g.Stream = &Stream{
-			Active: true,
-			Owner:  &g.bridge.User,
+			ActiveRaw: &active,
+			OwnerRaw:  &g.bridge.User,
 		}
 	}
 
@@ -287,9 +306,10 @@ func (g *Group) DisableStreaming() error {
 
 // DisableStreamingContext disabled streaming for the group by setting the Stream Active property to false
 func (g *Group) DisableStreamingContext(ctx context.Context) error {
+	active := false
 	update := Group{
 		Stream: &Stream{
-			Active: false,
+			ActiveRaw: &active,
 		},
 	}
 	_, err := g.bridge.UpdateGroupContext(ctx, g.ID, update)
@@ -298,8 +318,8 @@ func (g *Group) DisableStreamingContext(ctx context.Context) error {
 	}
 
 	if g.Stream != nil {
-		g.Stream.Active = false
-		g.Stream.Owner = nil
+		g.Stream.ActiveRaw = &active
+		g.Stream.OwnerRaw = nil
 	}
 
 	return nil
