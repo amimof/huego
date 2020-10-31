@@ -282,7 +282,7 @@ func (g *Group) EnableStreamingContext(ctx context.Context) error {
 
 // DisableStreaming disabled streaming for the group by setting the Stream Active property to false
 func (g *Group) DisableStreaming() error {
-	return g.EnableStreamingContext(context.Background())
+	return g.DisableStreamingContext(context.Background())
 }
 
 // DisableStreamingContext disabled streaming for the group by setting the Stream Active property to false
