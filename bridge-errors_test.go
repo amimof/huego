@@ -51,7 +51,7 @@ func TestBridge_postError(t *testing.T) {
 func TestBridge_deleteError(t *testing.T) {
 	httpmock.Deactivate()
 	defer httpmock.Activate()
-	expected := "Delete invalid%20hostname: unsupported protocol scheme \"\" "
+	expected := "Delete invalid%20hostname: unsupported protocol scheme \"\""
 	_, err := delete(context.Background(), "invalid hostname")
 	if errString := err.Error(); errString != expected {
 		t.Fatalf("Expected error %s but got %s", expected, errString)
