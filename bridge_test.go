@@ -65,49 +65,54 @@ func TestUpdateBridgeConfigError(t *testing.T) {
 
 func TestBridge_getAPIPathError(t *testing.T) {
 	b := New("invalid hostname", "")
-	expected := "parse http://invalid hostname: invalid character \" \" in host name"
+	expectedOlderGoVersion := "parse http://invalid hostname: invalid character \" \" in host name"
+	expectedNewerGoVersion := "parse \"http://invalid hostname\": invalid character \" \" in host name"
 	_, err := b.getAPIPath("/")
-	if err.Error() != expected {
-		t.Fatalf("Expected error %s but got %s", expected, err.Error())
+	if errString := err.Error(); errString != expectedOlderGoVersion && errString != expectedNewerGoVersion {
+		t.Fatalf("Expected error %s but got %s", expectedOlderGoVersion, errString)
 	}
 }
 
 func TestBridge_getError(t *testing.T) {
 	httpmock.Deactivate()
 	defer httpmock.Activate()
-	expected := "Get invalid%20hostname: unsupported protocol scheme \"\""
+	expectedOlderGoVersion := "Get invalid%20hostname: unsupported protocol scheme \"\""
+	expectedNewerGoVersion := "Get \"invalid%20hostname\": unsupported protocol scheme \"\""
 	_, err := get(context.Background(), "invalid hostname")
-	if err.Error() != expected {
-		t.Fatalf("Expected error %s but got %s", expected, err.Error())
+	if errString := err.Error(); errString != expectedOlderGoVersion && errString != expectedNewerGoVersion {
+		t.Fatalf("Expected error %s but got %s", expectedOlderGoVersion, errString)
 	}
 }
 
 func TestBridge_putError(t *testing.T) {
 	httpmock.Deactivate()
 	defer httpmock.Activate()
-	expected := "Put invalid%20hostname: unsupported protocol scheme \"\""
+	expectedOlderGoVersion := "Put invalid%20hostname: unsupported protocol scheme \"\""
+	expectedNewerGoVersion := "Put \"invalid%20hostname\": unsupported protocol scheme \"\""
 	_, err := put(context.Background(), "invalid hostname", []byte("huego"))
-	if err.Error() != expected {
-		t.Fatalf("Expected error %s but got %s", expected, err.Error())
+	if errString := err.Error(); errString != expectedOlderGoVersion && errString != expectedNewerGoVersion {
+		t.Fatalf("Expected error %s but got %s", expectedOlderGoVersion, errString)
 	}
 }
 
 func TestBridge_postError(t *testing.T) {
 	httpmock.Deactivate()
 	defer httpmock.Activate()
-	expected := "Post invalid%20hostname: unsupported protocol scheme \"\""
+	expectedOlderGoVersion := "Post invalid%20hostname: unsupported protocol scheme \"\""
+	expectedNewerGoVersion := "Post \"invalid%20hostname\": unsupported protocol scheme \"\""
 	_, err := post(context.Background(), "invalid hostname", []byte("huego"))
-	if err.Error() != expected {
-		t.Fatalf("Expected error %s but got %s", expected, err.Error())
+	if errString := err.Error(); errString != expectedOlderGoVersion && errString != expectedNewerGoVersion {
+		t.Fatalf("Expected error %s but got %s", expectedOlderGoVersion, errString)
 	}
 }
 
 func TestBridge_deleteError(t *testing.T) {
 	httpmock.Deactivate()
 	defer httpmock.Activate()
-	expected := "Delete invalid%20hostname: unsupported protocol scheme \"\""
+	expectedOlderGoVersion := "Delete invalid%20hostname: unsupported protocol scheme \"\" "
+	expectedNewerGoVersion := "Delete \"invalid%20hostname\": unsupported protocol scheme \"\""
 	_, err := delete(context.Background(), "invalid hostname")
-	if err.Error() != expected {
-		t.Fatalf("Expected error %s but got %s", expected, err.Error())
+	if errString := err.Error(); errString != expectedOlderGoVersion && errString != expectedNewerGoVersion {
+		t.Fatalf("Expected error %s but got %s", expectedOlderGoVersion, errString)
 	}
 }
