@@ -1,6 +1,9 @@
 package huego
 
-import "context"
+import (
+	"context"
+	"errors"
+)
 
 // Group represents a bridge group https://developers.meethue.com/documentation/groups-api
 type Group struct {
@@ -275,6 +278,10 @@ func (g *Group) EnableStreaming() error {
 
 // EnableStreamingContext enables streaming for the group by setting the Stream Active property to true
 func (g *Group) EnableStreamingContext(ctx context.Context) error {
+	if g.Type != "Entertainment" {
+		return errors.New("must be a entertainment group to enable streaming")
+	}
+
 	active := true
 	update := Group{
 		Stream: &Stream{
@@ -286,15 +293,8 @@ func (g *Group) EnableStreamingContext(ctx context.Context) error {
 		return err
 	}
 
-	if g.Stream != nil {
-		g.Stream.ActiveRaw = &active
-		g.Stream.OwnerRaw = &g.bridge.User
-	} else {
-		g.Stream = &Stream{
-			ActiveRaw: &active,
-			OwnerRaw:  &g.bridge.User,
-		}
-	}
+	g.Stream.ActiveRaw = &active
+	g.Stream.OwnerRaw = &g.bridge.User
 
 	return nil
 }
@@ -306,6 +306,10 @@ func (g *Group) DisableStreaming() error {
 
 // DisableStreamingContext disabled streaming for the group by setting the Stream Active property to false
 func (g *Group) DisableStreamingContext(ctx context.Context) error {
+	if g.Type != "Entertainment" {
+		return errors.New("must be a entertainment group to disable streaming")
+	}
+
 	active := false
 	update := Group{
 		Stream: &Stream{
@@ -317,10 +321,8 @@ func (g *Group) DisableStreamingContext(ctx context.Context) error {
 		return err
 	}
 
-	if g.Stream != nil {
-		g.Stream.ActiveRaw = &active
-		g.Stream.OwnerRaw = nil
-	}
+	g.Stream.ActiveRaw = &active
+	g.Stream.OwnerRaw = nil
 
 	return nil
 }

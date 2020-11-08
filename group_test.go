@@ -98,6 +98,45 @@ func TestGetGroup(t *testing.T) {
 	assert.NotNil(t, err)
 }
 
+func TestGetEntertainmentGroup(t *testing.T) {
+	b := New(hostname, username)
+	g, err := b.GetGroup(3)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if g.Stream.Active() {
+		t.Fatal("group stream should be inactive")
+	}
+	if owner := g.Stream.Owner(); owner != "" {
+		t.Fatalf("group stream should have no owner. got: %s", owner)
+	}
+
+	b = New(hostname, username)
+	g, err = b.GetGroup(4)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !g.Stream.Active() {
+		t.Fatal("group stream should be active")
+	}
+	if want, owner := "QZTPWY1ADZDM8IG188LBVOB5YV5O5OPZNCKTQPQB", g.Stream.Owner(); owner != want {
+		t.Fatalf("group stream should have owner. got: %s, want :%s", owner, want)
+	}
+
+	b = New(hostname, username)
+	g, err = b.GetGroup(2)
+	if err != nil {
+		t.Fatal(err)
+	}
+	g.Stream = &Stream{}
+	if g.Stream.Active() {
+		t.Fatal("group stream should be inactive")
+	}
+	if owner := g.Stream.Owner(); owner != "" {
+		t.Fatalf("group stream should have no owner. got: %s", owner)
+	}
+}
+
 func TestCreateGroup(t *testing.T) {
 	b := New(hostname, username)
 	group := Group{
@@ -436,7 +475,7 @@ func TestDeleteGroup(t *testing.T) {
 
 func TestEnableStreamingGroup(t *testing.T) {
 	bridge := New(hostname, username)
-	id := 1
+	id := 3
 	group, err := bridge.GetGroup(id)
 	if err != nil {
 		t.Fatal(err)
@@ -445,11 +484,35 @@ func TestEnableStreamingGroup(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+
+	id = 2
+	group, err = bridge.GetGroup(id)
+	if err != nil {
+		t.Fatal(err)
+	}
+	err = group.EnableStreaming()
+	if err == nil {
+		t.Fatal("error was nil")
+	} else if errString := err.Error(); errString != "must be a entertainment group to enable streaming" {
+		t.Fatalf("incorrect error: %s", errString)
+	}
+
+	id = 5
+	group, err = bridge.GetGroup(id)
+	if err != nil {
+		t.Fatal(err)
+	}
+	err = group.EnableStreaming()
+	if err == nil {
+		t.Fatal("error was nil")
+	} else if errString := err.Error(); errString != "ERROR 307 [/groups/5/stream/active]: \"Cannot claim stream ownership\"" {
+		t.Fatalf("incorrect error: %s", errString)
+	}
 }
 
 func TestDisableStreamingGroup(t *testing.T) {
 	bridge := New(hostname, username)
-	id := 1
+	id := 3
 	group, err := bridge.GetGroup(id)
 	if err != nil {
 		t.Fatal(err)
@@ -457,5 +520,29 @@ func TestDisableStreamingGroup(t *testing.T) {
 	err = group.DisableStreaming()
 	if err != nil {
 		t.Fatal(err)
+	}
+
+	id = 2
+	group, err = bridge.GetGroup(id)
+	if err != nil {
+		t.Fatal(err)
+	}
+	err = group.DisableStreaming()
+	if err == nil {
+		t.Fatal("error was nil")
+	} else if errString := err.Error(); errString != "must be a entertainment group to disable streaming" {
+		t.Fatalf("incorrect error %s", errString)
+	}
+
+	id = 6
+	group, err = bridge.GetGroup(id)
+	if err != nil {
+		t.Fatal(err)
+	}
+	err = group.DisableStreaming()
+	if err == nil {
+		t.Fatal("error was nil")
+	} else if errString := err.Error(); errString != "ERROR 999 [/groups/6/stream/active]: \"unspecified error\"" {
+		t.Fatalf("incorrect error %s", errString)
 	}
 }

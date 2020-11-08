@@ -109,7 +109,7 @@ func init() {
 		{
 			method: "GET",
 			path:   "/groups",
-			data:   `{"1":{"name":"Group 1","lights":["1","2"],"type":"LightGroup","state":{"all_on":true,"any_on":true},"action":{"on":true,"bri":254,"hue":10000,"sat":254,"effect":"none","xy":[0.5,0.5],"ct":250,"alert":"select","colormode":"ct"}},"2":{"name":"Group 2","lights":["3","4","5"],"type":"LightGroup","state":{"all_on":true,"any_on":true},"action":{"on":true,"bri":153,"hue":4345,"sat":254,"effect":"none","xy":[0.5,0.5],"ct":250,"alert":"select","colormode":"ct"}}}`,
+			data:   `{"1":{"name":"Group 1","lights":["1","2"],"type":"LightGroup","state":{"all_on":true,"any_on":true},"action":{"on":true,"bri":254,"hue":10000,"sat":254,"effect":"none","xy":[0.5,0.5],"ct":250,"alert":"select","colormode":"ct"}},"2":{"name":"Group 2","lights":["3","4","5"],"type":"LightGroup","state":{"all_on":true,"any_on":true},"action":{"on":true,"bri":153,"hue":4345,"sat":254,"effect":"none","xy":[0.5,0.5],"ct":250,"alert":"select","colormode":"ct"}},"3":{"name":"Group 3","lights":["1","2","3","4","5"],"sensors":[],"type":"Entertainment","state":{"all_on":true,"any_on":true},"recycle":false,"class":"TV","stream":{"proxymode":"auto","proxynode":"/lights/3","active":false,"owner":null},"locations":{"1":[0.93,-0.92,0.00],"2":[0.13,-0.85,1.00],"3":[-0.03,-0.86,1.00],"4":[-0.40,1.00,0.00],"5":[0.43,1.00,0.00]},"action":{"on":true,"bri":62,"hue":43749,"sat":189,"effect":"none","xy":[0.2133,0.2075],"ct":153,"alert":"select","colormode":"xy"}}}`,
 		},
 		{
 			method: "GET",
@@ -135,6 +135,66 @@ func init() {
 			method: "DELETE",
 			path:   "/groups/1",
 			data:   `[{"success":"/groups/1 deleted."}]`,
+		},
+
+		// NON-ENTERTAINMENT GROUP
+		{
+			method: "GET",
+			path:   "/groups/2",
+			data:   `{"name":"Office","lights":["4","5","1","2","3"],"sensors":[],"type":"Room","state":{"all_on":true,"any_on":true},"recycle":false,"class":"Office","action":{"on":true,"bri":92,"hue":53702,"sat":82,"effect":"none","xy":[    0.3693,    0.3006],"ct":233,"alert":"select","colormode":"xy"}}`,
+		},
+		{
+			method: "PUT",
+			path:   "/groups/2",
+			data:   `[{"error":{"type":6,"address":"/groups/2/stream","description":"parameter, /groups/2/stream, not available"}}]`,
+		},
+
+		// INACTIVE ENTERTAINMENT GROUP
+		{
+			method: "GET",
+			path:   "/groups/3",
+			data:   `{"name":"Group 3","lights":["1","2","3","4","5"],"sensors":[],"type":"Entertainment","state":{"all_on":true,"any_on":true},"recycle":false,"class":"TV","stream":{"proxymode":"auto","proxynode":"/lights/3","active":false,"owner":null},"locations":{"1":[0.93,-0.92,0.00],"2":[0.13,-0.85,1.00],"3":[-0.03,-0.86,1.00],"4":[-0.40,1.00,0.00],"5":[0.43,1.00,0.00]},"action":{"on":true,"bri":62,"hue":43749,"sat":189,"effect":"none","xy":[0.2133,0.2075],"ct":153,"alert":"select","colormode":"xy"}}`,
+		},
+		{
+			method: "PUT",
+			path:   "/groups/3",
+			data:   `[{"success":{"/groups/3/stream/active":true}}]`,
+		},
+
+		// ACTIVE ENTERTAINMENT GROUP
+		{
+			method: "GET",
+			path:   "/groups/4",
+			data:   `{"name":"Group 4","lights":["1","2","3","4","5"],"sensors":[],"type":"Entertainment","state":{"all_on":true,"any_on":true},"recycle":false,"class":"TV","stream":{"proxymode":"auto","proxynode":"/lights/3","active":true,"owner":"QZTPWY1ADZDM8IG188LBVOB5YV5O5OPZNCKTQPQB"},"locations":{"1":[0.93,-0.92,0.00],"2":[0.13,-0.85,1.00],"3":[-0.03,-0.86,1.00],"4":[-0.40,1.00,0.00],"5":[0.43,1.00,0.00]},"action":{"on":true,"bri":62,"hue":43749,"sat":189,"effect":"none","xy":[0.2133,0.2075],"ct":153,"alert":"select","colormode":"xy"}}`,
+		},
+		{
+			method: "PUT",
+			path:   "/groups/4",
+			data:   `[{"success":{"/groups/3/stream/active":false}}]`,
+		},
+
+		// ACTIVE ENTERTAINMENT GROUP FOR ENABLE ERROR
+		{
+			method: "GET",
+			path:   "/groups/5",
+			data:   `{"name":"Group 5","lights":["1","2","3","4","5"],"sensors":[],"type":"Entertainment","state":{"all_on":true,"any_on":true},"recycle":false,"class":"TV","stream":{"proxymode":"auto","proxynode":"/lights/3","active":true,"owner":"QZTPWY1ADZDM8IG188LBVOB5YV5O5OPZNCKTQPQB"},"locations":{"1":[0.93,-0.92,0.00],"2":[0.13,-0.85,1.00],"3":[-0.03,-0.86,1.00],"4":[-0.40,1.00,0.00],"5":[0.43,1.00,0.00]},"action":{"on":true,"bri":62,"hue":43749,"sat":189,"effect":"none","xy":[0.2133,0.2075],"ct":153,"alert":"select","colormode":"xy"}}`,
+		},
+		{
+			method: "PUT",
+			path:   "/groups/5",
+			data:   `[{"error":{"type":307,"address":"/groups/5/stream/active","description":"Cannot claim stream ownership"}}]`,
+		},
+
+		// ACTIVE ENTERTAINMENT GROUP FOR DISABLE ERROR
+		{
+			method: "GET",
+			path:   "/groups/6",
+			data:   `{"name":"Group 6","lights":["1","2","3","4","5"],"sensors":[],"type":"Entertainment","state":{"all_on":true,"any_on":true},"recycle":false,"class":"TV","stream":{"proxymode":"auto","proxynode":"/lights/3","active":true,"owner":"QZTPWY1ADZDM8IG188LBVOB5YV5O5OPZNCKTQPQB"},"locations":{"1":[0.93,-0.92,0.00],"2":[0.13,-0.85,1.00],"3":[-0.03,-0.86,1.00],"4":[-0.40,1.00,0.00],"5":[0.43,1.00,0.00]},"action":{"on":true,"bri":62,"hue":43749,"sat":189,"effect":"none","xy":[0.2133,0.2075],"ct":153,"alert":"select","colormode":"xy"}}`,
+		},
+		{
+			method: "PUT",
+			path:   "/groups/6",
+			data:   `[{"error":{"type":999,"address":"/groups/6/stream/active","description":"unspecified error"}}]`,
 		},
 
 		// SCENE
