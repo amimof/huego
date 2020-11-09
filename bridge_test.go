@@ -1,9 +1,13 @@
 package huego
 
 import (
+	"context"
 	"fmt"
 	"strings"
 	"testing"
+
+	"github.com/jarcoal/httpmock"
+	"github.com/stretchr/testify/assert"
 )
 
 func ExampleBridge_CreateUser() {
@@ -58,4 +62,38 @@ func TestUpdateBridgeConfigError(t *testing.T) {
 	if err == nil {
 		t.Fatal("Expected error not to be nil")
 	}
+}
+
+func TestBridge_getAPIPathError(t *testing.T) {
+	b := New("invalid hostname", "")
+	_, err := b.getAPIPath("/")
+	assert.NotNil(t, err)
+}
+
+func TestBridge_getError(t *testing.T) {
+	httpmock.Deactivate()
+	defer httpmock.Activate()
+	_, err := get(context.Background(), "invalid hostname")
+	assert.NotNil(t, err)
+}
+
+func TestBridge_putError(t *testing.T) {
+	httpmock.Deactivate()
+	defer httpmock.Activate()
+	_, err := put(context.Background(), "invalid hostname", []byte("huego"))
+	assert.NotNil(t, err)
+}
+
+func TestBridge_postError(t *testing.T) {
+	httpmock.Deactivate()
+	defer httpmock.Activate()
+	_, err := post(context.Background(), "invalid hostname", []byte("huego"))
+	assert.NotNil(t, err)
+}
+
+func TestBridge_deleteError(t *testing.T) {
+	httpmock.Deactivate()
+	defer httpmock.Activate()
+	_, err := delete(context.Background(), "invalid hostname")
+	assert.NotNil(t, err)
 }
