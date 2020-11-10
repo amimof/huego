@@ -279,7 +279,7 @@ func (g *Group) EnableStreaming() error {
 // EnableStreamingContext enables streaming for the group by setting the Stream Active property to true
 func (g *Group) EnableStreamingContext(ctx context.Context) error {
 	if g.Type != "Entertainment" {
-		return errors.New("must be a entertainment group to enable streaming")
+		return errors.New("must be an entertainment group to enable streaming")
 	}
 
 	active := true
@@ -307,7 +307,7 @@ func (g *Group) DisableStreaming() error {
 // DisableStreamingContext disabled streaming for the group by setting the Stream Active property to false
 func (g *Group) DisableStreamingContext(ctx context.Context) error {
 	if g.Type != "Entertainment" {
-		return errors.New("must be a entertainment group to disable streaming")
+		return errors.New("must be an entertainment group to disable streaming")
 	}
 
 	active := false

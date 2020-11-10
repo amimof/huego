@@ -493,7 +493,7 @@ func TestEnableStreamingGroup(t *testing.T) {
 	err = group.EnableStreaming()
 	if err == nil {
 		t.Fatal("error was nil")
-	} else if errString := err.Error(); errString != "must be a entertainment group to enable streaming" {
+	} else if errString := err.Error(); errString != "must be an entertainment group to enable streaming" {
 		t.Fatalf("incorrect error: %s", errString)
 	}
 
@@ -530,7 +530,7 @@ func TestDisableStreamingGroup(t *testing.T) {
 	err = group.DisableStreaming()
 	if err == nil {
 		t.Fatal("error was nil")
-	} else if errString := err.Error(); errString != "must be a entertainment group to disable streaming" {
+	} else if errString := err.Error(); errString != "must be an entertainment group to disable streaming" {
 		t.Fatalf("incorrect error %s", errString)
 	}
 
