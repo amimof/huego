@@ -1,17 +1,22 @@
 package huego
 
-import "context"
+import (
+	"context"
+	"errors"
+)
 
 // Group represents a bridge group https://developers.meethue.com/documentation/groups-api
 type Group struct {
-	Name       string      `json:"name,omitempty"`
-	Lights     []string    `json:"lights,omitempty"`
-	Type       string      `json:"type,omitempty"`
-	GroupState *GroupState `json:"state,omitempty"`
-	Recycle    bool        `json:"recycle,omitempty"`
-	Class      string      `json:"class,omitempty"`
-	State      *State      `json:"action,omitempty"`
-	ID         int         `json:"-"`
+	Name       string               `json:"name,omitempty"`
+	Lights     []string             `json:"lights,omitempty"`
+	Type       string               `json:"type,omitempty"`
+	GroupState *GroupState          `json:"state,omitempty"`
+	Recycle    bool                 `json:"recycle,omitempty"`
+	Class      string               `json:"class,omitempty"`
+	Stream     *Stream              `json:"stream,omitempty"`
+	Locations  map[string][]float64 `json:"locations,omitempty"`
+	State      *State               `json:"action,omitempty"`
+	ID         int                  `json:"-"`
 	bridge     *Bridge
 }
 
@@ -20,6 +25,32 @@ type Group struct {
 type GroupState struct {
 	AllOn bool `json:"all_on,omitempty"`
 	AnyOn bool `json:"any_on,omitempty"`
+}
+
+// Stream define the stream status of a group
+type Stream struct {
+	ProxyMode string  `json:"proxymode,omitempty"`
+	ProxyNode string  `json:"proxynode,omitempty"`
+	ActiveRaw *bool   `json:"active,omitempty"`
+	OwnerRaw  *string `json:"owner,omitempty"`
+}
+
+// Active returns the stream active state, and will return false if ActiveRaw is nil
+func (s *Stream) Active() bool {
+	if s.ActiveRaw == nil {
+		return false
+	}
+
+	return *s.ActiveRaw
+}
+
+// Owner returns the stream Owner, and will return an empty string if OwnerRaw is nil
+func (s *Stream) Owner() string {
+	if s.OwnerRaw == nil {
+		return ""
+	}
+
+	return *s.OwnerRaw
 }
 
 // SetState sets the state of the group to s.
@@ -237,5 +268,61 @@ func (g *Group) AlertContext(ctx context.Context, new string) error {
 		return err
 	}
 	g.State.Effect = new
+	return nil
+}
+
+// EnableStreaming enables streaming for the group by setting the Stream Active property to true
+func (g *Group) EnableStreaming() error {
+	return g.EnableStreamingContext(context.Background())
+}
+
+// EnableStreamingContext enables streaming for the group by setting the Stream Active property to true
+func (g *Group) EnableStreamingContext(ctx context.Context) error {
+	if g.Type != "Entertainment" {
+		return errors.New("must be an entertainment group to enable streaming")
+	}
+
+	active := true
+	update := Group{
+		Stream: &Stream{
+			ActiveRaw: &active,
+		},
+	}
+	_, err := g.bridge.UpdateGroupContext(ctx, g.ID, update)
+	if err != nil {
+		return err
+	}
+
+	g.Stream.ActiveRaw = &active
+	g.Stream.OwnerRaw = &g.bridge.User
+
+	return nil
+}
+
+// DisableStreaming disabled streaming for the group by setting the Stream Active property to false
+func (g *Group) DisableStreaming() error {
+	return g.DisableStreamingContext(context.Background())
+}
+
+// DisableStreamingContext disabled streaming for the group by setting the Stream Active property to false
+func (g *Group) DisableStreamingContext(ctx context.Context) error {
+	if g.Type != "Entertainment" {
+		return errors.New("must be an entertainment group to disable streaming")
+	}
+
+	active := false
+	update := Group{
+		Stream: &Stream{
+			ActiveRaw: &active,
+		},
+	}
+	_, err := g.bridge.UpdateGroupContext(ctx, g.ID, update)
+	if err != nil {
+		return err
+	}
+
+	g.Stream.ActiveRaw = &active
+	g.Stream.OwnerRaw = nil
+
 	return nil
 }
