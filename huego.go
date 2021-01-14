@@ -15,7 +15,6 @@ const (
 	contentType     = "Content-Type"
 )
 
-
 // APIResponse holds the response data returned form the bridge after a request has been made.
 type APIResponse struct {
 	Success map[string]interface{} `json:"success,omitempty"`
