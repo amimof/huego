@@ -10,6 +10,11 @@ import (
 	"strings"
 )
 
+const (
+	applicationJSON = "application/json"
+	contentType     = "Content-Type"
+)
+
 // APIResponse holds the response data returned form the bridge after a request has been made.
 type APIResponse struct {
 	Success map[string]interface{} `json:"success,omitempty"`
@@ -82,7 +87,7 @@ func unmarshal(data []byte, v interface{}) error {
 
 func get(ctx context.Context, url string) ([]byte, error) {
 
-	req, err := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -110,14 +115,14 @@ func put(ctx context.Context, url string, data []byte) ([]byte, error) {
 
 	body := strings.NewReader(string(data))
 
-	req, err := http.NewRequest("PUT", url, body)
+	req, err := http.NewRequest(http.MethodPut, url, body)
 	if err != nil {
 		return nil, err
 	}
 
 	req = req.WithContext(ctx)
 
-	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set(contentType, applicationJSON)
 
 	client := http.Client{}
 	res, err := client.Do(req)
@@ -140,14 +145,14 @@ func post(ctx context.Context, url string, data []byte) ([]byte, error) {
 
 	body := strings.NewReader(string(data))
 
-	req, err := http.NewRequest("POST", url, body)
+	req, err := http.NewRequest(http.MethodPost, url, body)
 	if err != nil {
 		return nil, err
 	}
 
 	req = req.WithContext(ctx)
 
-	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set(contentType, applicationJSON)
 
 	client := http.Client{}
 	res, err := client.Do(req)
@@ -168,14 +173,14 @@ func post(ctx context.Context, url string, data []byte) ([]byte, error) {
 
 func delete(ctx context.Context, url string) ([]byte, error) {
 
-	req, err := http.NewRequest("DELETE", url, nil)
+	req, err := http.NewRequest(http.MethodDelete, url, nil)
 	if err != nil {
 		return nil, err
 	}
 
 	req = req.WithContext(ctx)
 
-	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set(contentType, applicationJSON)
 
 	client := http.Client{}
 	res, err := client.Do(req)
@@ -204,7 +209,7 @@ func DiscoverAll() ([]Bridge, error) {
 // DiscoverAllContext returns a list of Bridge objects.
 func DiscoverAllContext(ctx context.Context) ([]Bridge, error) {
 
-	req, err := http.NewRequest("GET", "https://discovery.meethue.com", nil)
+	req, err := http.NewRequest(http.MethodGet, "https://discovery.meethue.com", nil)
 	if err != nil {
 		return nil, err
 	}
