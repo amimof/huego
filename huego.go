@@ -94,7 +94,7 @@ func get(ctx context.Context, url string) ([]byte, error) {
 
 	req = req.WithContext(ctx)
 
-	client := http.Client{}
+	client := http.DefaultClient
 	res, err := client.Do(req)
 	if err != nil {
 		return nil, err
@@ -124,7 +124,7 @@ func put(ctx context.Context, url string, data []byte) ([]byte, error) {
 
 	req.Header.Set(contentType, applicationJSON)
 
-	client := http.Client{}
+	client := http.DefaultClient
 	res, err := client.Do(req)
 	if err != nil {
 		return nil, err
@@ -154,7 +154,7 @@ func post(ctx context.Context, url string, data []byte) ([]byte, error) {
 
 	req.Header.Set(contentType, applicationJSON)
 
-	client := http.Client{}
+	client := http.DefaultClient
 	res, err := client.Do(req)
 	if err != nil {
 		return nil, err
@@ -182,7 +182,7 @@ func delete(ctx context.Context, url string) ([]byte, error) {
 
 	req.Header.Set(contentType, applicationJSON)
 
-	client := http.Client{}
+	client := http.DefaultClient
 	res, err := client.Do(req)
 	if err != nil {
 		return nil, err
@@ -216,7 +216,7 @@ func DiscoverAllContext(ctx context.Context) ([]Bridge, error) {
 
 	req = req.WithContext(ctx)
 
-	client := http.Client{}
+	client := http.DefaultClient
 	res, err := client.Do(req)
 	if err != nil {
 		return nil, err
