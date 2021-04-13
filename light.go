@@ -126,6 +126,7 @@ func (l *Light) BriContext(ctx context.Context, new uint8) error {
 		return err
 	}
 	l.State.Bri = new
+	l.State.On = true
 	return nil
 }
 
@@ -142,6 +143,7 @@ func (l *Light) HueContext(ctx context.Context, new uint16) error {
 		return err
 	}
 	l.State.Hue = new
+	l.State.On = true
 	return nil
 }
 
@@ -158,6 +160,7 @@ func (l *Light) SatContext(ctx context.Context, new uint8) error {
 		return err
 	}
 	l.State.Sat = new
+	l.State.On = true
 	return nil
 }
 
@@ -174,6 +177,7 @@ func (l *Light) XyContext(ctx context.Context, new []float32) error {
 		return err
 	}
 	l.State.Xy = new
+	l.State.On = true
 	return nil
 }
 
@@ -190,6 +194,7 @@ func (l *Light) CtContext(ctx context.Context, new uint16) error {
 		return err
 	}
 	l.State.Ct = new
+	l.State.On = true
 	return nil
 }
 
@@ -222,6 +227,7 @@ func (l *Light) EffectContext(ctx context.Context, new string) error {
 		return err
 	}
 	l.State.Effect = new
+	l.State.On = true
 	return nil
 }
 
