@@ -3,6 +3,7 @@ package huego
 import (
 	"context"
 	"errors"
+	"image/color"
 )
 
 // Group represents a bridge group https://developers.meethue.com/documentation/groups-api
@@ -134,6 +135,7 @@ func (g *Group) BriContext(ctx context.Context, new uint8) error {
 		return err
 	}
 	g.State.Bri = new
+	g.State.On = true
 	return nil
 }
 
@@ -150,6 +152,7 @@ func (g *Group) HueContext(ctx context.Context, new uint16) error {
 		return err
 	}
 	g.State.Hue = new
+	g.State.On = true
 	return nil
 }
 
@@ -166,6 +169,7 @@ func (g *Group) SatContext(ctx context.Context, new uint8) error {
 		return err
 	}
 	g.State.Sat = new
+	g.State.On = true
 	return nil
 }
 
@@ -182,6 +186,7 @@ func (g *Group) XyContext(ctx context.Context, new []float32) error {
 		return err
 	}
 	g.State.Xy = new
+	g.State.On = true
 	return nil
 }
 
@@ -198,6 +203,27 @@ func (g *Group) CtContext(ctx context.Context, new uint16) error {
 		return err
 	}
 	g.State.Ct = new
+	g.State.On = true
+	return nil
+}
+
+// Ct sets the light color temperature state property
+func (g *Group) Col(new color.Color) error {
+	return g.ColContext(context.Background(), new)
+}
+
+// CtContext sets the light color temperature state property
+func (g *Group) ColContext(ctx context.Context, new color.Color) error {
+	xy, bri := ConvertRGBToXy(new)
+
+	update := State{On: true, Xy: xy, Bri: bri}
+	_, err := g.bridge.SetGroupStateContext(ctx, g.ID, update)
+	if err != nil {
+		return err
+	}
+	g.State.Xy = xy
+	g.State.Bri = bri
+	g.State.On = true
 	return nil
 }
 
@@ -214,6 +240,7 @@ func (g *Group) SceneContext(ctx context.Context, scene string) error {
 		return err
 	}
 	g.State.Scene = scene
+	g.State.On = true
 	return nil
 }
 
@@ -246,6 +273,7 @@ func (g *Group) EffectContext(ctx context.Context, new string) error {
 		return err
 	}
 	g.State.Effect = new
+	g.State.On = true
 	return nil
 }
 
@@ -268,6 +296,7 @@ func (g *Group) AlertContext(ctx context.Context, new string) error {
 		return err
 	}
 	g.State.Effect = new
+	g.State.On = true
 	return nil
 }
 

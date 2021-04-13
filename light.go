@@ -209,8 +209,17 @@ func (l *Light) Col(new color.Color) error {
 
 // CtContext sets the light color temperature state property
 func (l *Light) ColContext(ctx context.Context, new color.Color) error {
-	xy := ConvertRGBToXy(new)
-	return l.XyContext(ctx, xy)
+	xy, bri := ConvertRGBToXy(new)
+
+	update := State{On: true, Xy: xy, Bri: bri}
+	_, err := l.bridge.SetLightStateContext(ctx, l.ID, update)
+	if err != nil {
+		return err
+	}
+	l.State.Xy = xy
+	l.State.Bri = bri
+	l.State.On = true
+	return nil
 }
 
 // TransitionTime sets the duration of the transition from the light’s current state to the new state
@@ -268,7 +277,7 @@ func (l *Light) AlertContext(ctx context.Context, new string) error {
 	return nil
 }
 
-func ConvertRGBToXy(newcolor color.Color) []float32 {
+func ConvertRGBToXy(newcolor color.Color) ([]float32, uint8) {
 	r, g, b, _ := newcolor.RGBA()
 	rf := float64(r) / 65536.0
 	gf := float64(g) / 65536.0
@@ -286,7 +295,7 @@ func ConvertRGBToXy(newcolor color.Color) []float32 {
 	y := Y / (X + Y + Z)
 
 	xy := []float32{x, y}
-	return xy
+	return xy, uint8(Y * 254)
 }
 
 func gammaCorrect(value float64) float64 {
