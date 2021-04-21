@@ -400,3 +400,14 @@ func TestSetStateLight(t *testing.T) {
 	err = light.SetState(state)
 	assert.NotNil(t, err)
 }
+
+func TestConvertRGBToXY(t *testing.T) {
+	color := color.RGBA{R: 0xff, G: 0x00, B: 0x00, A: 0xFF}
+	xy, brightness := ConvertRGBToXy(color)
+
+	assert.Greater(t, xy[0], float32(0))
+	assert.Greater(t, xy[1], float32(0))
+	assert.Greater(t, brightness, uint8(0))
+
+	t.Logf("Xy of light %+v set to xy: %+v, bright: %d ", color, xy, brightness)
+}
