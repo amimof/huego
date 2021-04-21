@@ -1,6 +1,7 @@
 package huego
 
 import (
+	"image/color"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -299,6 +300,26 @@ func TestSetLightCt(t *testing.T) {
 
 	b.Host = badHostname
 	err = light.Ct(16)
+	assert.NotNil(t, err)
+}
+
+func TestSetLightColor(t *testing.T) {
+	b := New(hostname, username)
+	id := 1
+	light, err := b.GetLight(id)
+	if err != nil {
+		t.Fatal(err)
+	}
+	color := color.RGBA{R: 0xff, G: 0x00, B: 0x00, A: 0xFF}
+	err = light.Col(color)
+	if err != nil {
+		t.Fatal(err)
+	}
+	assert.True(t, light.IsOn())
+	t.Logf("Col of light %d set to xy: %+v", light.ID, light.State.Xy)
+
+	b.Host = badHostname
+	err = light.Col(color)
 	assert.NotNil(t, err)
 }
 

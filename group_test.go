@@ -1,6 +1,7 @@
 package huego
 
 import (
+	"image/color"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -346,6 +347,25 @@ func TestSetGroupXy(t *testing.T) {
 
 	b.Host = badHostname
 	err = group.Xy(xy)
+	assert.NotNil(t, err)
+}
+
+func TestSetGroupCol(t *testing.T) {
+	b := New(hostname, username)
+	id := 1
+	group, err := b.GetGroup(id)
+	if err != nil {
+		t.Fatal(err)
+	}
+	color := color.RGBA{R: 0xff, G: 0x00, B: 0x00, A: 0xFF}
+	err = group.Col(color)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Logf("Col of group %d set to xy: %v", group.ID, group.State.Xy)
+
+	b.Host = badHostname
+	err = group.Col(color)
 	assert.NotNil(t, err)
 }
 

@@ -207,12 +207,12 @@ func (g *Group) CtContext(ctx context.Context, new uint16) error {
 	return nil
 }
 
-// Ct sets the light color temperature state property
+// Col sets the light color as RGB (will be converted to xy)
 func (g *Group) Col(new color.Color) error {
 	return g.ColContext(context.Background(), new)
 }
 
-// CtContext sets the light color temperature state property
+// ColContext sets the light color as RGB (will be converted to xy)
 func (g *Group) ColContext(ctx context.Context, new color.Color) error {
 	xy, bri := ConvertRGBToXy(new)
 

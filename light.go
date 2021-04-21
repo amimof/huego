@@ -202,12 +202,12 @@ func (l *Light) CtContext(ctx context.Context, new uint16) error {
 	return nil
 }
 
-// Ct sets the light color temperature state property
+// Col sets the light color as RGB (will be converted to xy)
 func (l *Light) Col(new color.Color) error {
 	return l.ColContext(context.Background(), new)
 }
 
-// CtContext sets the light color temperature state property
+// ColContext sets the light color as RGB (will be converted to xy)
 func (l *Light) ColContext(ctx context.Context, new color.Color) error {
 	xy, bri := ConvertRGBToXy(new)
 
@@ -277,6 +277,8 @@ func (l *Light) AlertContext(ctx context.Context, new string) error {
 	return nil
 }
 
+// ConvertRGBToXy converts a given RGB color to the xy color of the ligth.
+// implemented as in https://developers.meethue.com/develop/application-design-guidance/color-conversion-formulas-rgb-to-xy-and-back/
 func ConvertRGBToXy(newcolor color.Color) ([]float32, uint8) {
 	r, g, b, _ := newcolor.RGBA()
 	rf := float64(r) / 65536.0
