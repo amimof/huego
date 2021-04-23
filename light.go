@@ -274,6 +274,7 @@ func (l *Light) AlertContext(ctx context.Context, new string) error {
 		return err
 	}
 	l.State.Effect = new
+	l.State.On = true
 	return nil
 }
 
