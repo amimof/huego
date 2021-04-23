@@ -1,6 +1,10 @@
 package huego
 
-import "context"
+import (
+	"context"
+	"image/color"
+	"math"
+)
 
 // Light represents a bridge light https://developers.meethue.com/documentation/lights-api
 type Light struct {
@@ -126,6 +130,7 @@ func (l *Light) BriContext(ctx context.Context, new uint8) error {
 		return err
 	}
 	l.State.Bri = new
+	l.State.On = true
 	return nil
 }
 
@@ -142,6 +147,7 @@ func (l *Light) HueContext(ctx context.Context, new uint16) error {
 		return err
 	}
 	l.State.Hue = new
+	l.State.On = true
 	return nil
 }
 
@@ -158,6 +164,7 @@ func (l *Light) SatContext(ctx context.Context, new uint8) error {
 		return err
 	}
 	l.State.Sat = new
+	l.State.On = true
 	return nil
 }
 
@@ -174,6 +181,7 @@ func (l *Light) XyContext(ctx context.Context, new []float32) error {
 		return err
 	}
 	l.State.Xy = new
+	l.State.On = true
 	return nil
 }
 
@@ -190,6 +198,27 @@ func (l *Light) CtContext(ctx context.Context, new uint16) error {
 		return err
 	}
 	l.State.Ct = new
+	l.State.On = true
+	return nil
+}
+
+// Col sets the light color as RGB (will be converted to xy)
+func (l *Light) Col(new color.Color) error {
+	return l.ColContext(context.Background(), new)
+}
+
+// ColContext sets the light color as RGB (will be converted to xy)
+func (l *Light) ColContext(ctx context.Context, new color.Color) error {
+	xy, bri := ConvertRGBToXy(new)
+
+	update := State{On: true, Xy: xy, Bri: bri}
+	_, err := l.bridge.SetLightStateContext(ctx, l.ID, update)
+	if err != nil {
+		return err
+	}
+	l.State.Xy = xy
+	l.State.Bri = bri
+	l.State.On = true
 	return nil
 }
 
@@ -222,6 +251,7 @@ func (l *Light) EffectContext(ctx context.Context, new string) error {
 		return err
 	}
 	l.State.Effect = new
+	l.State.On = true
 	return nil
 }
 
@@ -244,5 +274,36 @@ func (l *Light) AlertContext(ctx context.Context, new string) error {
 		return err
 	}
 	l.State.Effect = new
+	l.State.On = true
 	return nil
+}
+
+// ConvertRGBToXy converts a given RGB color to the xy color of the ligth.
+// implemented as in https://developers.meethue.com/develop/application-design-guidance/color-conversion-formulas-rgb-to-xy-and-back/
+func ConvertRGBToXy(newcolor color.Color) ([]float32, uint8) {
+	r, g, b, _ := newcolor.RGBA()
+	rf := float64(r) / 65536.0
+	gf := float64(g) / 65536.0
+	bf := float64(b) / 65536.0
+
+	rf = gammaCorrect(rf)
+	gf = gammaCorrect(gf)
+	bf = gammaCorrect(bf)
+
+	X := float32(rf*0.649926 + gf*0.103455 + bf*0.197109)
+	Y := float32(rf*0.234327 + gf*0.743075 + bf*0.022598)
+	Z := float32(rf*0.0000000 + gf*0.053077 + bf*1.035763)
+
+	x := X / (X + Y + Z)
+	y := Y / (X + Y + Z)
+
+	xy := []float32{x, y}
+	return xy, uint8(Y * 254)
+}
+
+func gammaCorrect(value float64) float64 {
+	if value > 0.04045 {
+		return math.Pow((value+0.055)/(1.0+0.055), 2.4)
+	}
+	return (value / 12.92)
 }

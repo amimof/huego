@@ -1,8 +1,10 @@
 package huego
 
 import (
-	"github.com/stretchr/testify/assert"
+	"image/color"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestGetLights(t *testing.T) {
@@ -149,6 +151,7 @@ func TestTurnOffLight(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	assert.False(t, light.IsOn())
 	t.Logf("Turned off light with id %d", light.ID)
 
 	b.Host = badHostname
@@ -167,6 +170,7 @@ func TestTurnOnLight(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	assert.True(t, light.IsOn())
 	t.Logf("Turned on light with id %d", light.ID)
 
 	b.Host = badHostname
@@ -214,6 +218,7 @@ func TestSetLightBri(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	assert.True(t, light.IsOn())
 	t.Logf("Brightness of light %d set to %d", light.ID, light.State.Bri)
 
 	b.Host = badHostname
@@ -232,6 +237,7 @@ func TestSetLightHue(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	assert.True(t, light.IsOn())
 	t.Logf("Hue of light %d set to %d", light.ID, light.State.Hue)
 
 	b.Host = badHostname
@@ -250,6 +256,7 @@ func TestSetLightSat(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	assert.True(t, light.IsOn())
 	t.Logf("Sat of light %d set to %d", light.ID, light.State.Sat)
 
 	b.Host = badHostname
@@ -269,6 +276,7 @@ func TestSetLightXy(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	assert.True(t, light.IsOn())
 	t.Logf("Xy of light %d set to %+v", light.ID, light.State.Xy)
 
 	b.Host = badHostname
@@ -287,10 +295,31 @@ func TestSetLightCt(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	assert.True(t, light.IsOn())
 	t.Logf("Ct of light %d set to %d", light.ID, light.State.Ct)
 
 	b.Host = badHostname
 	err = light.Ct(16)
+	assert.NotNil(t, err)
+}
+
+func TestSetLightColor(t *testing.T) {
+	b := New(hostname, username)
+	id := 1
+	light, err := b.GetLight(id)
+	if err != nil {
+		t.Fatal(err)
+	}
+	color := color.RGBA{R: 0xff, G: 0x00, B: 0x00, A: 0xFF}
+	err = light.Col(color)
+	if err != nil {
+		t.Fatal(err)
+	}
+	assert.True(t, light.IsOn())
+	t.Logf("Col of light %d set to xy: %+v", light.ID, light.State.Xy)
+
+	b.Host = badHostname
+	err = light.Col(color)
 	assert.NotNil(t, err)
 }
 
@@ -323,6 +352,7 @@ func TestSetLightEffect(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	assert.True(t, light.IsOn())
 	t.Logf("Effect of light %d set to %s", light.ID, light.State.Effect)
 
 	b.Host = badHostname
@@ -341,6 +371,7 @@ func TestSetLightAlert(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	assert.True(t, light.IsOn())
 	t.Logf("Alert of light %d set to %s", light.ID, light.State.Alert)
 
 	b.Host = badHostname
@@ -368,4 +399,15 @@ func TestSetStateLight(t *testing.T) {
 	b.Host = badHostname
 	err = light.SetState(state)
 	assert.NotNil(t, err)
+}
+
+func TestConvertRGBToXY(t *testing.T) {
+	color := color.RGBA{R: 0xff, G: 0x00, B: 0x00, A: 0xFF}
+	xy, brightness := ConvertRGBToXy(color)
+
+	assert.Greater(t, xy[0], float32(0))
+	assert.Greater(t, xy[1], float32(0))
+	assert.Greater(t, brightness, uint8(0))
+
+	t.Logf("Xy of light %+v set to xy: %+v, bright: %d ", color, xy, brightness)
 }
