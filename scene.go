@@ -15,7 +15,7 @@ type Scene struct {
 	Picture         string        `json:"picture,omitempty"`
 	LastUpdated     string        `json:"lastupdated,omitempty"`
 	Version         int           `json:"version,omitempty"`
-	StoreSceneState bool          `json:"storescenestate,omitempty"`
+	StoreLightState bool          `json:"storelightstate,omitempty"`
 	LightStates     map[int]State `json:"lightstates,omitempty"`
 	TransitionTime  uint16        `json:"transitiontime,omitempty"`
 	ID              string        `json:"-"`
