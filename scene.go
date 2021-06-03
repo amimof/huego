@@ -9,14 +9,15 @@ type Scene struct {
 	Group           string        `json:"group,omitempty"`
 	Lights          []string      `json:"lights,omitempty"`
 	Owner           string        `json:"owner,omitempty"`
-	Recycle         bool          `json:"recycle,omitempty"`
+	Recycle         bool          `json:"recycle"`
 	Locked          bool          `json:"locked,omitempty"`
 	AppData         interface{}   `json:"appdata,omitempty"`
 	Picture         string        `json:"picture,omitempty"`
 	LastUpdated     string        `json:"lastupdated,omitempty"`
 	Version         int           `json:"version,omitempty"`
-	StoreSceneState bool          `json:"storescenestate,omitempty"`
+	StoreLightState bool          `json:"storelightstate,omitempty"`
 	LightStates     map[int]State `json:"lightstates,omitempty"`
+	TransitionTime  uint16        `json:"transitiontime,omitempty"`
 	ID              string        `json:"-"`
 	bridge          *Bridge
 }

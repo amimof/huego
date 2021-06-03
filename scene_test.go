@@ -25,7 +25,7 @@ func TestGetScenes(t *testing.T) {
 		t.Logf("  Picture: %s", scene.Picture)
 		t.Logf("  LastUpdated: %s", scene.LastUpdated)
 		t.Logf("  Version: %d", scene.Version)
-		t.Logf("  StoreSceneState: %t", scene.StoreSceneState)
+		t.Logf("  StoreLightState: %t", scene.StoreLightState)
 		t.Logf("  ID: %s", scene.ID)
 	}
 
@@ -65,7 +65,7 @@ func TestGetScene(t *testing.T) {
 	t.Logf("  Picture: %s", s.Picture)
 	t.Logf("  LastUpdated: %s", s.LastUpdated)
 	t.Logf("  Version: %d", s.Version)
-	t.Logf("  StoreSceneState: %t", s.StoreSceneState)
+	t.Logf("  StoreLightState: %t", s.StoreLightState)
 	t.Logf("  ID: %s", s.ID)
 	t.Logf("  LightStates: %d", len(s.LightStates))
 	for k := range s.LightStates {
