@@ -16,7 +16,7 @@ type Light struct {
 	UniqueID         string `json:"uniqueid,omitempty"`
 	SwVersion        string `json:"swversion,omitempty"`
 	SwConfigID       string `json:"swconfigid,omitempty"`
-	ProductID        string `json:"productid,omitempty"`
+	ProductName      string `json:"productname,omitempty"`
 	ID               int    `json:"-"`
 	bridge           *Bridge
 }

@@ -23,7 +23,7 @@ func TestGetLights(t *testing.T) {
 		t.Logf("  UniqueID: %s", l.UniqueID)
 		t.Logf("  SwVersion: %s", l.SwVersion)
 		t.Logf("  SwConfigID: %s", l.SwConfigID)
-		t.Logf("  ProductID: %s", l.ProductID)
+		t.Logf("  ProductName: %s", l.ProductName)
 	}
 	contains := func(name string, ss []Light) bool {
 		for _, s := range ss {
@@ -56,7 +56,7 @@ func TestGetLight(t *testing.T) {
 		t.Logf("UniqueID: %s", l.UniqueID)
 		t.Logf("SwVersion: %s", l.SwVersion)
 		t.Logf("SwConfigID: %s", l.SwConfigID)
-		t.Logf("ProductID: %s", l.ProductID)
+		t.Logf("ProductName: %s", l.ProductName)
 		t.Logf("State:")
 		t.Logf("  On: %t", l.State.On)
 		t.Logf("  Bri: %d", l.State.Bri)
