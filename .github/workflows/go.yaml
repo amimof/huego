@@ -1,0 +1,77 @@
+name: Go
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  verify:
+    runs-on: ubuntu-18.04
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.16
+    - name: Check Formating
+      run: make checkfmt
+    - name: Go Vet
+      run: make vet 
+    - name: Go Race
+      run: make race
+    - name: Gocyclo
+      run: make gocyclo
+    - name: Lint
+      run: make lint 
+    - name: Ineffassign
+      run: make ineffassign
+    - name: Check for misspells
+      run: make misspell
+
+  test:
+    runs-on: ubuntu-18.04
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.15
+
+    - name: Test
+      run: make test
+    - name: Benchmark
+      run: make benchmark
+    - name: Coverage
+      run: make coverage
+
+  coverage:
+    runs-on: ubuntu-18.04
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.15
+
+    - name: Coverage 
+      run: make coverage
+    - name: Codecov.io
+      run: bash <(curl -s https://codecov.io/bash)
+      
+  build:
+    runs-on: ubuntu-18.04
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.15
+    
+    - name: Compile
+      run: make
