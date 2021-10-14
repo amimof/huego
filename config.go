@@ -2,44 +2,44 @@ package huego
 
 // Config holds the bridge hardware configuration
 type Config struct {
-	Name             string               `json:"name,omitempty"`
-	SwUpdate         SwUpdate             `json:"swupdate"`
-	SwUpdate2        SwUpdate2            `json:"swupdate2"`
-	WhitelistMap     map[string]Whitelist `json:"whitelist"`
-	Whitelist        []Whitelist          `json:"-"`
-	PortalState      PortalState          `json:"portalstate"`
-	APIVersion       string               `json:"apiversion,omitempty"`
-	SwVersion        string               `json:"swversion,omitempty"`
-	ProxyAddress     string               `json:"proxyaddress,omitempty"`
-	ProxyPort        uint16               `json:"proxyport,omitempty"`
-	LinkButton       bool                 `json:"linkbutton,omitempty"`
-	IPAddress        string               `json:"ipaddress,omitempty"`
-	Mac              string               `json:"mac,omitempty"`
-	NetMask          string               `json:"netmask,omitempty"`
-	Gateway          string               `json:"gateway,omitempty"`
-	Dhcp             bool                 `json:"dhcp,omitempty"`
-	PortalServices   bool                 `json:"portalservices,omitempty"`
-	UTC              string               `json:"UTC,omitempty"`
-	LocalTime        string               `json:"localtime,omitempty"`
-	TimeZone         string               `json:"timezone,omitempty"`
-	ZigbeeChannel    uint8                `json:"zigbeechannel,omitempty"`
-	ModelID          string               `json:"modelid,omitempty"`
-	BridgeID         string               `json:"bridgeid,omitempty"`
-	FactoryNew       bool                 `json:"factorynew,omitempty"`
-	ReplacesBridgeID string               `json:"replacesbridgeid,omitempty"`
-	DatastoreVersion string               `json:"datastoreversion,omitempty"`
-	StarterKitID     string               `json:"starterkitid,omitempty"`
-	InternetService  InternetService      `json:"internetservices,omitempty"`
+	Name             *string               `json:"name,omitempty"`
+	SwUpdate         *SwUpdate             `json:"swupdate,omitempty"`
+	SwUpdate2        *SwUpdate2            `json:"swupdate2,omitempty"`
+	WhitelistMap     *map[string]Whitelist `json:"whitelist,omitempty"`
+	Whitelist        *[]Whitelist          `json:"-"`
+	PortalState      *PortalState          `json:"portalstate,omitempty"`
+	APIVersion       *string               `json:"apiversion,omitempty"`
+	SwVersion        *string               `json:"swversion,omitempty"`
+	ProxyAddress     *string               `json:"proxyaddress,omitempty"`
+	ProxyPort        *uint16               `json:"proxyport,omitempty"`
+	LinkButton       *bool                 `json:"linkbutton,omitempty"`
+	IPAddress        *string               `json:"ipaddress,omitempty"`
+	Mac              *string               `json:"mac,omitempty"`
+	NetMask          *string               `json:"netmask,omitempty"`
+	Gateway          *string               `json:"gateway,omitempty"`
+	Dhcp             *bool                 `json:"dhcp,omitempty"`
+	PortalServices   *bool                 `json:"portalservices,omitempty"`
+	UTC              *string               `json:"UTC,omitempty"`
+	LocalTime        *string               `json:"localtime,omitempty"`
+	TimeZone         *string               `json:"timezone,omitempty"`
+	ZigbeeChannel    *uint8                `json:"zigbeechannel,omitempty"`
+	ModelID          *string               `json:"modelid,omitempty"`
+	BridgeID         *string               `json:"bridgeid,omitempty"`
+	FactoryNew       *bool                 `json:"factorynew,omitempty"`
+	ReplacesBridgeID *string               `json:"replacesbridgeid,omitempty"`
+	DatastoreVersion *string               `json:"datastoreversion,omitempty"`
+	StarterKitID     *string               `json:"starterkitid,omitempty"`
+	InternetService  *InternetService      `json:"internetservices,omitempty"`
 }
 
 // SwUpdate contains information related to software updates. Deprecated in 1.20
 type SwUpdate struct {
-	CheckForUpdate bool        `json:"checkforupdate,omitempty"`
-	DeviceTypes    DeviceTypes `json:"devicetypes"`
-	UpdateState    uint8       `json:"updatestate,omitempty"`
-	Notify         bool        `json:"notify,omitempty"`
-	URL            string      `json:"url,omitempty"`
-	Text           string      `json:"text,omitempty"`
+	CheckForUpdate *bool        `json:"checkforupdate,omitempty"`
+	DeviceTypes    *DeviceTypes `json:"devicetypes"`
+	UpdateState    *uint8       `json:"updatestate,omitempty"`
+	Notify         *bool        `json:"notify,omitempty"`
+	URL            *string      `json:"url,omitempty"`
+	Text           *string      `json:"text,omitempty"`
 }
 
 // SwUpdate2 contains information related to software updates
