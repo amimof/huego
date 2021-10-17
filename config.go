@@ -22,6 +22,7 @@ type Config struct {
 	UTC              *string               `json:"UTC,omitempty"`
 	LocalTime        *string               `json:"localtime,omitempty"`
 	TimeZone         *string               `json:"timezone,omitempty"`
+	TouchLink        *bool                 `json:"touchlink,omitempty"`
 	ZigbeeChannel    *uint8                `json:"zigbeechannel,omitempty"`
 	ModelID          *string               `json:"modelid,omitempty"`
 	BridgeID         *string               `json:"bridgeid,omitempty"`
