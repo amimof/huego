@@ -36,7 +36,7 @@ type Config struct {
 // SwUpdate contains information related to software updates. Deprecated in 1.20
 type SwUpdate struct {
 	CheckForUpdate *bool        `json:"checkforupdate,omitempty"`
-	DeviceTypes    *DeviceTypes `json:"devicetypes"`
+	DeviceTypes    *DeviceTypes `json:"devicetypes,omitempty"`
 	UpdateState    *uint8       `json:"updatestate,omitempty"`
 	Notify         *bool        `json:"notify,omitempty"`
 	URL            *string      `json:"url,omitempty"`
