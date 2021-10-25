@@ -47,7 +47,7 @@ func TestLoginUnauthorized(t *testing.T) {
 func TestUpdateBridgeConfig(t *testing.T) {
 	b := New(hostname, username)
 	c := Config{
-		Name: StrPtr("Test"),
+		Name: strPtr("Test"),
 	}
 	_, err := b.UpdateConfig(&c)
 	if err != nil {
