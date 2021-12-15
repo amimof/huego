@@ -95,6 +95,12 @@ func init() {
 			data:   `[{"success":{"/lights/1/state/bri":200}},{"success":{"/lights/1/state/on":true}},{"success":{"/lights/1/state/hue":50000}}]`,
 		},
 		{
+			// Second route for identifying light testing
+			method: "PUT",
+			path:   path.Join(username, "/lights/2/state"),
+			data:   `[{"success":{"/lights/2/state/alert":"select"}}]`,
+		},
+		{
 			method: "PUT",
 			path:   path.Join(username, "/lights/1"),
 			data:   `[{"success":{"/lights/1/name":"Bedroom Light"}}]`,

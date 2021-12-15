@@ -82,6 +82,24 @@ func TestGetLight(t *testing.T) {
 
 }
 
+func TestIdentifyLight(t *testing.T) {
+	b := New(hostname, username)
+	id := 2
+	resp, err := b.IdentifyLight(id)
+	if err != nil {
+		t.Fatal(err)
+	} else {
+		t.Logf("Light %d identified", id)
+		for k, v := range resp.Success {
+			t.Logf("%v: %s", k, v)
+		}
+	}
+
+	b.Host = badHostname
+	_, err = b.IdentifyLight(id)
+	assert.NotNil(t, err)
+}
+
 func TestSetLight(t *testing.T) {
 	b := New(hostname, username)
 	id := 1

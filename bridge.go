@@ -571,6 +571,39 @@ func (b *Bridge) GetLightContext(ctx context.Context, i int) (*Light, error) {
 	return light, nil
 }
 
+// IdentifyLight allows identifying a light
+func (b *Bridge) IdentifyLight(i int) (*Response, error) {
+	return b.IdentifyLightContext(context.Background(), i)
+}
+
+// IdentifyLightContext allows identifying a light
+func (b *Bridge) IdentifyLightContext(ctx context.Context, i int) (*Response, error) {
+
+	var a []*APIResponse
+
+	url, err := b.getAPIPath("/lights/", strconv.Itoa(i), "/state")
+	if err != nil {
+		return nil, err
+	}
+	res, err := put(ctx, url, []byte(`{"alert":"select"}`))
+	if err != nil {
+		return nil, err
+	}
+
+	err = unmarshal(res, &a)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := handleResponse(a)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, nil
+
+}
+
 // SetLightState allows for controlling one light's state
 func (b *Bridge) SetLightState(i int, l State) (*Response, error) {
 	return b.SetLightStateContext(context.Background(), i, l)
