@@ -90,7 +90,11 @@ benchmark: ; $(info $(M) running go benchmark test) @ ## Benchmark tests to exam
 .PHONY: coverage
 coverage: ; $(info $(M) running go coverage) @ ## Runs tests and generates code coverage report at ./test/coverage.out
 	$Q mkdir -p $(CURDIR)/test/
-	$Q $(GO) test -coverprofile="$(CURDIR)/test/coverage.out" $(PKGS)
+	$Q CGO_ENABLED=1 $(GO) test -race -coverprofile="$(CURDIR)/test/coverage.out" $(PKGS)
+
+.PHONY: coverreport
+coverreport: coverage; $(info $(M) running go tool cover) @ ## Runs code coverage and opens the report in a browser
+	$Q $(GO) tool cover -html="$(CURDIR)/test/coverage.out"
 
 .PHONY: checkfmt
 checkfmt: ; $(info $(M) running checkfmt) @ ## Checks if code is formatted with go fmt and errors out if not

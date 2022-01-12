@@ -1,0 +1,72 @@
+package huego
+
+import (
+	"context"
+	"encoding/json"
+	"fmt"
+	"net/http"
+)
+
+var (
+	transport http.RoundTripper
+)
+
+const (
+	// TypeLight is a Hue resource of type light
+	TypeLight = "light"
+	// TypeScene is a Hue resource of type scene
+	TypeScene = "scene"
+	// TypeRoom is a Hue resource of type room
+	TypeRoom = "room"
+	// TypeZone is a Hue resource of type zone
+	TypeZone = "zone"
+	// TypeBridge is a Hue resource of type bridge
+	TypeBridge = "bridge"
+)
+
+// DiscoveredBridge is a type i used for discovering bridges
+type DiscoveredBridge struct {
+	ID                string `json:"id"`
+	InternalIPAddress string `json:"internalipaddress"`
+	Port              int    `json:"port"`
+}
+
+func init() {
+	transport = http.DefaultTransport
+}
+
+// SetTransport sets the http roundtripper used to make http requests
+func SetTransport(t http.RoundTripper) {
+	transport = t
+}
+
+// Discover uses DiscoverAll but returns the first bridge if any. Returns an error if no bridges are found
+func Discover() (*DiscoveredBridge, error) {
+	b, err := DiscoverAll()
+	if err != nil {
+		return nil, err
+	}
+	if len(b) == 0 {
+		return nil, fmt.Errorf("no bridges found during discovery")
+	}
+	return &b[0], nil
+}
+
+// DiscoverAll returns many discovered bridges
+func DiscoverAll() ([]DiscoveredBridge, error) {
+	d, err := Get("https://discovery.meethue.com").
+		Path("/").
+		Transport(transport).
+		DoRaw(context.Background())
+	if err != nil {
+		return nil, err
+	}
+
+	var discovered []DiscoveredBridge
+	err = json.Unmarshal(d, &discovered)
+	if err != nil {
+		return nil, err
+	}
+
+	return discovered, nil
+}
