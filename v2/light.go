@@ -24,7 +24,7 @@ type Light struct {
 	// +optional
 	Alert *AlertEffectType `json:"alert,omitempty"`
 	// +required
-	Mode *string `json:"mode,omitempty`
+	Mode *string `json:"mode,omitempty"`
 	// +optional
 	Gradient *Gradient `json:"gradient,omitempty"`
 

@@ -1,11 +1,10 @@
 package huego
 
 import (
+	"bytes"
 	"fmt"
-	"io"
 	"net/http"
 	"reflect"
-	"strings"
 	"testing"
 )
 
@@ -65,7 +64,7 @@ func TestDiscover(t *testing.T) {
 	for _, test := range tests {
 		testTransport.DoFunc = func(*http.Request) (*http.Response, error) {
 			return &http.Response{
-				Body:       io.NopCloser(strings.NewReader(test.Body)),
+				Body:       nopCloser(bytes.NewBufferString(test.Body)),
 				StatusCode: test.StatusCode,
 			}, nil
 		}
@@ -123,7 +122,7 @@ func TestDiscoverAll(t *testing.T) {
 	for _, test := range tests {
 		testTransport.DoFunc = func(*http.Request) (*http.Response, error) {
 			return &http.Response{
-				Body:       io.NopCloser(strings.NewReader(test.Body)),
+				Body:       nopCloser(bytes.NewBufferString(test.Body)),
 				StatusCode: test.StatusCode,
 			}, nil
 		}
