@@ -4,11 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"net/http"
-)
-
-var (
-	transport http.RoundTripper
 )
 
 const (
@@ -31,15 +26,6 @@ type DiscoveredBridge struct {
 	Port              int    `json:"port"`
 }
 
-func init() {
-	transport = http.DefaultTransport
-}
-
-// SetTransport sets the http roundtripper used to make http requests
-func SetTransport(t http.RoundTripper) {
-	transport = t
-}
-
 // Discover uses DiscoverAll but returns the first bridge if any. Returns an error if no bridges are found
 func Discover() (*DiscoveredBridge, error) {
 	b, err := DiscoverAll()
@@ -54,9 +40,12 @@ func Discover() (*DiscoveredBridge, error) {
 
 // DiscoverAll returns many discovered bridges
 func DiscoverAll() ([]DiscoveredBridge, error) {
-	d, err := Get("https://discovery.meethue.com").
+	c, err := NewClient("https://discovery.meethue.com", "")
+	if err != nil {
+		return nil, err
+	}
+	d, err := NewRequest(c).
 		Path("/").
-		Transport(transport).
 		DoRaw(context.Background())
 	if err != nil {
 		return nil, err

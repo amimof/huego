@@ -1,19 +1,17 @@
 package huego
 
 import (
-	"bytes"
 	"io"
 	"net/http"
-	"reflect"
-	"testing"
 )
 
 var (
 	testTransport = &mockTransport{}
+	testClient    = http.DefaultClient
 )
 
 func init() {
-	SetTransport(testTransport)
+	testClient.Transport = testTransport
 }
 
 type readCloser struct {
@@ -38,15 +36,15 @@ func (c mockTransport) RoundTrip(r *http.Request) (*http.Response, error) {
 	return c.DoFunc(r)
 }
 
-func TestSetTransport(t *testing.T) {
-	testTransport.DoFunc = func(*http.Request) (*http.Response, error) {
-		return &http.Response{
-			Body:       nopCloser(bytes.NewBufferString(`mock transport`)),
-			StatusCode: 200,
-		}, nil
-	}
-	SetTransport(testTransport)
-	if !reflect.DeepEqual(transport, testTransport) {
-		t.Fatalf("want: %+v\n, got: %+v", transport, testTransport)
-	}
+func ptrFloat32(f float32) *float32 {
+	return &f
+}
+func ptrString(s string) *string {
+	return &s
+}
+func ptrUint16(u uint16) *uint16 {
+	return &u
+}
+func ptrBool(b bool) *bool {
+	return &b
 }

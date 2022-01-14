@@ -11,13 +11,13 @@ type BaseResource struct {
 	// +optional
 	IDv1 *string `json:"id_v1,omitempty"`
 	// +required
-	Metadata map[string]interface{} `json:"metadata,omitempty"`
+	Metadata map[string]string `json:"metadata,omitempty"`
 	// +required
-	Owner *ResourceOwner `json:"owner,omitempty"`
+	Owner *Owner `json:"owner,omitempty"`
 }
 
-// ResourceOwner is the owner attributes for base resources
-type ResourceOwner struct {
+// Owner is the owner attributes for base resources
+type Owner struct {
 	// +required
 	Rid *string `json:"rid,omitempty"`
 	// +required
@@ -28,6 +28,6 @@ type ResourceOwner struct {
 type Resource interface {
 	Type() *string
 	Id() *string
-	Metadata() map[string]interface{}
-	Owner() *ResourceOwner
+	Metadata() map[string]string
+	Owner() *Owner
 }
