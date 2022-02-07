@@ -1,6 +1,7 @@
 package huego
 
 import (
+	"context"
 	"encoding/json"
 )
 
@@ -26,6 +27,8 @@ type Light struct {
 	Effects *Effects `json:"effects,omitempty"`
 
 	BaseResource
+
+	client *ClientV2
 }
 
 // Effects controls the visual effects of a resource
@@ -131,4 +134,24 @@ func (l *Light) Raw() []byte {
 		return nil
 	}
 	return d
+}
+
+func (l *Light) Off() error {
+	on := false
+	light := &Light{On:&On{On:&on}}
+	_, err := l.client.SetLightContext(context.Background(), *l.ID, light)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (l *Light) TurnOn() error {
+	on := true
+	light := &Light{On:&On{On:&on}}
+	_, err := l.client.SetLightContext(context.Background(), *l.ID, light)
+	if err != nil {
+		return err
+	}
+	return nil
 }

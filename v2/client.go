@@ -160,29 +160,16 @@ func (r *Request) URL() *url.URL {
 		r.err = err
 	}
 
+	
 	finalURL := &url.URL{}
 	if r.c.baseURL != nil {
 		*finalURL = *r.c.baseURL
 	}
 	finalURL.Path = p
 	finalURL.RawQuery = q.Encode()
-
+	
 	return finalURL
 }
-
-// Do executes the request and returns a Response. It uses DoRaw and unmarshals the result into a response type
-// func (r *Request) Do(ctx context.Context) (*Response, error) {
-// 	d, err := r.DoRaw(ctx)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	var response *Response
-// 	err = json.Unmarshal(d, &response)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	return response, nil
-// }
 
 // DoRaw executes the request and returns the body of the response
 func (r *Request) Do(ctx context.Context) (*Response, error) {
@@ -218,12 +205,18 @@ func (r *Request) Do(ctx context.Context) (*Response, error) {
 	}
 	defer res.Body.Close()
 
-	body, err := ioutil.ReadAll(res.Body)
+	// Handle errors
+	if r.onErr == nil {
+		r.onErr = func(res *http.Response) error {
+			return nil
+		}
+	}
+	err = r.onErr(res)
 	if err != nil {
 		return nil, err
 	}
-
-	err = r.onErr(res)
+	
+	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		return nil, err
 	}
@@ -238,7 +231,6 @@ func (r *Request) Do(ctx context.Context) (*Response, error) {
 func (r *Response) Into(obj interface{}) error {
 	err := json.Unmarshal(r.BodyRaw, obj)
 	if err != nil {
-		fmt.Printf("ERror is %s\n", err.Error())
 		return err
 	}
 	return nil
@@ -308,6 +300,7 @@ func NewRequest(c *CLIPClient) *Request {
 	}
 }
 
+// NewClientV2 creates a client for V2 bridges
 func NewClientV2(h, u string) (*ClientV2, error) {
 	cc, err := NewClient(h, u)
 	if err != nil {
@@ -318,6 +311,7 @@ func NewClientV2(h, u string) (*ClientV2, error) {
 	}, nil
 }
 
+// NewInsecureClientV2 creates an insecure client for V2 bridges
 func NewInsecureClientV2(h, u string) (*ClientV2, error) {
 	cc, err := NewInsecureClient(h, u)
 	if err != nil {

@@ -5,39 +5,7 @@ import (
 	"net/http"
 	"fmt"
 	"encoding/json"
-	"io/ioutil"
 )
-
-func unmarshal(data []byte, obj interface{}) error {
-	var a APIResponse
-	err := json.Unmarshal(data, &a)
-	if err!= nil {
-		return err
-	}
-	err = a.Into(obj)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func errorHandler(res *http.Response) error {
-	var a *APIResponse
-	if res.StatusCode >= 400 {
-		body, err := ioutil.ReadAll(res.Body)
-		if err != nil {
-			return err
-		}
-		err = json.Unmarshal(body, a)
-		if err != nil {
-			return err
-		}
-		for _, e := range a.Errors {
-			return e
-		}
-	}
-	return nil
-}
 
 // Response represents an API response returned by a bridge
 type APIResponse struct {
@@ -45,21 +13,21 @@ type APIResponse struct {
 	Errors  []APIError      `json:"errors,omitempty"`
 }
 
-func (a *APIResponse) Into(obj interface{}) error {
-	return json.Unmarshal(a.Data, obj)
-}
-
 // APIError represents an error returned in a response from a bridge
 type APIError struct {
 	Description string `json:"description"`
 }
 
-func (a APIError) Error() string {
-	return a.Description
-}
-
 type ClientV2 struct {
 	Clip *CLIPClient
+}
+
+func (a *APIResponse) Into(obj interface{}) error {
+	return json.Unmarshal(a.Data, obj)
+}
+
+func (a APIError) Error() string {
+	return a.Description
 }
 
 func (c *ClientV2) SetClient(client *http.Client) {
@@ -97,6 +65,7 @@ func (c *ClientV2) GetLightContext(ctx context.Context, id string) (*Light, erro
 		NewRequest(c.Clip).
 			Verb(http.MethodGet).
 			Resource(TypeLight).
+			OnError(errorHandler).
 			ID(id).
 			Do(ctx)
 	if err != nil {
@@ -110,7 +79,9 @@ func (c *ClientV2) GetLightContext(ctx context.Context, id string) (*Light, erro
 	if len(l) <= 0 {
 		return nil, fmt.Errorf("light %s not found", id)
 	}
-	return l[0], nil
+	light := l[0]
+	light.client = c
+	return light, nil
 }
 
 func (c *ClientV2) SetLightContext(ctx context.Context, id string, light *Light) (*Response, error) {
@@ -118,6 +89,7 @@ func (c *ClientV2) SetLightContext(ctx context.Context, id string, light *Light)
 		NewRequest(c.Clip).
 			Verb(http.MethodPut).
 			Resource(TypeLight).
+			OnError(errorHandler).
 			ID(id).
 			Body(light.Raw()).
 			Do(ctx)
@@ -125,6 +97,4 @@ func (c *ClientV2) SetLightContext(ctx context.Context, id string, light *Light)
 		return nil, err
 	}
 	return res, nil
-
-
 }

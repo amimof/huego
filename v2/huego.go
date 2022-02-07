@@ -4,6 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"net/http"
+	"io/ioutil"
 )
 
 const (
@@ -58,4 +60,37 @@ func DiscoverAll() ([]DiscoveredBridge, error) {
 	}
 
 	return discovered, nil
+}
+
+
+func unmarshal(data []byte, obj interface{}) error {
+	var a APIResponse
+	err := json.Unmarshal(data, &a)
+	if err!= nil {
+		return err
+	}
+	err = a.Into(obj)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func errorHandler(res *http.Response) error {
+	response := res
+	var a APIResponse
+	if response.StatusCode >= 400 {
+		body, err := ioutil.ReadAll(response.Body)
+		if err != nil {
+			return err
+		}
+		err = json.Unmarshal(body, &a)
+		if err != nil {
+			return err
+		}
+		for _, e := range a.Errors {
+			return e
+		}
+	}
+	return nil
 }
