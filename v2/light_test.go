@@ -91,7 +91,7 @@ func TestGetLight(t *testing.T) {
 
 	httpClient := http.DefaultClient
 	httpClient.Transport = testTransport
-	client, err := NewClient("127.0.0.1", "f0")
+	client, err := NewClientV2("127.0.0.1", "f0")
 	if err != nil {
 		t.Fatal(err)
 	}

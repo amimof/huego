@@ -13,10 +13,11 @@ import (
 	"path"
 	"strings"
 	"time"
+	"bytes"
 )
 
 // Client is a simple type used to compose inidivudal requests to an HTTP server.
-type Client struct {
+type CLIPClient struct {
 	Client   *http.Client
 	baseURL  *url.URL
 	username string
@@ -24,7 +25,7 @@ type Client struct {
 
 // Request allows for building a http request
 type Request struct {
-	c *Client
+	c *CLIPClient
 
 	// Generic components
 	verb    string
@@ -40,19 +41,21 @@ type Request struct {
 	// Output
 	body io.Reader
 	err  error
+
+	// Errorhandler
+	onErr	func(*http.Response) error
 }
 
 // Response represents an API response returned by a bridge
 type Response struct {
-	Data    json.RawMessage `json:"data"`
-	Errors  []APIError      `json:"errors,omitempty"`
-	DataRaw []byte
-	err     error
+	Response *http.Response
+	BodyRaw []byte
 }
 
-// APIError represents an error returned in a response from a bridge
-type APIError struct {
-	Description string `json:"description"`
+// OnError handler
+func (r *Request) OnError(f func (*http.Response) error) *Request {
+	r.onErr = f
+	return r
 }
 
 // Username sets the hue-application-key header for authenticating with a v2 bridge
@@ -103,8 +106,8 @@ func (r *Request) Query(q string) *Request {
 }
 
 // Body sets the request body of the request being made.
-func (r *Request) Body(b io.Reader) *Request {
-	r.body = b
+func (r *Request) Body(data []byte) *Request {
+	r.body = bytes.NewReader(data)
 	return r
 }
 
@@ -168,21 +171,21 @@ func (r *Request) URL() *url.URL {
 }
 
 // Do executes the request and returns a Response. It uses DoRaw and unmarshals the result into a response type
-func (r *Request) Do(ctx context.Context) (*Response, error) {
-	d, err := r.DoRaw(ctx)
-	if err != nil {
-		return nil, err
-	}
-	var response *Response
-	err = json.Unmarshal(d, &response)
-	if err != nil {
-		return nil, err
-	}
-	return response, nil
-}
+// func (r *Request) Do(ctx context.Context) (*Response, error) {
+// 	d, err := r.DoRaw(ctx)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	var response *Response
+// 	err = json.Unmarshal(d, &response)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	return response, nil
+// }
 
 // DoRaw executes the request and returns the body of the response
-func (r *Request) DoRaw(ctx context.Context) ([]byte, error) {
+func (r *Request) Do(ctx context.Context) (*Response, error) {
 	// Return any error if any has been generated along the way before continuing
 	if r.err != nil {
 		return nil, r.err
@@ -220,79 +223,35 @@ func (r *Request) DoRaw(ctx context.Context) ([]byte, error) {
 		return nil, err
 	}
 
-	return body, nil
+	err = r.onErr(res)
+	if err != nil {
+		return nil, err
+	}
+
+	return &Response{
+		Response: res,
+		BodyRaw: body,
+	}, nil
 }
 
 // Into sets the interface in which the returning data will be marshaled into.
 func (r *Response) Into(obj interface{}) error {
-	if r.err != nil {
-		return r.err
+	err := json.Unmarshal(r.BodyRaw, obj)
+	if err != nil {
+		fmt.Printf("ERror is %s\n", err.Error())
+		return err
 	}
-	return json.Unmarshal(r.Data, obj)
+	return nil
 }
 
 // SetClient is used to set the http.Client to use for making http requests
-func (c *Client) SetClient(client *http.Client) *Client {
+func (c *CLIPClient) SetClient(client *http.Client) *CLIPClient {
 	c.Client = client
 	return c
 }
 
-// GetLights returns an array of light resources by using an empty context with GetLightsContext
-func (c *Client) GetLights() ([]*Light, error) {
-	return c.GetLightsContext(context.Background())
-}
-
-// GetLightsContext accepts a context and returns an array of light resources
-func (c *Client) GetLightsContext(ctx context.Context) ([]*Light, error) {
-	res, err :=
-		NewRequest(c).
-			Verb(http.MethodGet).
-			Resource(TypeLight).
-			Do(ctx)
-	if err != nil {
-		return nil, err
-	}
-	var lights []*Light
-	err = res.Into(&lights)
-	if err != nil {
-		return nil, err
-	}
-	return lights, nil
-}
-
-// GetLight returns a light resource by ID using an empty context with GetLightContext
-func (c *Client) GetLight(id string) (*Light, error) {
-	return c.GetLightContext(context.Background(), id)
-}
-
-// GetLightContext returns a light resource by ID using the provided context
-func (c *Client) GetLightContext(ctx context.Context, id string) (*Light, error) {
-	res, err :=
-		NewRequest(c).
-			Verb(http.MethodGet).
-			Resource(TypeLight).
-			ID(id).
-			Do(ctx)
-	if err != nil {
-		return nil, err
-	}
-	var light []*Light
-	err = res.Into(&light)
-	if err != nil {
-		return nil, err
-	}
-	if len(light) <= 0 {
-		return nil, fmt.Errorf("light %s not found", id)
-	}
-	return light[0], nil
-}
-
 // NewClient creates a client for making http requests
-func NewClient(h, u string) (*Client, error) {
-	c := &Client{
-		Client:   http.DefaultClient,
-		username: u,
-	}
+func NewClient(h, u string) (*CLIPClient, error) {
 	if h == "" {
 		return nil, fmt.Errorf("host must be a URL or a host:port pair")
 	}
@@ -305,13 +264,16 @@ func NewClient(h, u string) (*Client, error) {
 			return nil, err
 		}
 	}
-	c.baseURL = hostURL
-	return c, nil
+	return &CLIPClient{
+		Client:   http.DefaultClient,
+		username: u,
+		baseURL: hostURL,
+	}, nil
 }
 
 // NewInsecureClient creates an insecure client for making http requests.
 // It sets InsecureSkipVerify to true on the underlying Transport
-func NewInsecureClient(h, u string) (*Client, error) {
+func NewInsecureClient(h, u string) (*CLIPClient, error) {
 	c, err := NewClient(h, u)
 	if err != nil {
 		return nil, err
@@ -339,9 +301,29 @@ func NewInsecureClient(h, u string) (*Client, error) {
 }
 
 // NewRequest creates a default request using the given client
-func NewRequest(c *Client) *Request {
+func NewRequest(c *CLIPClient) *Request {
 	return &Request{
 		c:          c,
 		apiVersion: "v2",
 	}
+}
+
+func NewClientV2(h, u string) (*ClientV2, error) {
+	cc, err := NewClient(h, u)
+	if err != nil {
+		return nil, err
+	}
+	return &ClientV2{
+		Clip: cc,
+	}, nil
+}
+
+func NewInsecureClientV2(h, u string) (*ClientV2, error) {
+	cc, err := NewInsecureClient(h, u)
+	if err != nil {
+		return nil, err
+	}
+	return &ClientV2{
+		Clip: cc,
+	}, nil
 }

@@ -44,15 +44,15 @@ func DiscoverAll() ([]DiscoveredBridge, error) {
 	if err != nil {
 		return nil, err
 	}
-	d, err := NewRequest(c).
+	res, err := NewRequest(c).
 		Path("/").
-		DoRaw(context.Background())
+		Do(context.Background())
 	if err != nil {
 		return nil, err
 	}
 
 	var discovered []DiscoveredBridge
-	err = json.Unmarshal(d, &discovered)
+	err = json.Unmarshal(res.BodyRaw, &discovered)
 	if err != nil {
 		return nil, err
 	}

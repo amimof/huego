@@ -1,5 +1,9 @@
 package huego
 
+import (
+	"encoding/json"
+)
+
 // Light is a resource of type light: https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_light
 type Light struct {
 	// +required
@@ -118,4 +122,13 @@ type Gradient struct {
 type Alert struct {
 	// +required
 	ActionValues []string `json:"action_values,omitempty"`
+}
+
+// Raw marshals the light into a byte array. Returns nil if errors occur on the way
+func (l *Light) Raw() []byte {
+	d, err := json.Marshal(l)
+	if err != nil {
+		return nil
+	}
+	return d
 }
