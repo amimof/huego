@@ -37,7 +37,7 @@ func main() {
 	}
 
 	// // Get a light with custom client
-	// res, err := 
+	// res, err :=
 	// 	huego.NewRequest(c.Clip).
 	// 		Verb(http.MethodGet).
 	// 		Resource(huego.TypeLight).
@@ -54,7 +54,7 @@ func main() {
 	// 	panic(err)
 	// }
 	// var lights []huego.Light
-	// err = re.Into(&lights) 
+	// err = re.Into(&lights)
 	// if err != nil {
 	// 	panic(err)
 	// }
@@ -62,8 +62,7 @@ func main() {
 	// 	fmt.Printf("Light: %s\n", *light.ID)
 	// }
 
-
-	// ures, err := 
+	// ures, err :=
 	// 	huego.NewRequest(c.Clip).
 	// 		Verb(http.MethodPut).
 	// 		Resource(huego.TypeLight).
@@ -76,7 +75,6 @@ func main() {
 	// }
 	// fmt.Printf("Res: %s\n", string(ures.BodyRaw))
 
-
 	//Get one light
 	light, err := c.GetLight("b1312d43-7aca-447b-92eb-95402aace153")
 	if err != nil {
@@ -86,16 +84,15 @@ func main() {
 	fmt.Printf("On: %t\n", *light.On.On)
 
 	// Turning the light off
-	err = light.Off()
+	_, err = c.SetLight(*light.ID, huego.LightOff())
 	if err != nil {
 		panic(err)
 	}
 	// Turn the light on
-	err = light.TurnOn()
+	_, err = c.SetLight(*light.ID, huego.LightOn())
 	if err != nil {
 		panic(err)
 	}
-	
 
 	//Get many lights
 	// lights, err := c.GetLightsContext(context.Background())

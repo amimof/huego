@@ -4,8 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"net/http"
 	"io/ioutil"
+	"net/http"
 )
 
 const (
@@ -62,11 +62,10 @@ func DiscoverAll() ([]DiscoveredBridge, error) {
 	return discovered, nil
 }
 
-
 func unmarshal(data []byte, obj interface{}) error {
 	var a APIResponse
 	err := json.Unmarshal(data, &a)
-	if err!= nil {
+	if err != nil {
 		return err
 	}
 	err = a.Into(obj)
@@ -93,4 +92,14 @@ func errorHandler(res *http.Response) error {
 		}
 	}
 	return nil
+}
+
+func LightOn() *Light {
+	on := true
+	return &Light{On: &On{On: &on}}
+}
+
+func LightOff() *Light {
+	on := false
+	return &Light{On: &On{On: &on}}
 }

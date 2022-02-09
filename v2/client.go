@@ -1,6 +1,7 @@
 package huego
 
 import (
+	"bytes"
 	"context"
 	"crypto/tls"
 	"encoding/json"
@@ -13,7 +14,6 @@ import (
 	"path"
 	"strings"
 	"time"
-	"bytes"
 )
 
 // Client is a simple type used to compose inidivudal requests to an HTTP server.
@@ -43,17 +43,17 @@ type Request struct {
 	err  error
 
 	// Errorhandler
-	onErr	func(*http.Response) error
+	onErr func(*http.Response) error
 }
 
 // Response represents an API response returned by a bridge
 type Response struct {
 	Response *http.Response
-	BodyRaw []byte
+	BodyRaw  []byte
 }
 
 // OnError handler
-func (r *Request) OnError(f func (*http.Response) error) *Request {
+func (r *Request) OnError(f func(*http.Response) error) *Request {
 	r.onErr = f
 	return r
 }
@@ -160,14 +160,13 @@ func (r *Request) URL() *url.URL {
 		r.err = err
 	}
 
-	
 	finalURL := &url.URL{}
 	if r.c.baseURL != nil {
 		*finalURL = *r.c.baseURL
 	}
 	finalURL.Path = p
 	finalURL.RawQuery = q.Encode()
-	
+
 	return finalURL
 }
 
@@ -215,7 +214,7 @@ func (r *Request) Do(ctx context.Context) (*Response, error) {
 	if err != nil {
 		return nil, err
 	}
-	
+
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		return nil, err
@@ -223,7 +222,7 @@ func (r *Request) Do(ctx context.Context) (*Response, error) {
 
 	return &Response{
 		Response: res,
-		BodyRaw: body,
+		BodyRaw:  body,
 	}, nil
 }
 
@@ -259,7 +258,7 @@ func NewClient(h, u string) (*CLIPClient, error) {
 	return &CLIPClient{
 		Client:   http.DefaultClient,
 		username: u,
-		baseURL: hostURL,
+		baseURL:  hostURL,
 	}, nil
 }
 
