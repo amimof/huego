@@ -3,6 +3,7 @@ package huego
 import (
 	"context"
 	"fmt"
+	"net/http"
 	"strings"
 	"testing"
 
@@ -73,27 +74,31 @@ func TestBridge_getAPIPathError(t *testing.T) {
 func TestBridge_getError(t *testing.T) {
 	httpmock.Deactivate()
 	defer httpmock.Activate()
-	_, err := get(context.Background(), "invalid hostname")
+	b := &Bridge{transport: http.DefaultClient}
+	_, err := b.get(context.Background(), "invalid hostname")
 	assert.NotNil(t, err)
 }
 
 func TestBridge_putError(t *testing.T) {
 	httpmock.Deactivate()
 	defer httpmock.Activate()
-	_, err := put(context.Background(), "invalid hostname", []byte("huego"))
+	b := &Bridge{transport: http.DefaultClient}
+	_, err := b.put(context.Background(), "invalid hostname", []byte("huego"))
 	assert.NotNil(t, err)
 }
 
 func TestBridge_postError(t *testing.T) {
 	httpmock.Deactivate()
 	defer httpmock.Activate()
-	_, err := post(context.Background(), "invalid hostname", []byte("huego"))
+	b := &Bridge{transport: http.DefaultClient}
+	_, err := b.post(context.Background(), "invalid hostname", []byte("huego"))
 	assert.NotNil(t, err)
 }
 
 func TestBridge_deleteError(t *testing.T) {
 	httpmock.Deactivate()
 	defer httpmock.Activate()
-	_, err := delete(context.Background(), "invalid hostname")
+	b := &Bridge{transport: http.DefaultClient}
+	_, err := b.delete(context.Background(), "invalid hostname")
 	assert.NotNil(t, err)
 }

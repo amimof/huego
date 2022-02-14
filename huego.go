@@ -85,7 +85,7 @@ func unmarshal(data []byte, v interface{}) error {
 	return nil
 }
 
-func get(ctx context.Context, url string) ([]byte, error) {
+func (b *Bridge) get(ctx context.Context, url string) ([]byte, error) {
 
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
@@ -94,8 +94,7 @@ func get(ctx context.Context, url string) ([]byte, error) {
 
 	req = req.WithContext(ctx)
 
-	client := http.DefaultClient
-	res, err := client.Do(req)
+	res, err := b.transport.Do(req)
 	if err != nil {
 		return nil, err
 	}
@@ -111,7 +110,7 @@ func get(ctx context.Context, url string) ([]byte, error) {
 	return body, nil
 }
 
-func put(ctx context.Context, url string, data []byte) ([]byte, error) {
+func (b *Bridge) put(ctx context.Context, url string, data []byte) ([]byte, error) {
 
 	body := strings.NewReader(string(data))
 
@@ -124,8 +123,7 @@ func put(ctx context.Context, url string, data []byte) ([]byte, error) {
 
 	req.Header.Set(contentType, applicationJSON)
 
-	client := http.DefaultClient
-	res, err := client.Do(req)
+	res, err := b.transport.Do(req)
 	if err != nil {
 		return nil, err
 	}
@@ -141,7 +139,7 @@ func put(ctx context.Context, url string, data []byte) ([]byte, error) {
 
 }
 
-func post(ctx context.Context, url string, data []byte) ([]byte, error) {
+func (b *Bridge) post(ctx context.Context, url string, data []byte) ([]byte, error) {
 
 	body := strings.NewReader(string(data))
 
@@ -154,8 +152,7 @@ func post(ctx context.Context, url string, data []byte) ([]byte, error) {
 
 	req.Header.Set(contentType, applicationJSON)
 
-	client := http.DefaultClient
-	res, err := client.Do(req)
+	res, err := b.transport.Do(req)
 	if err != nil {
 		return nil, err
 	}
@@ -171,7 +168,7 @@ func post(ctx context.Context, url string, data []byte) ([]byte, error) {
 
 }
 
-func delete(ctx context.Context, url string) ([]byte, error) {
+func (b *Bridge) delete(ctx context.Context, url string) ([]byte, error) {
 
 	req, err := http.NewRequest(http.MethodDelete, url, nil)
 	if err != nil {
@@ -182,8 +179,7 @@ func delete(ctx context.Context, url string) ([]byte, error) {
 
 	req.Header.Set(contentType, applicationJSON)
 
-	client := http.DefaultClient
-	res, err := client.Do(req)
+	res, err := b.transport.Do(req)
 	if err != nil {
 		return nil, err
 	}
@@ -269,5 +265,25 @@ func DiscoverContext(ctx context.Context) (*Bridge, error) {
 // h may or may not be prefixed with http(s)://. For example http://192.168.1.20/ or 192.168.1.20.
 // u is a username known to the bridge. Use Discover() and CreateUser() to create a user.
 func New(h, u string) *Bridge {
-	return &Bridge{h, u, ""}
+	return &Bridge{
+		Host:      h,
+		User:      u,
+		ID:        "",
+		transport: http.DefaultClient,
+	}
+}
+
+// NewCustom instantiates and returns a new Bridge.
+// New accepts hostname/ip address to the bridge (h) as well as an username (u).
+//
+// h may or may not be prefixed with http(s)://. For example http://192.168.1.20/ or 192.168.1.20.
+// u is a username known to the bridge. Use Discover() and CreateUser() to create a user.
+// Difference between New and NewCustom being the ability to implement your own http.RoundTripper for proxying.
+func NewCustom(h, u string, transport *http.RoundTripper) *Bridge {
+	return &Bridge{
+		Host:      h,
+		User:      u,
+		ID:        "",
+		transport: http.DefaultClient,
+	}
 }
