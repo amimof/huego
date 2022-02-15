@@ -94,7 +94,7 @@ func (b *Bridge) get(ctx context.Context, url string) ([]byte, error) {
 
 	req = req.WithContext(ctx)
 
-	res, err := b.transport.Do(req)
+	res, err := b.client.Do(req)
 	if err != nil {
 		return nil, err
 	}
@@ -123,7 +123,7 @@ func (b *Bridge) put(ctx context.Context, url string, data []byte) ([]byte, erro
 
 	req.Header.Set(contentType, applicationJSON)
 
-	res, err := b.transport.Do(req)
+	res, err := b.client.Do(req)
 	if err != nil {
 		return nil, err
 	}
@@ -152,7 +152,7 @@ func (b *Bridge) post(ctx context.Context, url string, data []byte) ([]byte, err
 
 	req.Header.Set(contentType, applicationJSON)
 
-	res, err := b.transport.Do(req)
+	res, err := b.client.Do(req)
 	if err != nil {
 		return nil, err
 	}
@@ -179,7 +179,7 @@ func (b *Bridge) delete(ctx context.Context, url string) ([]byte, error) {
 
 	req.Header.Set(contentType, applicationJSON)
 
-	res, err := b.transport.Do(req)
+	res, err := b.client.Do(req)
 	if err != nil {
 		return nil, err
 	}
@@ -266,24 +266,24 @@ func DiscoverContext(ctx context.Context) (*Bridge, error) {
 // u is a username known to the bridge. Use Discover() and CreateUser() to create a user.
 func New(h, u string) *Bridge {
 	return &Bridge{
-		Host:      h,
-		User:      u,
-		ID:        "",
-		transport: http.DefaultClient,
+		Host:   h,
+		User:   u,
+		ID:     "",
+		client: http.DefaultClient,
 	}
 }
 
-// NewCustom instantiates and returns a new Bridge.
-// New accepts hostname/ip address to the bridge (h) as well as an username (u).
+// NewCustom instantiates and returns a new Bridge with a custom HTTP client.
+// NewCustom accepts the same parameters as New, but with an additional acceptance of an http.Client.
 //
 // h may or may not be prefixed with http(s)://. For example http://192.168.1.20/ or 192.168.1.20.
 // u is a username known to the bridge. Use Discover() and CreateUser() to create a user.
 // Difference between New and NewCustom being the ability to implement your own http.RoundTripper for proxying.
-func NewCustom(h, u string, transport *http.RoundTripper) *Bridge {
+func NewCustom(h, u string, client *http.Client) *Bridge {
 	return &Bridge{
-		Host:      h,
-		User:      u,
-		ID:        "",
-		transport: http.DefaultClient,
+		Host:   h,
+		User:   u,
+		ID:     "",
+		client: client,
 	}
 }

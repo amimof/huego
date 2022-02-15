@@ -32,6 +32,28 @@ func TestLogin(t *testing.T) {
 	t.Logf("Name: %s, SwVersion: %s", c.Name, c.SwVersion)
 }
 
+/*
+func TestCustomLogin(t *testing.T) {
+	newTransport := http.DefaultTransport.(*httpmock.MockTransport)
+	newTransport. = func(ctx context.Context, network, address string) (net.Conn, error) {
+		return proxy.Direct.Dial(network, address)
+	}
+	newClient := http.DefaultClient
+	newClient.Transport = newTransport
+
+	b := NewCustom(hostname, username, newClient)
+
+	c, err := b.GetConfig()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if c == nil {
+		t.Fatal("failed to get config")
+	}
+	t.Logf("Logged in and got config which means that we are authorized")
+	t.Logf("Name: %s, SwVersion: %s", c.Name, c.SwVersion)
+}
+*/
 func TestLoginUnauthorized(t *testing.T) {
 	b := New(hostname, "")
 	b = b.Login("invalid_password")
@@ -74,7 +96,7 @@ func TestBridge_getAPIPathError(t *testing.T) {
 func TestBridge_getError(t *testing.T) {
 	httpmock.Deactivate()
 	defer httpmock.Activate()
-	b := &Bridge{transport: http.DefaultClient}
+	b := &Bridge{client: http.DefaultClient}
 	_, err := b.get(context.Background(), "invalid hostname")
 	assert.NotNil(t, err)
 }
@@ -82,7 +104,7 @@ func TestBridge_getError(t *testing.T) {
 func TestBridge_putError(t *testing.T) {
 	httpmock.Deactivate()
 	defer httpmock.Activate()
-	b := &Bridge{transport: http.DefaultClient}
+	b := &Bridge{client: http.DefaultClient}
 	_, err := b.put(context.Background(), "invalid hostname", []byte("huego"))
 	assert.NotNil(t, err)
 }
@@ -90,7 +112,7 @@ func TestBridge_putError(t *testing.T) {
 func TestBridge_postError(t *testing.T) {
 	httpmock.Deactivate()
 	defer httpmock.Activate()
-	b := &Bridge{transport: http.DefaultClient}
+	b := &Bridge{client: http.DefaultClient}
 	_, err := b.post(context.Background(), "invalid hostname", []byte("huego"))
 	assert.NotNil(t, err)
 }
@@ -98,7 +120,7 @@ func TestBridge_postError(t *testing.T) {
 func TestBridge_deleteError(t *testing.T) {
 	httpmock.Deactivate()
 	defer httpmock.Activate()
-	b := &Bridge{transport: http.DefaultClient}
+	b := &Bridge{client: http.DefaultClient}
 	_, err := b.delete(context.Background(), "invalid hostname")
 	assert.NotNil(t, err)
 }

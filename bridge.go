@@ -18,7 +18,7 @@ type Bridge struct {
 	User string
 	ID   string `json:"id,omitempty"`
 
-	transport *http.Client
+	client *http.Client
 }
 
 func (b *Bridge) getAPIPath(str ...string) (string, error) {
