@@ -3,12 +3,14 @@ package huego
 import (
 	"context"
 	"fmt"
+	"net"
 	"net/http"
 	"strings"
 	"testing"
 
 	"github.com/jarcoal/httpmock"
 	"github.com/stretchr/testify/assert"
+	"golang.org/x/net/proxy"
 )
 
 func ExampleBridge_CreateUser() {
@@ -32,14 +34,15 @@ func TestLogin(t *testing.T) {
 	t.Logf("Name: %s, SwVersion: %s", c.Name, c.SwVersion)
 }
 
-/*
 func TestCustomLogin(t *testing.T) {
-	newTransport := http.DefaultTransport.(*httpmock.MockTransport)
-	newTransport. = func(ctx context.Context, network, address string) (net.Conn, error) {
+	newTransport := httpmock.InitialTransport.(*http.Transport).Clone()
+	newTransport.DialContext = func(ctx context.Context, network, address string) (net.Conn, error) {
 		return proxy.Direct.Dial(network, address)
 	}
 	newClient := http.DefaultClient
 	newClient.Transport = newTransport
+
+	httpmock.ActivateNonDefault(newClient)
 
 	b := NewCustom(hostname, username, newClient)
 
@@ -53,7 +56,7 @@ func TestCustomLogin(t *testing.T) {
 	t.Logf("Logged in and got config which means that we are authorized")
 	t.Logf("Name: %s, SwVersion: %s", c.Name, c.SwVersion)
 }
-*/
+
 func TestLoginUnauthorized(t *testing.T) {
 	b := New(hostname, "")
 	b = b.Login("invalid_password")
