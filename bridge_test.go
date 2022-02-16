@@ -34,29 +34,6 @@ func TestLogin(t *testing.T) {
 	t.Logf("Name: %s, SwVersion: %s", c.Name, c.SwVersion)
 }
 
-func TestCustomLogin(t *testing.T) {
-	newTransport := httpmock.InitialTransport.(*http.Transport).Clone()
-	newTransport.DialContext = func(ctx context.Context, network, address string) (net.Conn, error) {
-		return proxy.Direct.Dial(network, address)
-	}
-	newClient := http.DefaultClient
-	newClient.Transport = newTransport
-
-	httpmock.ActivateNonDefault(newClient)
-
-	b := NewCustom(hostname, username, newClient)
-
-	c, err := b.GetConfig()
-	if err != nil {
-		t.Fatal(err)
-	}
-	if c == nil {
-		t.Fatal("failed to get config")
-	}
-	t.Logf("Logged in and got config which means that we are authorized")
-	t.Logf("Name: %s, SwVersion: %s", c.Name, c.SwVersion)
-}
-
 func TestLoginUnauthorized(t *testing.T) {
 	b := New(hostname, "")
 	b = b.Login("invalid_password")
@@ -126,4 +103,27 @@ func TestBridge_deleteError(t *testing.T) {
 	b := &Bridge{client: http.DefaultClient}
 	_, err := b.delete(context.Background(), "invalid hostname")
 	assert.NotNil(t, err)
+}
+
+func TestCustomLogin(t *testing.T) {
+	newTransport := httpmock.InitialTransport.(*http.Transport).Clone()
+	newTransport.DialContext = func(ctx context.Context, network, address string) (net.Conn, error) {
+		return proxy.Direct.Dial(network, address)
+	}
+	newClient := http.DefaultClient
+	newClient.Transport = newTransport
+
+	httpmock.ActivateNonDefault(newClient)
+
+	b := NewCustom(hostname, username, newClient)
+
+	c, err := b.GetConfig()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if c == nil {
+		t.Fatal("failed to get config")
+	}
+	t.Logf("Logged in and got config which means that we are authorized")
+	t.Logf("Name: %s, SwVersion: %s", c.Name, c.SwVersion)
 }
