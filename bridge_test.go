@@ -76,32 +76,28 @@ func TestBridge_getAPIPathError(t *testing.T) {
 func TestBridge_getError(t *testing.T) {
 	httpmock.Deactivate()
 	defer httpmock.Activate()
-	b := &Bridge{client: http.DefaultClient}
-	_, err := b.get(context.Background(), "invalid hostname")
+	_, err := get(context.Background(), "invalid hostname", http.DefaultClient)
 	assert.NotNil(t, err)
 }
 
 func TestBridge_putError(t *testing.T) {
 	httpmock.Deactivate()
 	defer httpmock.Activate()
-	b := &Bridge{client: http.DefaultClient}
-	_, err := b.put(context.Background(), "invalid hostname", []byte("huego"))
+	_, err := put(context.Background(), "invalid hostname", []byte("huego"), http.DefaultClient)
 	assert.NotNil(t, err)
 }
 
 func TestBridge_postError(t *testing.T) {
 	httpmock.Deactivate()
 	defer httpmock.Activate()
-	b := &Bridge{client: http.DefaultClient}
-	_, err := b.post(context.Background(), "invalid hostname", []byte("huego"))
+	_, err := post(context.Background(), "invalid hostname", []byte("huego"), http.DefaultClient)
 	assert.NotNil(t, err)
 }
 
 func TestBridge_deleteError(t *testing.T) {
 	httpmock.Deactivate()
 	defer httpmock.Activate()
-	b := &Bridge{client: http.DefaultClient}
-	_, err := b.delete(context.Background(), "invalid hostname")
+	_, err := del(context.Background(), "invalid hostname", http.DefaultClient)
 	assert.NotNil(t, err)
 }
 
@@ -115,7 +111,7 @@ func TestCustomLogin(t *testing.T) {
 
 	httpmock.ActivateNonDefault(newClient)
 
-	b := NewCustom(hostname, username, newClient)
+	b := NewWithClient(hostname, username, newClient)
 
 	c, err := b.GetConfig()
 	if err != nil {

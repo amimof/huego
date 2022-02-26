@@ -1,8 +1,5 @@
 # Changelog
 
-## 1.0.3
-* Added ability to use a custom http.Client
-
 ## 1.0.2
 * Improved test coverage
 * Use of `httpmock` in tests
