@@ -3,11 +3,14 @@ package huego
 import (
 	"context"
 	"fmt"
+	"net"
+	"net/http"
 	"strings"
 	"testing"
 
 	"github.com/jarcoal/httpmock"
 	"github.com/stretchr/testify/assert"
+	"golang.org/x/net/proxy"
 )
 
 func ExampleBridge_CreateUser() {
@@ -73,27 +76,50 @@ func TestBridge_getAPIPathError(t *testing.T) {
 func TestBridge_getError(t *testing.T) {
 	httpmock.Deactivate()
 	defer httpmock.Activate()
-	_, err := get(context.Background(), "invalid hostname")
+	_, err := get(context.Background(), "invalid hostname", http.DefaultClient)
 	assert.NotNil(t, err)
 }
 
 func TestBridge_putError(t *testing.T) {
 	httpmock.Deactivate()
 	defer httpmock.Activate()
-	_, err := put(context.Background(), "invalid hostname", []byte("huego"))
+	_, err := put(context.Background(), "invalid hostname", []byte("huego"), http.DefaultClient)
 	assert.NotNil(t, err)
 }
 
 func TestBridge_postError(t *testing.T) {
 	httpmock.Deactivate()
 	defer httpmock.Activate()
-	_, err := post(context.Background(), "invalid hostname", []byte("huego"))
+	_, err := post(context.Background(), "invalid hostname", []byte("huego"), http.DefaultClient)
 	assert.NotNil(t, err)
 }
 
 func TestBridge_deleteError(t *testing.T) {
 	httpmock.Deactivate()
 	defer httpmock.Activate()
-	_, err := delete(context.Background(), "invalid hostname")
+	_, err := del(context.Background(), "invalid hostname", http.DefaultClient)
 	assert.NotNil(t, err)
+}
+
+func TestCustomLogin(t *testing.T) {
+	newTransport := httpmock.InitialTransport.(*http.Transport).Clone()
+	newTransport.DialContext = func(ctx context.Context, network, address string) (net.Conn, error) {
+		return proxy.Direct.Dial(network, address)
+	}
+	newClient := http.DefaultClient
+	newClient.Transport = newTransport
+
+	httpmock.ActivateNonDefault(newClient)
+
+	b := NewWithClient(hostname, username, newClient)
+
+	c, err := b.GetConfig()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if c == nil {
+		t.Fatal("failed to get config")
+	}
+	t.Logf("Logged in and got config which means that we are authorized")
+	t.Logf("Name: %s, SwVersion: %s", c.Name, c.SwVersion)
 }

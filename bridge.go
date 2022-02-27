@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"net/http"
 	"net/url"
 	"path"
 	"strconv"
@@ -16,6 +17,8 @@ type Bridge struct {
 	Host string `json:"internalipaddress,omitempty"`
 	User string
 	ID   string `json:"id,omitempty"`
+
+	client *http.Client
 }
 
 func (b *Bridge) getAPIPath(str ...string) (string, error) {
@@ -63,7 +66,7 @@ func (b *Bridge) GetConfigContext(ctx context.Context) (*Config, error) {
 		return nil, err
 	}
 
-	res, err := get(ctx, url)
+	res, err := get(ctx, url, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -133,7 +136,7 @@ func (b *Bridge) createUserWithContext(ctx context.Context, deviceType string, g
 		return nil, err
 	}
 
-	res, err := post(ctx, url, data)
+	res, err := post(ctx, url, data, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -191,7 +194,7 @@ func (b *Bridge) UpdateConfigContext(ctx context.Context, c *Config) (*Response,
 		return nil, err
 	}
 
-	res, err := put(ctx, url, data)
+	res, err := put(ctx, url, data, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -224,7 +227,7 @@ func (b *Bridge) DeleteUserContext(ctx context.Context, n string) error {
 		return err
 	}
 
-	res, err := delete(ctx, url)
+	res, err := del(ctx, url, b.client)
 	if err != nil {
 		return err
 	}
@@ -255,7 +258,7 @@ func (b *Bridge) GetFullStateContext(ctx context.Context) (map[string]interface{
 		return nil, err
 	}
 
-	res, err := get(ctx, url)
+	res, err := get(ctx, url, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -289,7 +292,7 @@ func (b *Bridge) GetGroupsContext(ctx context.Context) ([]Group, error) {
 		return nil, err
 	}
 
-	res, err := get(ctx, url)
+	res, err := get(ctx, url, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -331,7 +334,7 @@ func (b *Bridge) GetGroupContext(ctx context.Context, i int) (*Group, error) {
 		return nil, err
 	}
 
-	res, err := get(ctx, url)
+	res, err := get(ctx, url, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -367,7 +370,7 @@ func (b *Bridge) SetGroupStateContext(ctx context.Context, i int, l State) (*Res
 		return nil, err
 	}
 
-	res, err := put(ctx, url, data)
+	res, err := put(ctx, url, data, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -406,7 +409,7 @@ func (b *Bridge) UpdateGroupContext(ctx context.Context, i int, l Group) (*Respo
 		return nil, err
 	}
 
-	res, err := put(ctx, url, data)
+	res, err := put(ctx, url, data, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -444,7 +447,7 @@ func (b *Bridge) CreateGroupContext(ctx context.Context, g Group) (*Response, er
 		return nil, err
 	}
 
-	res, err := post(ctx, url, data)
+	res, err := post(ctx, url, data, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -478,7 +481,7 @@ func (b *Bridge) DeleteGroupContext(ctx context.Context, i int) error {
 		return err
 	}
 
-	res, err := delete(ctx, url)
+	res, err := del(ctx, url, b.client)
 	if err != nil {
 		return err
 	}
@@ -514,7 +517,7 @@ func (b *Bridge) GetLightsContext(ctx context.Context) ([]Light, error) {
 		return nil, err
 	}
 
-	res, err := get(ctx, url)
+	res, err := get(ctx, url, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -556,7 +559,7 @@ func (b *Bridge) GetLightContext(ctx context.Context, i int) (*Light, error) {
 		return nil, err
 	}
 
-	res, err := get(ctx, url)
+	res, err := get(ctx, url, b.client)
 	if err != nil {
 		return light, err
 	}
@@ -585,7 +588,7 @@ func (b *Bridge) IdentifyLightContext(ctx context.Context, i int) (*Response, er
 	if err != nil {
 		return nil, err
 	}
-	res, err := put(ctx, url, []byte(`{"alert":"select"}`))
+	res, err := put(ctx, url, []byte(`{"alert":"select"}`), b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -626,7 +629,7 @@ func (b *Bridge) SetLightStateContext(ctx context.Context, i int, l State) (*Res
 	if err != nil {
 		return nil, err
 	}
-	res, err := put(ctx, url, data)
+	res, err := put(ctx, url, data, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -662,7 +665,7 @@ func (b *Bridge) FindLightsContext(ctx context.Context) (*Response, error) {
 		return nil, err
 	}
 
-	res, err := post(ctx, url, nil)
+	res, err := post(ctx, url, nil, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -696,7 +699,7 @@ func (b *Bridge) GetNewLightsContext(ctx context.Context) (*NewLight, error) {
 		return nil, err
 	}
 
-	res, err := get(ctx, url)
+	res, err := get(ctx, url, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -739,7 +742,7 @@ func (b *Bridge) DeleteLightContext(ctx context.Context, i int) error {
 		return err
 	}
 
-	res, err := delete(ctx, url)
+	res, err := del(ctx, url, b.client)
 	if err != nil {
 		return err
 	}
@@ -776,7 +779,7 @@ func (b *Bridge) UpdateLightContext(ctx context.Context, i int, light Light) (*R
 		return nil, err
 	}
 
-	res, err := put(ctx, url, data)
+	res, err := put(ctx, url, data, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -815,7 +818,7 @@ func (b *Bridge) GetResourcelinksContext(ctx context.Context) ([]*Resourcelink, 
 		return nil, err
 	}
 
-	res, err := get(ctx, url)
+	res, err := get(ctx, url, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -857,7 +860,7 @@ func (b *Bridge) GetResourcelinkContext(ctx context.Context, i int) (*Resourceli
 		return nil, err
 	}
 
-	res, err := get(ctx, url)
+	res, err := get(ctx, url, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -891,7 +894,7 @@ func (b *Bridge) CreateResourcelinkContext(ctx context.Context, s *Resourcelink)
 		return nil, err
 	}
 
-	res, err := post(ctx, url, data)
+	res, err := post(ctx, url, data, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -929,7 +932,7 @@ func (b *Bridge) UpdateResourcelinkContext(ctx context.Context, i int, resourcel
 		return nil, err
 	}
 
-	res, err := put(ctx, url, data)
+	res, err := put(ctx, url, data, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -963,7 +966,7 @@ func (b *Bridge) DeleteResourcelinkContext(ctx context.Context, i int) error {
 		return err
 	}
 
-	res, err := delete(ctx, url)
+	res, err := del(ctx, url, b.client)
 	if err != nil {
 		return err
 	}
@@ -999,7 +1002,7 @@ func (b *Bridge) GetRulesContext(ctx context.Context) ([]*Rule, error) {
 		return nil, err
 	}
 
-	res, err := get(ctx, url)
+	res, err := get(ctx, url, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -1041,7 +1044,7 @@ func (b *Bridge) GetRuleContext(ctx context.Context, i int) (*Rule, error) {
 		return nil, err
 	}
 
-	res, err := get(ctx, url)
+	res, err := get(ctx, url, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -1075,7 +1078,7 @@ func (b *Bridge) CreateRuleContext(ctx context.Context, s *Rule) (*Response, err
 		return nil, err
 	}
 
-	res, err := post(ctx, url, data)
+	res, err := post(ctx, url, data, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -1114,7 +1117,7 @@ func (b *Bridge) UpdateRuleContext(ctx context.Context, i int, rule *Rule) (*Res
 		return nil, err
 	}
 
-	res, err := put(ctx, url, data)
+	res, err := put(ctx, url, data, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -1148,7 +1151,7 @@ func (b *Bridge) DeleteRuleContext(ctx context.Context, i int) error {
 		return err
 	}
 
-	res, err := delete(ctx, url)
+	res, err := del(ctx, url, b.client)
 	if err != nil {
 		return err
 	}
@@ -1184,7 +1187,7 @@ func (b *Bridge) GetScenesContext(ctx context.Context) ([]Scene, error) {
 		return nil, err
 	}
 
-	res, err := get(ctx, url)
+	res, err := get(ctx, url, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -1220,7 +1223,7 @@ func (b *Bridge) GetSceneContext(ctx context.Context, i string) (*Scene, error) 
 		return nil, err
 	}
 
-	res, err := get(ctx, url)
+	res, err := get(ctx, url, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -1260,7 +1263,7 @@ func (b *Bridge) UpdateSceneContext(ctx context.Context, id string, s *Scene) (*
 		return nil, err
 	}
 
-	res, err := put(ctx, url, data)
+	res, err := put(ctx, url, data, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -1301,7 +1304,7 @@ func (b *Bridge) SetSceneLightStateContext(ctx context.Context, id string, iid i
 		return nil, err
 	}
 
-	res, err := put(ctx, url, data)
+	res, err := put(ctx, url, data, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -1342,7 +1345,7 @@ func (b *Bridge) RecallSceneContext(ctx context.Context, id string, gid int) (*R
 		return nil, err
 	}
 
-	res, err := put(ctx, url, data)
+	res, err := put(ctx, url, data, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -1380,7 +1383,7 @@ func (b *Bridge) CreateSceneContext(ctx context.Context, s *Scene) (*Response, e
 		return nil, err
 	}
 
-	res, err := post(ctx, url, data)
+	res, err := post(ctx, url, data, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -1413,7 +1416,7 @@ func (b *Bridge) DeleteSceneContext(ctx context.Context, id string) error {
 		return err
 	}
 
-	res, err := delete(ctx, url)
+	res, err := del(ctx, url, b.client)
 	if err != nil {
 		return err
 	}
@@ -1449,7 +1452,7 @@ func (b *Bridge) GetSchedulesContext(ctx context.Context) ([]*Schedule, error) {
 		return nil, err
 	}
 
-	res, err := get(ctx, url)
+	res, err := get(ctx, url, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -1491,7 +1494,7 @@ func (b *Bridge) GetScheduleContext(ctx context.Context, i int) (*Schedule, erro
 		return nil, err
 	}
 
-	res, err := get(ctx, url)
+	res, err := get(ctx, url, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -1525,7 +1528,7 @@ func (b *Bridge) CreateScheduleContext(ctx context.Context, s *Schedule) (*Respo
 		return nil, err
 	}
 
-	res, err := post(ctx, url, data)
+	res, err := post(ctx, url, data, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -1564,7 +1567,7 @@ func (b *Bridge) UpdateScheduleContext(ctx context.Context, i int, schedule *Sch
 		return nil, err
 	}
 
-	res, err := put(ctx, url, data)
+	res, err := put(ctx, url, data, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -1598,7 +1601,7 @@ func (b *Bridge) DeleteScheduleContext(ctx context.Context, i int) error {
 		return err
 	}
 
-	res, err := delete(ctx, url)
+	res, err := del(ctx, url, b.client)
 	if err != nil {
 		return err
 	}
@@ -1634,7 +1637,7 @@ func (b *Bridge) GetSensorsContext(ctx context.Context) ([]Sensor, error) {
 		return nil, err
 	}
 
-	res, err := get(ctx, url)
+	res, err := get(ctx, url, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -1674,7 +1677,7 @@ func (b *Bridge) GetSensorContext(ctx context.Context, i int) (*Sensor, error) {
 		return nil, err
 	}
 
-	res, err := get(ctx, url)
+	res, err := get(ctx, url, b.client)
 	if err != nil {
 		return r, err
 	}
@@ -1708,7 +1711,7 @@ func (b *Bridge) CreateSensorContext(ctx context.Context, s *Sensor) (*Response,
 		return nil, err
 	}
 
-	res, err := post(ctx, url, data)
+	res, err := post(ctx, url, data, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -1744,7 +1747,7 @@ func (b *Bridge) FindSensorsContext(ctx context.Context) (*Response, error) {
 		return nil, err
 	}
 
-	res, err := post(ctx, url, nil)
+	res, err := post(ctx, url, nil, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -1779,7 +1782,7 @@ func (b *Bridge) GetNewSensorsContext(ctx context.Context) (*NewSensor, error) {
 		return nil, err
 	}
 
-	res, err := get(ctx, url)
+	res, err := get(ctx, url, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -1830,7 +1833,7 @@ func (b *Bridge) UpdateSensorContext(ctx context.Context, i int, sensor *Sensor)
 		return nil, err
 	}
 
-	res, err := put(ctx, url, data)
+	res, err := put(ctx, url, data, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -1864,7 +1867,7 @@ func (b *Bridge) DeleteSensorContext(ctx context.Context, i int) error {
 		return err
 	}
 
-	res, err := delete(ctx, url)
+	res, err := del(ctx, url, b.client)
 	if err != nil {
 		return err
 	}
@@ -1898,7 +1901,7 @@ func (b *Bridge) UpdateSensorConfigContext(ctx context.Context, i int, c interfa
 		return nil, err
 	}
 
-	res, err := put(ctx, url, data)
+	res, err := put(ctx, url, data, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -1937,7 +1940,7 @@ func (b *Bridge) GetCapabilitiesContext(ctx context.Context) (*Capabilities, err
 		return nil, err
 	}
 
-	res, err := get(ctx, url)
+	res, err := get(ctx, url, b.client)
 	if err != nil {
 		return nil, err
 	}
