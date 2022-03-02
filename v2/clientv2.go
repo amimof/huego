@@ -108,3 +108,50 @@ func (c *ClientV2) SetLightContext(ctx context.Context, id string, light *Light)
 	}
 	return res, nil
 }
+
+func (c *ClientV2) GetScenesContext(ctx context.Context) ([]*Scene, error) {
+	res, err :=
+		NewRequest(c.Clip).
+			Verb(http.MethodGet).
+			Resource(TypeScene).
+			OnError(errorHandler).
+			Do(ctx)
+	fmt.Println(res.Response.Request.URL.String())
+	//fmt.Println(string(res.BodyRaw))
+	if err != nil {
+		return nil, err
+	}
+	var s []*Scene
+	return s, unmarshal(res.BodyRaw, &s)
+}
+
+func (c *ClientV2) GetScenes() ([]*Scene, error) {
+	return c.GetScenesContext(context.Background())
+}
+
+func (c *ClientV2) GetSceneContext(ctx context.Context, id string) (*Scene, error) {
+	res, err :=
+		NewRequest(c.Clip).
+			Verb(http.MethodGet).
+			Resource(TypeScene).
+			OnError(errorHandler).
+			ID(id).
+			Do(ctx)
+	if err != nil {
+		return nil, err
+	}
+	var s []*Scene
+	err = unmarshal(res.BodyRaw, &s)
+	if err != nil {
+		return nil, err
+	}
+	if len(s) <= 0 {
+		return nil, fmt.Errorf("scene %s not found", id)
+	}
+	scene := s[0]
+	return scene, nil
+}
+
+func (c *ClientV2) GetScene(id string) (*Scene, error) {
+	return c.GetSceneContext(context.Background(), id)
+}

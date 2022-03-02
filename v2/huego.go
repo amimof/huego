@@ -70,6 +70,7 @@ func unmarshal(data []byte, obj interface{}) error {
 	}
 	err = a.Into(obj)
 	if err != nil {
+		fmt.Println(err)
 		return err
 	}
 	return nil

@@ -76,7 +76,7 @@ func TestGetLight(t *testing.T) {
 					Type: ptrString(TypeLight),
 					ID:   ptrString("63939343-2449-48b7-aa7d-5daea11dc546"),
 					IDv1: ptrString("/lights/45"),
-					Metadata: map[string]string{
+					Metadata: map[string]interface{}{
 						"archetype": "spot_bulb",
 						"name":      "Hue color spot 3",
 					},

@@ -11,7 +11,7 @@ type BaseResource struct {
 	// +optional
 	IDv1 *string `json:"id_v1,omitempty"`
 	// +required
-	Metadata map[string]string `json:"metadata,omitempty"`
+	Metadata map[string]interface{} `json:"metadata,omitempty"`
 	// +required
 	Owner *Owner `json:"owner,omitempty"`
 }
