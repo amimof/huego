@@ -39,6 +39,9 @@ func (c mockTransport) RoundTrip(r *http.Request) (*http.Response, error) {
 func ptrFloat32(f float32) *float32 {
 	return &f
 }
+func ptrFloat64(f float64) *float64 {
+	return &f
+}
 func ptrString(s string) *string {
 	return &s
 }

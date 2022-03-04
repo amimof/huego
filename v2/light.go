@@ -132,3 +132,19 @@ func (l *Light) Raw() []byte {
 	}
 	return d
 }
+
+func NewXy(x float32, y float32) *Xy {
+	return &Xy{&x, &y}
+}
+
+func NewColor(x float32, y float32) *Color {
+	return &Color{Xy: &Xy{&x, &y}}
+}
+
+func NewColorTemperature(m uint16) *ColorTemperature {
+	return &ColorTemperature{Mirek: &m}
+}
+
+func NewGradient(color ...*Color) *Gradient {
+	return &Gradient{Points: color}
+}
