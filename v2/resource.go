@@ -16,6 +16,12 @@ type BaseResource struct {
 	Owner *Owner `json:"owner,omitempty"`
 }
 
+type ResourceIdentifier struct {
+	Type string `json:"type,omitempty"`
+	ID  string `json:"id,omitempty"`
+	IDv1 string `json:"id_v1,omitempty"`
+}
+
 // Owner is the owner attributes for base resources
 type Owner struct {
 	// +required

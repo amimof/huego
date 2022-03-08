@@ -1,5 +1,9 @@
 package huego
 
+import (
+	"encoding/json"
+)
+
 type Scene struct {
 	Actions []*ActionGet `json:"actions,omitempty"`
 	Group   *Owner       `json:"group,omitempty"`
@@ -41,4 +45,13 @@ type PaletteColorTemperature struct {
 
 func NewDimming(bri float32) *Dimming {
 	return &Dimming{Brightness: &bri}
+}
+
+// Raw marshals the scene into a byte array. Returns nil if errors occur on the way
+func (s *Scene) Raw() []byte {
+	d, err := json.Marshal(s)
+	if err != nil {
+		return nil
+	}
+	return d
 }
