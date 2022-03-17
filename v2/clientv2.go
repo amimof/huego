@@ -83,8 +83,7 @@ func (c *ClientV2) GetLightContext(ctx context.Context, id string) (*Light, erro
 	if len(l) <= 0 {
 		return nil, fmt.Errorf("light %s not found", id)
 	}
-	light := l[0]
-	return light, nil
+	return l[0], nil
 }
 
 // SetLight updates a light by id using properties in the given light paramter.
@@ -148,8 +147,7 @@ func (c *ClientV2) GetSceneContext(ctx context.Context, id string) (*Scene, erro
 	if len(s) <= 0 {
 		return nil, fmt.Errorf("scene %s not found", id)
 	}
-	scene := s[0]
-	return scene, nil
+	return s[0], nil
 }
 
 func (c *ClientV2) GetScene(id string) (*Scene, error) {
@@ -210,10 +208,9 @@ func (c *ClientV2) GetRoomContext(ctx context.Context, id string) (*Room, error)
 		return nil, err
 	}
 	if len(s) <= 0 {
-		return nil, fmt.Errorf("Room %s not found", id)
+		return nil, fmt.Errorf("room %s not found", id)
 	}
-	Room := s[0]
-	return Room, nil
+	return s[0], nil
 }
 
 func (c *ClientV2) GetRoom(id string) (*Room, error) {
@@ -221,12 +218,73 @@ func (c *ClientV2) GetRoom(id string) (*Room, error) {
 }
 
 // SetRoomContext updates a Room by id using properties in the given Room paramter.
-func (c *ClientV2) SetRoomContext(ctx context.Context, id string, Room *Room) (*Response, error) {
-	s := Room
+func (c *ClientV2) SetRoomContext(ctx context.Context, id string, room *Room) (*Response, error) {
+	s := room
 	res, err :=
 		NewRequest(c.Clip).
 			Verb(http.MethodPut).
 			Resource(TypeRoom).
+			OnError(errorHandler).
+			ID(id).
+			Body(s.Raw()).
+			Do(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+func (c *ClientV2) GetZonesContext(ctx context.Context) ([]*Zone, error) {
+	res, err :=
+		NewRequest(c.Clip).
+			Verb(http.MethodGet).
+			Resource(TypeZone).
+			OnError(errorHandler).
+			Do(ctx)
+	if err != nil {
+		return nil, err
+	}
+	var s []*Zone
+	return s, unmarshal(res.BodyRaw, &s)
+}
+
+func (c *ClientV2) GetZones() ([]*Zone, error) {
+	return c.GetZonesContext(context.Background())
+}
+
+func (c *ClientV2) GetZoneContext(ctx context.Context, id string) (*Zone, error) {
+	res, err :=
+		NewRequest(c.Clip).
+			Verb(http.MethodGet).
+			Resource(TypeZone).
+			OnError(errorHandler).
+			ID(id).
+			Do(ctx)
+	if err != nil {
+		return nil, err
+	}
+	var s []*Zone
+	err = unmarshal(res.BodyRaw, &s)
+	if err != nil {
+		return nil, err
+	}
+	if len(s) <= 0 {
+		return nil, fmt.Errorf("zone %s not found", id)
+	}
+	return s[0], nil
+}
+
+func (c *ClientV2) GetZone(id string) (*Zone, error) {
+	return c.GetZoneContext(context.Background(), id)
+}
+
+// SetZoneContext updates a Zone by id using properties in the given Zone paramter.
+func (c *ClientV2) SetZoneContext(ctx context.Context, id string, zone *Zone) (*Response, error) {
+	s := zone
+	res, err :=
+		NewRequest(c.Clip).
+			Verb(http.MethodPut).
+			Resource(TypeZone).
 			OnError(errorHandler).
 			ID(id).
 			Body(s.Raw()).

@@ -36,4 +36,5 @@ type Resource interface {
 	Id() *string
 	Metadata() map[string]string
 	Owner() *Owner
+	Raw() []byte
 }
