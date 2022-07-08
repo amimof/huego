@@ -291,11 +291,12 @@ func NewWithClient(h, u string, client *http.Client) *Bridge {
   - a custom HTTP client like NewWithClient that will be used to make API requests
 
 Note that this is for advanced users, the other "New" functions may suit you better.*/
-func NewCustom(raw []byte, client *http.Client) (*Bridge, error) {
+func NewCustom(raw []byte, host string, client *http.Client) (*Bridge, error) {
 	br := &Bridge{}
 	if err := json.Unmarshal(raw, br); err != nil {
 		return nil, err
 	}
+	br.Host = host
 	br.client = client
 	return br, nil
 }

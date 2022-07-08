@@ -138,7 +138,7 @@ func TestNewCustom(t *testing.T) {
 	"mac":"ec:b5:00:00:00:01","bridgeid":"EC000CF00V0000223","factorynew":false,"replacesbridgeid":null,
 	"modelid":"BSB002","starterkitid":""}`
 
-	b, err := NewCustom([]byte(testData), newClient)
+	b, err := NewCustom([]byte(testData), hostname, newClient)
 	if err != nil {
 		t.Fatal(err)
 	}
