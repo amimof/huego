@@ -155,4 +155,3 @@ func TestNewCustom(t *testing.T) {
 	t.Logf("Logged in and got config which means that we are authorized")
 	t.Logf("Name: %s, SwVersion: %s", c.Name, c.SwVersion)
 }
-
