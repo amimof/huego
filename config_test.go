@@ -62,6 +62,7 @@ func TestGetConfig(t *testing.T) {
 	t.Logf("ReplacesBridgeID: %s", config.ReplacesBridgeID)
 	t.Logf("DatastoreVersion: %s", config.DatastoreVersion)
 	t.Logf("StarterKitID: %s", config.StarterKitID)
+	t.Logf("Reboot: %t", config.Reboot)
 }
 
 func TestGetConfigError(t *testing.T) {
