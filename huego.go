@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"os"
 	"strings"
 )
 
@@ -86,6 +87,9 @@ func unmarshal(data []byte, v interface{}) error {
 }
 
 func get(ctx context.Context, url string, client *http.Client) ([]byte, error) {
+	if os.Getenv("HUEGO_DEBUG") != "" {
+		fmt.Printf("GET %s\n", url)
+	}
 
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
@@ -111,6 +115,10 @@ func get(ctx context.Context, url string, client *http.Client) ([]byte, error) {
 }
 
 func put(ctx context.Context, url string, data []byte, client *http.Client) ([]byte, error) {
+	if os.Getenv("HUEGO_DEBUG") != "" {
+		fmt.Printf("PUT %s\n", url)
+		fmt.Println(string(data))
+	}
 
 	body := strings.NewReader(string(data))
 
@@ -140,6 +148,10 @@ func put(ctx context.Context, url string, data []byte, client *http.Client) ([]b
 }
 
 func post(ctx context.Context, url string, data []byte, client *http.Client) ([]byte, error) {
+	if os.Getenv("HUEGO_DEBUG") != "" {
+		fmt.Printf("POST %s\n", url)
+		fmt.Println(string(data))
+	}
 
 	body := strings.NewReader(string(data))
 
@@ -169,6 +181,10 @@ func post(ctx context.Context, url string, data []byte, client *http.Client) ([]
 }
 
 func del(ctx context.Context, url string, client *http.Client) ([]byte, error) {
+	if os.Getenv("HUEGO_DEBUG") != "" {
+		fmt.Printf("DEL %s\n", url)
+	}
+
 	req, err := http.NewRequest(http.MethodDelete, url, nil)
 	if err != nil {
 		return nil, err
@@ -271,12 +287,14 @@ func New(h, u string) *Bridge {
 	}
 }
 
-/*NewWithClient instantiates and returns a new Bridge with a custom HTTP client.
+/*
+NewWithClient instantiates and returns a new Bridge with a custom HTTP client.
 NewWithClient accepts the same parameters as New, but with an additional acceptance of an http.Client.
 
- - h may or may not be prefixed with http(s)://. For example http://192.168.1.20/ or 192.168.1.20.
- - u is a username known to the bridge. Use Discover() and CreateUser() to create a user.
- - Difference between New and NewWithClient being the ability to implement your own http.RoundTripper for proxying.*/
+  - h may or may not be prefixed with http(s)://. For example http://192.168.1.20/ or 192.168.1.20.
+  - u is a username known to the bridge. Use Discover() and CreateUser() to create a user.
+  - Difference between New and NewWithClient being the ability to implement your own http.RoundTripper for proxying.
+*/
 func NewWithClient(h, u string, client *http.Client) *Bridge {
 	return &Bridge{
 		Host:   h,
@@ -286,11 +304,13 @@ func NewWithClient(h, u string, client *http.Client) *Bridge {
 	}
 }
 
-/*NewCustom instantiates and returns a new Bridge. NewCustom accepts:
+/*
+NewCustom instantiates and returns a new Bridge. NewCustom accepts:
   - a raw JSON []byte slice as input for substantiating the Bridge type
   - a custom HTTP client like NewWithClient that will be used to make API requests
 
-Note that this is for advanced users, the other "New" functions may suit you better.*/
+Note that this is for advanced users, the other "New" functions may suit you better.
+*/
 func NewCustom(raw []byte, host string, client *http.Client) (*Bridge, error) {
 	br := &Bridge{}
 	if err := json.Unmarshal(raw, br); err != nil {
