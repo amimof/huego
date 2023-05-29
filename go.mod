@@ -1,4 +1,4 @@
-module github.com/amimof/huego
+module github.com/yunginnanet/huego
 
 go 1.13
 
