@@ -71,6 +71,9 @@ func handleResponse(a []*APIResponse) (*Response, error) {
 // unmarshal will try to unmarshal data into APIResponse so that we can
 // return the actual error returned by the bridge http API as an error struct.
 func unmarshal(data []byte, v interface{}) error {
+	if os.Getenv("HUEGO_DEBUG") != "" {
+		fmt.Printf("RESPONSE %s\n", data)
+	}
 	err := json.Unmarshal(data, &v)
 	if err != nil {
 		var a []*APIResponse
