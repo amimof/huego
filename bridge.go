@@ -61,12 +61,12 @@ func (b *Bridge) GetConfigContext(ctx context.Context) (*Config, error) {
 
 	var config *Config
 
-	url, err := b.getAPIPath("/config/")
+	target, err := b.getAPIPath("/config/")
 	if err != nil {
 		return nil, err
 	}
 
-	res, err := get(ctx, url, b.client)
+	res, err := get(ctx, target, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -126,7 +126,7 @@ func (b *Bridge) createUserWithContext(ctx context.Context, deviceType string, g
 		GenerateClientKey bool   `json:"generateclientkey,omitempty"`
 	}{deviceType, generateClientKey}
 
-	url, err := b.getAPIPath("/")
+	target, err := b.getAPIPath("/")
 	if err != nil {
 		return nil, err
 	}
@@ -136,7 +136,7 @@ func (b *Bridge) createUserWithContext(ctx context.Context, deviceType string, g
 		return nil, err
 	}
 
-	res, err := post(ctx, url, data, b.client)
+	res, err := post(ctx, target, data, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -184,7 +184,7 @@ func (b *Bridge) UpdateConfigContext(ctx context.Context, c *Config) (*Response,
 
 	var a []*APIResponse
 
-	url, err := b.getAPIPath("/config/")
+	target, err := b.getAPIPath("/config/")
 	if err != nil {
 		return nil, err
 	}
@@ -194,7 +194,7 @@ func (b *Bridge) UpdateConfigContext(ctx context.Context, c *Config) (*Response,
 		return nil, err
 	}
 
-	res, err := put(ctx, url, data, b.client)
+	res, err := put(ctx, target, data, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -222,12 +222,12 @@ func (b *Bridge) DeleteUserContext(ctx context.Context, n string) error {
 
 	var a []*APIResponse
 
-	url, err := b.getAPIPath("/config/whitelist/", n)
+	target, err := b.getAPIPath("/config/whitelist/", n)
 	if err != nil {
 		return err
 	}
 
-	res, err := del(ctx, url, b.client)
+	res, err := del(ctx, target, b.client)
 	if err != nil {
 		return err
 	}
@@ -253,12 +253,12 @@ func (b *Bridge) GetFullStateContext(ctx context.Context) (map[string]interface{
 
 	var n map[string]interface{}
 
-	url, err := b.getAPIPath("/")
+	target, err := b.getAPIPath("/")
 	if err != nil {
 		return nil, err
 	}
 
-	res, err := get(ctx, url, b.client)
+	res, err := get(ctx, target, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -287,12 +287,12 @@ func (b *Bridge) GetGroupsContext(ctx context.Context) ([]Group, error) {
 
 	var m map[string]Group
 
-	url, err := b.getAPIPath("/groups/")
+	target, err := b.getAPIPath("/groups/")
 	if err != nil {
 		return nil, err
 	}
 
-	res, err := get(ctx, url, b.client)
+	res, err := get(ctx, target, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -329,12 +329,12 @@ func (b *Bridge) GetGroupContext(ctx context.Context, i int) (*Group, error) {
 		ID: i,
 	}
 
-	url, err := b.getAPIPath("/groups/", strconv.Itoa(i))
+	target, err := b.getAPIPath("/groups/", strconv.Itoa(i))
 	if err != nil {
 		return nil, err
 	}
 
-	res, err := get(ctx, url, b.client)
+	res, err := get(ctx, target, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -360,7 +360,7 @@ func (b *Bridge) SetGroupStateContext(ctx context.Context, i int, l State) (*Res
 	var a []*APIResponse
 
 	id := strconv.Itoa(i)
-	url, err := b.getAPIPath("/groups/", id, "/action/")
+	target, err := b.getAPIPath("/groups/", id, "/action/")
 	if err != nil {
 		return nil, err
 	}
@@ -370,7 +370,7 @@ func (b *Bridge) SetGroupStateContext(ctx context.Context, i int, l State) (*Res
 		return nil, err
 	}
 
-	res, err := put(ctx, url, data, b.client)
+	res, err := put(ctx, target, data, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -399,7 +399,7 @@ func (b *Bridge) UpdateGroupContext(ctx context.Context, i int, l Group) (*Respo
 	var a []*APIResponse
 
 	id := strconv.Itoa(i)
-	url, err := b.getAPIPath("/groups/", id)
+	target, err := b.getAPIPath("/groups/", id)
 	if err != nil {
 		return nil, err
 	}
@@ -409,7 +409,7 @@ func (b *Bridge) UpdateGroupContext(ctx context.Context, i int, l Group) (*Respo
 		return nil, err
 	}
 
-	res, err := put(ctx, url, data, b.client)
+	res, err := put(ctx, target, data, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -437,7 +437,7 @@ func (b *Bridge) CreateGroupContext(ctx context.Context, g Group) (*Response, er
 
 	var a []*APIResponse
 
-	url, err := b.getAPIPath("/groups/")
+	target, err := b.getAPIPath("/groups/")
 	if err != nil {
 		return nil, err
 	}
@@ -447,7 +447,7 @@ func (b *Bridge) CreateGroupContext(ctx context.Context, g Group) (*Response, er
 		return nil, err
 	}
 
-	res, err := post(ctx, url, data, b.client)
+	res, err := post(ctx, target, data, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -476,12 +476,12 @@ func (b *Bridge) DeleteGroupContext(ctx context.Context, i int) error {
 	var a []*APIResponse
 
 	id := strconv.Itoa(i)
-	url, err := b.getAPIPath("/groups/", id)
+	target, err := b.getAPIPath("/groups/", id)
 	if err != nil {
 		return err
 	}
 
-	res, err := del(ctx, url, b.client)
+	res, err := del(ctx, target, b.client)
 	if err != nil {
 		return err
 	}
@@ -512,12 +512,12 @@ func (b *Bridge) GetLightsContext(ctx context.Context) ([]Light, error) {
 
 	m := map[string]Light{}
 
-	url, err := b.getAPIPath("/lights/")
+	target, err := b.getAPIPath("/lights/")
 	if err != nil {
 		return nil, err
 	}
 
-	res, err := get(ctx, url, b.client)
+	res, err := get(ctx, target, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -554,12 +554,12 @@ func (b *Bridge) GetLightContext(ctx context.Context, i int) (*Light, error) {
 		ID: i,
 	}
 
-	url, err := b.getAPIPath("/lights/", strconv.Itoa(i))
+	target, err := b.getAPIPath("/lights/", strconv.Itoa(i))
 	if err != nil {
 		return nil, err
 	}
 
-	res, err := get(ctx, url, b.client)
+	res, err := get(ctx, target, b.client)
 	if err != nil {
 		return light, err
 	}
@@ -584,11 +584,11 @@ func (b *Bridge) IdentifyLightContext(ctx context.Context, i int) (*Response, er
 
 	var a []*APIResponse
 
-	url, err := b.getAPIPath("/lights/", strconv.Itoa(i), "/state")
+	target, err := b.getAPIPath("/lights/", strconv.Itoa(i), "/state")
 	if err != nil {
 		return nil, err
 	}
-	res, err := put(ctx, url, []byte(`{"alert":"select"}`), b.client)
+	res, err := put(ctx, target, []byte(`{"alert":"select"}`), b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -625,11 +625,11 @@ func (b *Bridge) SetLightStateContext(ctx context.Context, i int, l State) (*Res
 		return nil, err
 	}
 
-	url, err := b.getAPIPath("/lights/", strconv.Itoa(i), "/state")
+	target, err := b.getAPIPath("/lights/", strconv.Itoa(i), "/state")
 	if err != nil {
 		return nil, err
 	}
-	res, err := put(ctx, url, data, b.client)
+	res, err := put(ctx, target, data, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -660,12 +660,12 @@ func (b *Bridge) FindLightsContext(ctx context.Context) (*Response, error) {
 
 	var a []*APIResponse
 
-	url, err := b.getAPIPath("/lights/")
+	target, err := b.getAPIPath("/lights/")
 	if err != nil {
 		return nil, err
 	}
 
-	res, err := post(ctx, url, nil, b.client)
+	res, err := post(ctx, target, nil, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -694,12 +694,12 @@ func (b *Bridge) GetNewLightsContext(ctx context.Context) (*NewLight, error) {
 
 	var n map[string]interface{}
 
-	url, err := b.getAPIPath("/lights/new")
+	target, err := b.getAPIPath("/lights/new")
 	if err != nil {
 		return nil, err
 	}
 
-	res, err := get(ctx, url, b.client)
+	res, err := get(ctx, target, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -737,12 +737,12 @@ func (b *Bridge) DeleteLightContext(ctx context.Context, i int) error {
 	var a []*APIResponse
 
 	id := strconv.Itoa(i)
-	url, err := b.getAPIPath("/lights/", id)
+	target, err := b.getAPIPath("/lights/", id)
 	if err != nil {
 		return err
 	}
 
-	res, err := del(ctx, url, b.client)
+	res, err := del(ctx, target, b.client)
 	if err != nil {
 		return err
 	}
@@ -769,7 +769,7 @@ func (b *Bridge) UpdateLightContext(ctx context.Context, i int, light Light) (*R
 	var a []*APIResponse
 
 	id := strconv.Itoa(i)
-	url, err := b.getAPIPath("/lights/", id)
+	target, err := b.getAPIPath("/lights/", id)
 	if err != nil {
 		return nil, err
 	}
@@ -779,7 +779,7 @@ func (b *Bridge) UpdateLightContext(ctx context.Context, i int, light Light) (*R
 		return nil, err
 	}
 
-	res, err := put(ctx, url, data, b.client)
+	res, err := put(ctx, target, data, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -813,12 +813,12 @@ func (b *Bridge) GetResourcelinksContext(ctx context.Context) ([]*Resourcelink, 
 
 	var r map[string]Resourcelink
 
-	url, err := b.getAPIPath("/resourcelinks/")
+	target, err := b.getAPIPath("/resourcelinks/")
 	if err != nil {
 		return nil, err
 	}
 
-	res, err := get(ctx, url, b.client)
+	res, err := get(ctx, target, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -855,12 +855,12 @@ func (b *Bridge) GetResourcelinkContext(ctx context.Context, i int) (*Resourceli
 		ID: i,
 	}
 
-	url, err := b.getAPIPath("/resourcelinks/", strconv.Itoa(i))
+	target, err := b.getAPIPath("/resourcelinks/", strconv.Itoa(i))
 	if err != nil {
 		return nil, err
 	}
 
-	res, err := get(ctx, url, b.client)
+	res, err := get(ctx, target, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -889,12 +889,12 @@ func (b *Bridge) CreateResourcelinkContext(ctx context.Context, s *Resourcelink)
 		return nil, err
 	}
 
-	url, err := b.getAPIPath("/resourcelinks/")
+	target, err := b.getAPIPath("/resourcelinks/")
 	if err != nil {
 		return nil, err
 	}
 
-	res, err := post(ctx, url, data, b.client)
+	res, err := post(ctx, target, data, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -927,12 +927,12 @@ func (b *Bridge) UpdateResourcelinkContext(ctx context.Context, i int, resourcel
 		return nil, err
 	}
 
-	url, err := b.getAPIPath("/resourcelinks/", strconv.Itoa(i))
+	target, err := b.getAPIPath("/resourcelinks/", strconv.Itoa(i))
 	if err != nil {
 		return nil, err
 	}
 
-	res, err := put(ctx, url, data, b.client)
+	res, err := put(ctx, target, data, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -961,12 +961,12 @@ func (b *Bridge) DeleteResourcelinkContext(ctx context.Context, i int) error {
 	var a []*APIResponse
 
 	id := strconv.Itoa(i)
-	url, err := b.getAPIPath("/resourcelinks/", id)
+	target, err := b.getAPIPath("/resourcelinks/", id)
 	if err != nil {
 		return err
 	}
 
-	res, err := del(ctx, url, b.client)
+	res, err := del(ctx, target, b.client)
 	if err != nil {
 		return err
 	}
@@ -997,12 +997,12 @@ func (b *Bridge) GetRulesContext(ctx context.Context) ([]*Rule, error) {
 
 	var r map[string]Rule
 
-	url, err := b.getAPIPath("/rules/")
+	target, err := b.getAPIPath("/rules/")
 	if err != nil {
 		return nil, err
 	}
 
-	res, err := get(ctx, url, b.client)
+	res, err := get(ctx, target, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -1039,12 +1039,12 @@ func (b *Bridge) GetRuleContext(ctx context.Context, i int) (*Rule, error) {
 		ID: i,
 	}
 
-	url, err := b.getAPIPath("/rules/", strconv.Itoa(i))
+	target, err := b.getAPIPath("/rules/", strconv.Itoa(i))
 	if err != nil {
 		return nil, err
 	}
 
-	res, err := get(ctx, url, b.client)
+	res, err := get(ctx, target, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -1073,12 +1073,12 @@ func (b *Bridge) CreateRuleContext(ctx context.Context, s *Rule) (*Response, err
 		return nil, err
 	}
 
-	url, err := b.getAPIPath("/rules/")
+	target, err := b.getAPIPath("/rules/")
 	if err != nil {
 		return nil, err
 	}
 
-	res, err := post(ctx, url, data, b.client)
+	res, err := post(ctx, target, data, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -1112,12 +1112,12 @@ func (b *Bridge) UpdateRuleContext(ctx context.Context, i int, rule *Rule) (*Res
 		return nil, err
 	}
 
-	url, err := b.getAPIPath("/rules/", strconv.Itoa(i))
+	target, err := b.getAPIPath("/rules/", strconv.Itoa(i))
 	if err != nil {
 		return nil, err
 	}
 
-	res, err := put(ctx, url, data, b.client)
+	res, err := put(ctx, target, data, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -1146,12 +1146,12 @@ func (b *Bridge) DeleteRuleContext(ctx context.Context, i int) error {
 	var a []*APIResponse
 
 	id := strconv.Itoa(i)
-	url, err := b.getAPIPath("/rules/", id)
+	target, err := b.getAPIPath("/rules/", id)
 	if err != nil {
 		return err
 	}
 
-	res, err := del(ctx, url, b.client)
+	res, err := del(ctx, target, b.client)
 	if err != nil {
 		return err
 	}
@@ -1182,12 +1182,12 @@ func (b *Bridge) GetScenesContext(ctx context.Context) ([]Scene, error) {
 
 	var m map[string]Scene
 
-	url, err := b.getAPIPath("/scenes/")
+	target, err := b.getAPIPath("/scenes/")
 	if err != nil {
 		return nil, err
 	}
 
-	res, err := get(ctx, url, b.client)
+	res, err := get(ctx, target, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -1218,12 +1218,12 @@ func (b *Bridge) GetSceneContext(ctx context.Context, i string) (*Scene, error) 
 		LightStates map[int]State `json:"lightstates"`
 	}{}
 
-	url, err := b.getAPIPath("/scenes/", i)
+	target, err := b.getAPIPath("/scenes/", i)
 	if err != nil {
 		return nil, err
 	}
 
-	res, err := get(ctx, url, b.client)
+	res, err := get(ctx, target, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -1253,7 +1253,7 @@ func (b *Bridge) UpdateSceneContext(ctx context.Context, id string, s *Scene) (*
 
 	var a []*APIResponse
 
-	url, err := b.getAPIPath("/scenes/", id)
+	target, err := b.getAPIPath("/scenes/", id)
 	if err != nil {
 		return nil, err
 	}
@@ -1263,7 +1263,7 @@ func (b *Bridge) UpdateSceneContext(ctx context.Context, id string, s *Scene) (*
 		return nil, err
 	}
 
-	res, err := put(ctx, url, data, b.client)
+	res, err := put(ctx, target, data, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -1294,7 +1294,7 @@ func (b *Bridge) SetSceneLightStateContext(ctx context.Context, id string, iid i
 	var a []*APIResponse
 
 	lightid := strconv.Itoa(iid)
-	url, err := b.getAPIPath("scenes", id, "lightstates", lightid)
+	target, err := b.getAPIPath("scenes", id, "lightstates", lightid)
 	if err != nil {
 		return nil, err
 	}
@@ -1304,7 +1304,7 @@ func (b *Bridge) SetSceneLightStateContext(ctx context.Context, id string, iid i
 		return nil, err
 	}
 
-	res, err := put(ctx, url, data, b.client)
+	res, err := put(ctx, target, data, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -1340,12 +1340,12 @@ func (b *Bridge) RecallSceneContext(ctx context.Context, id string, gid int) (*R
 		return nil, err
 	}
 
-	url, err := b.getAPIPath("/groups/", strconv.Itoa(gid), "/action")
+	target, err := b.getAPIPath("/groups/", strconv.Itoa(gid), "/action")
 	if err != nil {
 		return nil, err
 	}
 
-	res, err := put(ctx, url, data, b.client)
+	res, err := put(ctx, target, data, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -1378,12 +1378,12 @@ func (b *Bridge) CreateSceneContext(ctx context.Context, s *Scene) (*Response, e
 		return nil, err
 	}
 
-	url, err := b.getAPIPath("/scenes/")
+	target, err := b.getAPIPath("/scenes/")
 	if err != nil {
 		return nil, err
 	}
 
-	res, err := post(ctx, url, data, b.client)
+	res, err := post(ctx, target, data, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -1411,12 +1411,12 @@ func (b *Bridge) DeleteSceneContext(ctx context.Context, id string) error {
 
 	var a []*APIResponse
 
-	url, err := b.getAPIPath("/scenes/", id)
+	target, err := b.getAPIPath("/scenes/", id)
 	if err != nil {
 		return err
 	}
 
-	res, err := del(ctx, url, b.client)
+	res, err := del(ctx, target, b.client)
 	if err != nil {
 		return err
 	}
@@ -1447,12 +1447,12 @@ func (b *Bridge) GetSchedulesContext(ctx context.Context) ([]*Schedule, error) {
 
 	var r map[string]Schedule
 
-	url, err := b.getAPIPath("/schedules/")
+	target, err := b.getAPIPath("/schedules/")
 	if err != nil {
 		return nil, err
 	}
 
-	res, err := get(ctx, url, b.client)
+	res, err := get(ctx, target, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -1489,12 +1489,12 @@ func (b *Bridge) GetScheduleContext(ctx context.Context, i int) (*Schedule, erro
 		ID: i,
 	}
 
-	url, err := b.getAPIPath("/schedules/", strconv.Itoa(i))
+	target, err := b.getAPIPath("/schedules/", strconv.Itoa(i))
 	if err != nil {
 		return nil, err
 	}
 
-	res, err := get(ctx, url, b.client)
+	res, err := get(ctx, target, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -1523,12 +1523,12 @@ func (b *Bridge) CreateScheduleContext(ctx context.Context, s *Schedule) (*Respo
 		return nil, err
 	}
 
-	url, err := b.getAPIPath("/schedules/")
+	target, err := b.getAPIPath("/schedules/")
 	if err != nil {
 		return nil, err
 	}
 
-	res, err := post(ctx, url, data, b.client)
+	res, err := post(ctx, target, data, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -1562,12 +1562,12 @@ func (b *Bridge) UpdateScheduleContext(ctx context.Context, i int, schedule *Sch
 		return nil, err
 	}
 
-	url, err := b.getAPIPath("/schedules/", strconv.Itoa(i))
+	target, err := b.getAPIPath("/schedules/", strconv.Itoa(i))
 	if err != nil {
 		return nil, err
 	}
 
-	res, err := put(ctx, url, data, b.client)
+	res, err := put(ctx, target, data, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -1596,12 +1596,12 @@ func (b *Bridge) DeleteScheduleContext(ctx context.Context, i int) error {
 	var a []*APIResponse
 
 	id := strconv.Itoa(i)
-	url, err := b.getAPIPath("/schedules/", id)
+	target, err := b.getAPIPath("/schedules/", id)
 	if err != nil {
 		return err
 	}
 
-	res, err := del(ctx, url, b.client)
+	res, err := del(ctx, target, b.client)
 	if err != nil {
 		return err
 	}
@@ -1632,12 +1632,12 @@ func (b *Bridge) GetSensorsContext(ctx context.Context) ([]Sensor, error) {
 
 	s := map[string]Sensor{}
 
-	url, err := b.getAPIPath("/sensors/")
+	target, err := b.getAPIPath("/sensors/")
 	if err != nil {
 		return nil, err
 	}
 
-	res, err := get(ctx, url, b.client)
+	res, err := get(ctx, target, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -1672,12 +1672,12 @@ func (b *Bridge) GetSensorContext(ctx context.Context, i int) (*Sensor, error) {
 	}
 
 	id := strconv.Itoa(i)
-	url, err := b.getAPIPath("/sensors/", id)
+	target, err := b.getAPIPath("/sensors/", id)
 	if err != nil {
 		return nil, err
 	}
 
-	res, err := get(ctx, url, b.client)
+	res, err := get(ctx, target, b.client)
 	if err != nil {
 		return r, err
 	}
@@ -1706,12 +1706,12 @@ func (b *Bridge) CreateSensorContext(ctx context.Context, s *Sensor) (*Response,
 		return nil, err
 	}
 
-	url, err := b.getAPIPath("/sensors/")
+	target, err := b.getAPIPath("/sensors/")
 	if err != nil {
 		return nil, err
 	}
 
-	res, err := post(ctx, url, data, b.client)
+	res, err := post(ctx, target, data, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -1742,12 +1742,12 @@ func (b *Bridge) FindSensorsContext(ctx context.Context) (*Response, error) {
 
 	var a []*APIResponse
 
-	url, err := b.getAPIPath("/sensors/")
+	target, err := b.getAPIPath("/sensors/")
 	if err != nil {
 		return nil, err
 	}
 
-	res, err := post(ctx, url, nil, b.client)
+	res, err := post(ctx, target, nil, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -1777,12 +1777,12 @@ func (b *Bridge) GetNewSensorsContext(ctx context.Context) (*NewSensor, error) {
 	var n map[string]Sensor
 	var result *NewSensor
 
-	url, err := b.getAPIPath("/sensors/new")
+	target, err := b.getAPIPath("/sensors/new")
 	if err != nil {
 		return nil, err
 	}
 
-	res, err := get(ctx, url, b.client)
+	res, err := get(ctx, target, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -1828,12 +1828,12 @@ func (b *Bridge) UpdateSensorContext(ctx context.Context, i int, sensor *Sensor)
 		return nil, err
 	}
 
-	url, err := b.getAPIPath("/sensors/", strconv.Itoa(i))
+	target, err := b.getAPIPath("/sensors/", strconv.Itoa(i))
 	if err != nil {
 		return nil, err
 	}
 
-	res, err := put(ctx, url, data, b.client)
+	res, err := put(ctx, target, data, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -1862,12 +1862,12 @@ func (b *Bridge) DeleteSensorContext(ctx context.Context, i int) error {
 	var a []*APIResponse
 
 	id := strconv.Itoa(i)
-	url, err := b.getAPIPath("/sensors/", id)
+	target, err := b.getAPIPath("/sensors/", id)
 	if err != nil {
 		return err
 	}
 
-	res, err := del(ctx, url, b.client)
+	res, err := del(ctx, target, b.client)
 	if err != nil {
 		return err
 	}
@@ -1896,12 +1896,12 @@ func (b *Bridge) UpdateSensorConfigContext(ctx context.Context, i int, c interfa
 		return nil, err
 	}
 
-	url, err := b.getAPIPath("/sensors/", strconv.Itoa(i), "/config")
+	target, err := b.getAPIPath("/sensors/", strconv.Itoa(i), "/config")
 	if err != nil {
 		return nil, err
 	}
 
-	res, err := put(ctx, url, data, b.client)
+	res, err := put(ctx, target, data, b.client)
 	if err != nil {
 		return nil, err
 	}
@@ -1935,12 +1935,12 @@ func (b *Bridge) GetCapabilitiesContext(ctx context.Context) (*Capabilities, err
 
 	s := &Capabilities{}
 
-	url, err := b.getAPIPath("/capabilities/")
+	target, err := b.getAPIPath("/capabilities/")
 	if err != nil {
 		return nil, err
 	}
 
-	res, err := get(ctx, url, b.client)
+	res, err := get(ctx, target, b.client)
 	if err != nil {
 		return nil, err
 	}
