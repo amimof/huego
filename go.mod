@@ -4,6 +4,7 @@ go 1.13
 
 require (
 	github.com/jarcoal/httpmock v1.0.4
+	github.com/luci/go-render v0.0.0-20160219211803-9a04cc21af0f // indirect
 	github.com/stretchr/testify v1.4.0
 	golang.org/x/net v0.0.0-20220127200216-cd36cc0744dd
 )
