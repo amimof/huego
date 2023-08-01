@@ -31,7 +31,7 @@ func TestLogin(t *testing.T) {
 		t.Fatal(err)
 	}
 	t.Logf("Logged in and got config which means that we are authorized")
-	t.Logf("Name: %s, SwVersion: %s", c.Name, c.SwVersion)
+	t.Logf("Name: %s, SwVersion: %s", *c.Name, *c.SwVersion)
 }
 
 func TestLoginUnauthorized(t *testing.T) {
@@ -49,11 +49,10 @@ func TestLoginUnauthorized(t *testing.T) {
 
 func TestUpdateBridgeConfig(t *testing.T) {
 	b := New(hostname, username)
-	c, err := b.GetConfig()
-	if err != nil {
-		t.Fatal(err)
+	c := Config{
+		Name: strPtr("Test"),
 	}
-	_, err = b.UpdateConfig(c)
+	_, err := b.UpdateConfig(&c)
 	if err != nil {
 		t.Fatal(err)
 	}

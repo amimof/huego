@@ -22,7 +22,6 @@ type Bridge struct {
 }
 
 func (b *Bridge) getAPIPath(str ...string) (string, error) {
-
 	if strings.Index(strings.ToLower(b.Host), "http://") <= -1 && strings.Index(strings.ToLower(b.Host), "https://") <= -1 {
 		b.Host = fmt.Sprintf("%s%s", "http://", b.Host)
 	}
@@ -36,6 +35,7 @@ func (b *Bridge) getAPIPath(str ...string) (string, error) {
 	for _, p := range str {
 		u.Path = path.Join(u.Path, p)
 	}
+
 	return u.String(), nil
 }
 
@@ -46,10 +46,10 @@ func (b *Bridge) Login(u string) *Bridge {
 }
 
 /*
-
-	CONFIGURATION API
-
-*/
+ *
+ * CONFIGURATION API
+ *
+ */
 
 // GetConfig returns the bridge configuration
 func (b *Bridge) GetConfig() (*Config, error) {
@@ -58,7 +58,6 @@ func (b *Bridge) GetConfig() (*Config, error) {
 
 // GetConfigContext returns the bridge configuration
 func (b *Bridge) GetConfigContext(ctx context.Context) (*Config, error) {
-
 	var config *Config
 
 	target, err := b.getAPIPath("/config/")
@@ -76,16 +75,15 @@ func (b *Bridge) GetConfigContext(ctx context.Context) (*Config, error) {
 		return nil, err
 	}
 
-	wl := make([]Whitelist, 0, len(config.WhitelistMap))
-	for k, v := range config.WhitelistMap {
+	wl := make([]Whitelist, 0, len(*config.WhitelistMap))
+	for k, v := range *config.WhitelistMap {
 		v.Username = k
 		wl = append(wl, v)
 	}
 
-	config.Whitelist = wl
+	config.Whitelist = &wl
 
 	return config, nil
-
 }
 
 // CreateUser creates a user by adding n to the list of whitelists in the bridge.
@@ -118,7 +116,6 @@ func (b *Bridge) CreateUserWithClientKeyContext(ctx context.Context, deviceType 
 }
 
 func (b *Bridge) createUserWithContext(ctx context.Context, deviceType string, generateClientKey bool) (*Whitelist, error) {
-
 	var a []*APIResponse
 
 	body := struct {
@@ -171,7 +168,8 @@ func (b *Bridge) GetUsers() ([]Whitelist, error) {
 	if err != nil {
 		return nil, err
 	}
-	return c.Whitelist, nil
+
+	return *c.Whitelist, nil
 }
 
 // UpdateConfig updates the bridge configuration with c
@@ -181,7 +179,6 @@ func (b *Bridge) UpdateConfig(c *Config) (*Response, error) {
 
 // UpdateConfigContext updates the bridge configuration with c
 func (b *Bridge) UpdateConfigContext(ctx context.Context, c *Config) (*Response, error) {
-
 	var a []*APIResponse
 
 	target, err := b.getAPIPath("/config/")
@@ -219,7 +216,6 @@ func (b *Bridge) DeleteUser(n string) error {
 
 // DeleteUserContext removes a whitelist item from whitelists on the bridge
 func (b *Bridge) DeleteUserContext(ctx context.Context, n string) error {
-
 	var a []*APIResponse
 
 	target, err := b.getAPIPath("/config/whitelist/", n)
@@ -240,7 +236,6 @@ func (b *Bridge) DeleteUserContext(ctx context.Context, n string) error {
 	}
 
 	return nil
-
 }
 
 // GetFullState returns the entire bridge configuration.
@@ -250,7 +245,6 @@ func (b *Bridge) GetFullState() (map[string]interface{}, error) {
 
 // GetFullStateContext returns the entire bridge configuration.
 func (b *Bridge) GetFullStateContext(ctx context.Context) (map[string]interface{}, error) {
-
 	var n map[string]interface{}
 
 	target, err := b.getAPIPath("/")
@@ -272,10 +266,10 @@ func (b *Bridge) GetFullStateContext(ctx context.Context) (map[string]interface{
 }
 
 /*
-
-	GROUP API
-
-*/
+ *
+ * GROUP API
+ *
+ */
 
 // GetGroups returns all groups known to the bridge
 func (b *Bridge) GetGroups() ([]Group, error) {
@@ -284,7 +278,6 @@ func (b *Bridge) GetGroups() ([]Group, error) {
 
 // GetGroupsContext returns all groups known to the bridge
 func (b *Bridge) GetGroupsContext(ctx context.Context) ([]Group, error) {
-
 	var m map[string]Group
 
 	target, err := b.getAPIPath("/groups/")
@@ -314,7 +307,6 @@ func (b *Bridge) GetGroupsContext(ctx context.Context) ([]Group, error) {
 	}
 
 	return groups, err
-
 }
 
 // GetGroup returns one group known to the bridge by its id
@@ -324,7 +316,6 @@ func (b *Bridge) GetGroup(i int) (*Group, error) {
 
 // GetGroupContext returns one group known to the bridge by its id
 func (b *Bridge) GetGroupContext(ctx context.Context, i int) (*Group, error) {
-
 	g := &Group{
 		ID: i,
 	}
@@ -356,7 +347,6 @@ func (b *Bridge) SetGroupState(i int, l State) (*Response, error) {
 
 // SetGroupStateContext allows for setting the state of one group, controlling the state of all lights in that group.
 func (b *Bridge) SetGroupStateContext(ctx context.Context, i int, l State) (*Response, error) {
-
 	var a []*APIResponse
 
 	id := strconv.Itoa(i)
@@ -395,7 +385,6 @@ func (b *Bridge) UpdateGroup(i int, l Group) (*Response, error) {
 
 // UpdateGroupContext updates one group known to the bridge
 func (b *Bridge) UpdateGroupContext(ctx context.Context, i int, l Group) (*Response, error) {
-
 	var a []*APIResponse
 
 	id := strconv.Itoa(i)
@@ -434,7 +423,6 @@ func (b *Bridge) CreateGroup(g Group) (*Response, error) {
 
 // CreateGroupContext creates one new group with attributes defined by g
 func (b *Bridge) CreateGroupContext(ctx context.Context, g Group) (*Response, error) {
-
 	var a []*APIResponse
 
 	target, err := b.getAPIPath("/groups/")
@@ -474,7 +462,6 @@ func (b *Bridge) DeleteGroup(i int) error {
 func (b *Bridge) DeleteGroupContext(ctx context.Context, i int) error {
 
 	var a []*APIResponse
-
 	id := strconv.Itoa(i)
 	target, err := b.getAPIPath("/groups/", id)
 	if err != nil {
@@ -497,10 +484,10 @@ func (b *Bridge) DeleteGroupContext(ctx context.Context, i int) error {
 }
 
 /*
-
-	LIGHT API
-
-*/
+ *
+ * LIGHT API
+ *
+ */
 
 // GetLights returns all lights known to the bridge
 func (b *Bridge) GetLights() ([]Light, error) {
@@ -509,7 +496,6 @@ func (b *Bridge) GetLights() ([]Light, error) {
 
 // GetLightsContext returns all lights known to the bridge
 func (b *Bridge) GetLightsContext(ctx context.Context) ([]Light, error) {
-
 	m := map[string]Light{}
 
 	target, err := b.getAPIPath("/lights/")
@@ -539,7 +525,6 @@ func (b *Bridge) GetLightsContext(ctx context.Context) ([]Light, error) {
 	}
 
 	return lights, nil
-
 }
 
 // GetLight returns one light with the id of i
@@ -549,7 +534,6 @@ func (b *Bridge) GetLight(i int) (*Light, error) {
 
 // GetLightContext returns one light with the id of i
 func (b *Bridge) GetLightContext(ctx context.Context, i int) (*Light, error) {
-
 	light := &Light{
 		ID: i,
 	}
@@ -614,7 +598,6 @@ func (b *Bridge) SetLightState(i int, l State) (*Response, error) {
 
 // SetLightStateContext allows for controlling one light's state
 func (b *Bridge) SetLightStateContext(ctx context.Context, i int, l State) (*Response, error) {
-
 	var a []*APIResponse
 
 	l.Reachable = false
@@ -645,7 +628,6 @@ func (b *Bridge) SetLightStateContext(ctx context.Context, i int, l State) (*Res
 	}
 
 	return resp, nil
-
 }
 
 // FindLights starts a search for new lights on the bridge.
@@ -657,7 +639,6 @@ func (b *Bridge) FindLights() (*Response, error) {
 // FindLightsContext starts a search for new lights on the bridge.
 // Use GetNewLights() verify if new lights have been detected.
 func (b *Bridge) FindLightsContext(ctx context.Context) (*Response, error) {
-
 	var a []*APIResponse
 
 	target, err := b.getAPIPath("/lights/")
@@ -681,7 +662,6 @@ func (b *Bridge) FindLightsContext(ctx context.Context) (*Response, error) {
 	}
 
 	return resp, nil
-
 }
 
 // GetNewLights returns a list of lights that were discovered last time FindLights() was executed.
@@ -691,7 +671,6 @@ func (b *Bridge) GetNewLights() (*NewLight, error) {
 
 // GetNewLightsContext returns a list of lights that were discovered last time FindLights() was executed.
 func (b *Bridge) GetNewLightsContext(ctx context.Context) (*NewLight, error) {
-
 	var n map[string]interface{}
 
 	target, err := b.getAPIPath("/lights/new")
@@ -723,7 +702,6 @@ func (b *Bridge) GetNewLightsContext(ctx context.Context) (*NewLight, error) {
 	}
 
 	return result, nil
-
 }
 
 // DeleteLight deletes one lights from the bridge
@@ -733,7 +711,6 @@ func (b *Bridge) DeleteLight(i int) error {
 
 // DeleteLightContext deletes one lights from the bridge
 func (b *Bridge) DeleteLightContext(ctx context.Context, i int) error {
-
 	var a []*APIResponse
 
 	id := strconv.Itoa(i)
@@ -755,7 +732,6 @@ func (b *Bridge) DeleteLightContext(ctx context.Context, i int) error {
 	}
 
 	return nil
-
 }
 
 // UpdateLight updates one light's attributes and state properties
@@ -765,7 +741,6 @@ func (b *Bridge) UpdateLight(i int, light Light) (*Response, error) {
 
 // UpdateLightContext updates one light's attributes and state properties
 func (b *Bridge) UpdateLightContext(ctx context.Context, i int, light Light) (*Response, error) {
-
 	var a []*APIResponse
 
 	id := strconv.Itoa(i)
@@ -798,10 +773,10 @@ func (b *Bridge) UpdateLightContext(ctx context.Context, i int, light Light) (*R
 }
 
 /*
-
-	RESOURCELINK API
-
-*/
+ *
+ * RESOURCELINK API
+ *
+ */
 
 // GetResourcelinks returns all resourcelinks known to the bridge
 func (b *Bridge) GetResourcelinks() ([]*Resourcelink, error) {
@@ -810,7 +785,6 @@ func (b *Bridge) GetResourcelinks() ([]*Resourcelink, error) {
 
 // GetResourcelinksContext returns all resourcelinks known to the bridge
 func (b *Bridge) GetResourcelinksContext(ctx context.Context) ([]*Resourcelink, error) {
-
 	var r map[string]Resourcelink
 
 	target, err := b.getAPIPath("/resourcelinks/")
@@ -840,7 +814,6 @@ func (b *Bridge) GetResourcelinksContext(ctx context.Context) ([]*Resourcelink, 
 	}
 
 	return resourcelinks, nil
-
 }
 
 // GetResourcelink returns one resourcelink by its id defined by i
@@ -850,7 +823,6 @@ func (b *Bridge) GetResourcelink(i int) (*Resourcelink, error) {
 
 // GetResourcelinkContext returns one resourcelink by its id defined by i
 func (b *Bridge) GetResourcelinkContext(ctx context.Context, i int) (*Resourcelink, error) {
-
 	g := &Resourcelink{
 		ID: i,
 	}
@@ -871,7 +843,6 @@ func (b *Bridge) GetResourcelinkContext(ctx context.Context, i int) (*Resourceli
 	}
 
 	return g, nil
-
 }
 
 // CreateResourcelink creates one new resourcelink on the bridge
@@ -881,7 +852,6 @@ func (b *Bridge) CreateResourcelink(s *Resourcelink) (*Response, error) {
 
 // CreateResourcelinkContext creates one new resourcelink on the bridge
 func (b *Bridge) CreateResourcelinkContext(ctx context.Context, s *Resourcelink) (*Response, error) {
-
 	var a []*APIResponse
 
 	data, err := json.Marshal(&s)
@@ -910,7 +880,6 @@ func (b *Bridge) CreateResourcelinkContext(ctx context.Context, s *Resourcelink)
 	}
 
 	return resp, nil
-
 }
 
 // UpdateResourcelink updates one resourcelink with attributes defined by resourcelink
@@ -957,7 +926,6 @@ func (b *Bridge) DeleteResourcelink(i int) error {
 
 // DeleteResourcelinkContext deletes one resourcelink with the id of i
 func (b *Bridge) DeleteResourcelinkContext(ctx context.Context, i int) error {
-
 	var a []*APIResponse
 
 	id := strconv.Itoa(i)
@@ -982,10 +950,10 @@ func (b *Bridge) DeleteResourcelinkContext(ctx context.Context, i int) error {
 }
 
 /*
-
-	RULE API
-
-*/
+ *
+ * RULE API
+ *
+ */
 
 // GetRules returns all rules known to the bridge
 func (b *Bridge) GetRules() ([]*Rule, error) {
@@ -994,7 +962,6 @@ func (b *Bridge) GetRules() ([]*Rule, error) {
 
 // GetRulesContext returns all rules known to the bridge
 func (b *Bridge) GetRulesContext(ctx context.Context) ([]*Rule, error) {
-
 	var r map[string]Rule
 
 	target, err := b.getAPIPath("/rules/")
@@ -1024,7 +991,6 @@ func (b *Bridge) GetRulesContext(ctx context.Context) ([]*Rule, error) {
 	}
 
 	return rules, nil
-
 }
 
 // GetRule returns one rule by its id of i
@@ -1034,7 +1000,6 @@ func (b *Bridge) GetRule(i int) (*Rule, error) {
 
 // GetRuleContext returns one rule by its id of i
 func (b *Bridge) GetRuleContext(ctx context.Context, i int) (*Rule, error) {
-
 	g := &Rule{
 		ID: i,
 	}
@@ -1055,7 +1020,6 @@ func (b *Bridge) GetRuleContext(ctx context.Context, i int) (*Rule, error) {
 	}
 
 	return g, nil
-
 }
 
 // CreateRule creates one rule with attribues defined in s
@@ -1065,7 +1029,6 @@ func (b *Bridge) CreateRule(s *Rule) (*Response, error) {
 
 // CreateRuleContext creates one rule with attribues defined in s
 func (b *Bridge) CreateRuleContext(ctx context.Context, s *Rule) (*Response, error) {
-
 	var a []*APIResponse
 
 	data, err := json.Marshal(&s)
@@ -1094,7 +1057,6 @@ func (b *Bridge) CreateRuleContext(ctx context.Context, s *Rule) (*Response, err
 	}
 
 	return resp, nil
-
 }
 
 // UpdateRule updates one rule by its id of i and rule configuration of rule
@@ -1104,7 +1066,6 @@ func (b *Bridge) UpdateRule(i int, rule *Rule) (*Response, error) {
 
 // UpdateRuleContext updates one rule by its id of i and rule configuration of rule
 func (b *Bridge) UpdateRuleContext(ctx context.Context, i int, rule *Rule) (*Response, error) {
-
 	var a []*APIResponse
 
 	data, err := json.Marshal(&rule)
@@ -1142,7 +1103,6 @@ func (b *Bridge) DeleteRule(i int) error {
 
 // DeleteRuleContext deletes one rule from the bridge
 func (b *Bridge) DeleteRuleContext(ctx context.Context, i int) error {
-
 	var a []*APIResponse
 
 	id := strconv.Itoa(i)
@@ -1167,10 +1127,10 @@ func (b *Bridge) DeleteRuleContext(ctx context.Context, i int) error {
 }
 
 /*
-
-	SCENE API
-
-*/
+ *
+ * SCENE API
+ *
+ */
 
 // GetScenes returns all scenes known to the bridge
 func (b *Bridge) GetScenes() ([]Scene, error) {
@@ -1179,7 +1139,6 @@ func (b *Bridge) GetScenes() ([]Scene, error) {
 
 // GetScenesContext returns all scenes known to the bridge
 func (b *Bridge) GetScenesContext(ctx context.Context) ([]Scene, error) {
-
 	var m map[string]Scene
 
 	target, err := b.getAPIPath("/scenes/")
@@ -1202,7 +1161,6 @@ func (b *Bridge) GetScenesContext(ctx context.Context) ([]Scene, error) {
 	}
 
 	return scenes, err
-
 }
 
 // GetScene returns one scene by its id of i
@@ -1212,7 +1170,6 @@ func (b *Bridge) GetScene(i string) (*Scene, error) {
 
 // GetSceneContext returns one scene by its id of i
 func (b *Bridge) GetSceneContext(ctx context.Context, i string) (*Scene, error) {
-
 	g := &Scene{ID: i}
 	l := struct {
 		LightStates map[int]State `json:"lightstates"`
@@ -1250,7 +1207,6 @@ func (b *Bridge) UpdateScene(id string, s *Scene) (*Response, error) {
 
 // UpdateSceneContext updates one scene and its attributes by id of i
 func (b *Bridge) UpdateSceneContext(ctx context.Context, id string, s *Scene) (*Response, error) {
-
 	var a []*APIResponse
 
 	target, err := b.getAPIPath("/scenes/", id)
@@ -1290,7 +1246,6 @@ func (b *Bridge) SetSceneLightState(id string, iid int, l *State) (*Response, er
 // SetSceneLightStateContext allows for setting the state of a light in a scene.
 // SetSceneLightStateContext accepts the id of the scene, the id of a light associated with the scene and the state object.
 func (b *Bridge) SetSceneLightStateContext(ctx context.Context, id string, iid int, l *State) (*Response, error) {
-
 	var a []*APIResponse
 
 	lightid := strconv.Itoa(iid)
@@ -1329,7 +1284,6 @@ func (b *Bridge) RecallScene(id string, gid int) (*Response, error) {
 
 // RecallSceneContext will recall a scene in a group identified by both scene and group identifiers
 func (b *Bridge) RecallSceneContext(ctx context.Context, id string, gid int) (*Response, error) {
-
 	var a []*APIResponse
 
 	data, err := json.Marshal(struct {
@@ -1370,7 +1324,6 @@ func (b *Bridge) CreateScene(s *Scene) (*Response, error) {
 
 // CreateSceneContext creates one new scene with its attributes defined in s
 func (b *Bridge) CreateSceneContext(ctx context.Context, s *Scene) (*Response, error) {
-
 	var a []*APIResponse
 
 	data, err := json.Marshal(&s)
@@ -1408,7 +1361,6 @@ func (b *Bridge) DeleteScene(id string) error {
 
 // DeleteSceneContext deletes one scene from the bridge
 func (b *Bridge) DeleteSceneContext(ctx context.Context, id string) error {
-
 	var a []*APIResponse
 
 	target, err := b.getAPIPath("/scenes/", id)
@@ -1432,10 +1384,10 @@ func (b *Bridge) DeleteSceneContext(ctx context.Context, id string) error {
 }
 
 /*
-
-	SCHEDULE API
-
-*/
+ *
+ * SCHEDULE API
+ *
+ */
 
 // GetSchedules returns all schedules known to the bridge
 func (b *Bridge) GetSchedules() ([]*Schedule, error) {
@@ -1444,7 +1396,6 @@ func (b *Bridge) GetSchedules() ([]*Schedule, error) {
 
 // GetSchedulesContext returns all schedules known to the bridge
 func (b *Bridge) GetSchedulesContext(ctx context.Context) ([]*Schedule, error) {
-
 	var r map[string]Schedule
 
 	target, err := b.getAPIPath("/schedules/")
@@ -1474,7 +1425,6 @@ func (b *Bridge) GetSchedulesContext(ctx context.Context) ([]*Schedule, error) {
 	}
 
 	return schedules, nil
-
 }
 
 // GetSchedule returns one schedule by id defined in i
@@ -1484,7 +1434,6 @@ func (b *Bridge) GetSchedule(i int) (*Schedule, error) {
 
 // GetScheduleContext returns one schedule by id defined in i
 func (b *Bridge) GetScheduleContext(ctx context.Context, i int) (*Schedule, error) {
-
 	g := &Schedule{
 		ID: i,
 	}
@@ -1505,7 +1454,6 @@ func (b *Bridge) GetScheduleContext(ctx context.Context, i int) (*Schedule, erro
 	}
 
 	return g, nil
-
 }
 
 // CreateSchedule creates one schedule and sets its attributes defined in s
@@ -1515,7 +1463,6 @@ func (b *Bridge) CreateSchedule(s *Schedule) (*Response, error) {
 
 // CreateScheduleContext creates one schedule and sets its attributes defined in s
 func (b *Bridge) CreateScheduleContext(ctx context.Context, s *Schedule) (*Response, error) {
-
 	var a []*APIResponse
 
 	data, err := json.Marshal(&s)
@@ -1544,7 +1491,6 @@ func (b *Bridge) CreateScheduleContext(ctx context.Context, s *Schedule) (*Respo
 	}
 
 	return resp, nil
-
 }
 
 // UpdateSchedule updates one schedule by its id of i and attributes by schedule
@@ -1554,7 +1500,6 @@ func (b *Bridge) UpdateSchedule(i int, schedule *Schedule) (*Response, error) {
 
 // UpdateScheduleContext updates one schedule by its id of i and attributes by schedule
 func (b *Bridge) UpdateScheduleContext(ctx context.Context, i int, schedule *Schedule) (*Response, error) {
-
 	var a []*APIResponse
 
 	data, err := json.Marshal(&schedule)
@@ -1592,7 +1537,6 @@ func (b *Bridge) DeleteSchedule(i int) error {
 
 // DeleteScheduleContext deletes one schedule from the bridge by its id of i
 func (b *Bridge) DeleteScheduleContext(ctx context.Context, i int) error {
-
 	var a []*APIResponse
 
 	id := strconv.Itoa(i)
@@ -1617,10 +1561,10 @@ func (b *Bridge) DeleteScheduleContext(ctx context.Context, i int) error {
 }
 
 /*
-
-	SENSOR API
-
-*/
+ *
+ * SENSOR API
+ *
+ */
 
 // GetSensors returns all sensors known to the bridge
 func (b *Bridge) GetSensors() ([]Sensor, error) {
@@ -1629,7 +1573,6 @@ func (b *Bridge) GetSensors() ([]Sensor, error) {
 
 // GetSensorsContext returns all sensors known to the bridge
 func (b *Bridge) GetSensorsContext(ctx context.Context) ([]Sensor, error) {
-
 	s := map[string]Sensor{}
 
 	target, err := b.getAPIPath("/sensors/")
@@ -1666,7 +1609,6 @@ func (b *Bridge) GetSensor(i int) (*Sensor, error) {
 
 // GetSensorContext returns one sensor by its id of i
 func (b *Bridge) GetSensorContext(ctx context.Context, i int) (*Sensor, error) {
-
 	r := &Sensor{
 		ID: i,
 	}
@@ -1688,7 +1630,6 @@ func (b *Bridge) GetSensorContext(ctx context.Context, i int) (*Sensor, error) {
 	}
 
 	return r, err
-
 }
 
 // CreateSensor creates one new sensor
@@ -1698,7 +1639,6 @@ func (b *Bridge) CreateSensor(s *Sensor) (*Response, error) {
 
 // CreateSensorContext creates one new sensor
 func (b *Bridge) CreateSensorContext(ctx context.Context, s *Sensor) (*Response, error) {
-
 	var a []*APIResponse
 
 	data, err := json.Marshal(&s)
@@ -1727,7 +1667,6 @@ func (b *Bridge) CreateSensorContext(ctx context.Context, s *Sensor) (*Response,
 	}
 
 	return resp, nil
-
 }
 
 // FindSensors starts a search for new sensors.
@@ -1739,7 +1678,6 @@ func (b *Bridge) FindSensors() (*Response, error) {
 // FindSensorsContext starts a search for new sensors.
 // Use GetNewSensorsContext() to verify if new sensors have been discovered in the bridge.
 func (b *Bridge) FindSensorsContext(ctx context.Context) (*Response, error) {
-
 	var a []*APIResponse
 
 	target, err := b.getAPIPath("/sensors/")
@@ -1763,7 +1701,6 @@ func (b *Bridge) FindSensorsContext(ctx context.Context) (*Response, error) {
 	}
 
 	return resp, nil
-
 }
 
 // GetNewSensors returns a list of sensors that were discovered last time GetNewSensors() was executed.
@@ -1773,7 +1710,6 @@ func (b *Bridge) GetNewSensors() (*NewSensor, error) {
 
 // GetNewSensorsContext returns a list of sensors that were discovered last time GetNewSensors() was executed.
 func (b *Bridge) GetNewSensorsContext(ctx context.Context) (*NewSensor, error) {
-
 	var n map[string]Sensor
 	var result *NewSensor
 
@@ -1810,7 +1746,6 @@ func (b *Bridge) GetNewSensorsContext(ctx context.Context) (*NewSensor, error) {
 	resu := &NewSensor{sensors, result.LastScan}
 
 	return resu, nil
-
 }
 
 // UpdateSensor updates one sensor by its id and attributes by sensor
@@ -1820,7 +1755,6 @@ func (b *Bridge) UpdateSensor(i int, sensor *Sensor) (*Response, error) {
 
 // UpdateSensorContext updates one sensor by its id and attributes by sensor
 func (b *Bridge) UpdateSensorContext(ctx context.Context, i int, sensor *Sensor) (*Response, error) {
-
 	var a []*APIResponse
 
 	data, err := json.Marshal(&sensor)
@@ -1858,7 +1792,6 @@ func (b *Bridge) DeleteSensor(i int) error {
 
 // DeleteSensorContext deletes one sensor from the bridge
 func (b *Bridge) DeleteSensorContext(ctx context.Context, i int) error {
-
 	var a []*APIResponse
 
 	id := strconv.Itoa(i)
@@ -1920,10 +1853,10 @@ func (b *Bridge) UpdateSensorConfigContext(ctx context.Context, i int, c interfa
 }
 
 /*
-
-	CAPABILITIES API
-
-*/
+ *
+ * CAPABILITIES API
+ *
+ */
 
 // GetCapabilities returns a list of capabilities of resources supported in the bridge.
 func (b *Bridge) GetCapabilities() (*Capabilities, error) {
@@ -1932,7 +1865,6 @@ func (b *Bridge) GetCapabilities() (*Capabilities, error) {
 
 // GetCapabilitiesContext returns a list of capabilities of resources supported in the bridge.
 func (b *Bridge) GetCapabilitiesContext(ctx context.Context) (*Capabilities, error) {
-
 	s := &Capabilities{}
 
 	target, err := b.getAPIPath("/capabilities/")
