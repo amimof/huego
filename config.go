@@ -30,6 +30,7 @@ type Config struct {
 	DatastoreVersion string               `json:"datastoreversion,omitempty"`
 	StarterKitID     string               `json:"starterkitid,omitempty"`
 	InternetService  InternetService      `json:"internetservices,omitempty"`
+	Reboot           bool                 `json:"reboot,omitempty"`
 }
 
 // SwUpdate contains information related to software updates. Deprecated in 1.20

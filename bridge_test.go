@@ -101,7 +101,7 @@ func TestBridge_deleteError(t *testing.T) {
 	assert.NotNil(t, err)
 }
 
-func TestCustomLogin(t *testing.T) {
+func TestNewWithClient(t *testing.T) {
 	newTransport := httpmock.InitialTransport.(*http.Transport).Clone()
 	newTransport.DialContext = func(ctx context.Context, network, address string) (net.Conn, error) {
 		return proxy.Direct.Dial(network, address)
@@ -112,6 +112,38 @@ func TestCustomLogin(t *testing.T) {
 	httpmock.ActivateNonDefault(newClient)
 
 	b := NewWithClient(hostname, username, newClient)
+
+	c, err := b.GetConfig()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if c == nil {
+		t.Fatal("failed to get config")
+	}
+	t.Logf("Logged in and got config which means that we are authorized")
+	t.Logf("Name: %s, SwVersion: %s", c.Name, c.SwVersion)
+}
+
+func TestNewCustom(t *testing.T) {
+	newTransport := httpmock.InitialTransport.(*http.Transport).Clone()
+	newTransport.DialContext = func(ctx context.Context, network, address string) (net.Conn, error) {
+		return proxy.Direct.Dial(network, address)
+	}
+	newClient := http.DefaultClient
+	newClient.Transport = newTransport
+
+	httpmock.ActivateNonDefault(newClient)
+
+	testData := `{"name":"Philips hue","datastoreversion":"125","swversion":"1952043030","apiversion":"1.52.0",
+	"mac":"ec:b5:00:00:00:01","bridgeid":"EC000CF00V0000223","factorynew":false,"replacesbridgeid":null,
+	"modelid":"BSB002","starterkitid":""}`
+
+	b, err := NewCustom([]byte(testData), hostname, newClient)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	b.User = username
 
 	c, err := b.GetConfig()
 	if err != nil {

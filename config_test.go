@@ -62,6 +62,7 @@ func TestGetConfig(t *testing.T) {
 	t.Logf("ReplacesBridgeID: %s", config.ReplacesBridgeID)
 	t.Logf("DatastoreVersion: %s", config.DatastoreVersion)
 	t.Logf("StarterKitID: %s", config.StarterKitID)
+	t.Logf("Reboot: %t", config.Reboot)
 }
 
 func TestGetConfigError(t *testing.T) {
@@ -74,7 +75,7 @@ func TestGetConfigError(t *testing.T) {
 
 func TestCreateUser(t *testing.T) {
 	b := New(hostname, "")
-	u, err := b.CreateUser("github.com/amimof/huego#go test")
+	u, err := b.CreateUser("github.com/yunginnanet/huego#go test")
 	if err != nil {
 		t.Fatal(err)
 	} else {
@@ -84,7 +85,7 @@ func TestCreateUser(t *testing.T) {
 
 func TestCreateUserError(t *testing.T) {
 	b := New(badHostname, username)
-	_, err := b.CreateUser("github.com/amimof/huego#go test")
+	_, err := b.CreateUser("github.com/yunginnanet/huego#go test")
 	if err == nil {
 		t.Fatal("Expected error not to be nil")
 	}
@@ -92,7 +93,7 @@ func TestCreateUserError(t *testing.T) {
 
 func TestCreateUserWithClientKey(t *testing.T) {
 	b := New(hostname, "")
-	u, err := b.CreateUserWithClientKey("github.com/amimof/huego#go test")
+	u, err := b.CreateUserWithClientKey("github.com/yunginnanet/huego#go test")
 	if err != nil {
 		t.Fatal(err)
 	} else {
@@ -102,7 +103,7 @@ func TestCreateUserWithClientKey(t *testing.T) {
 
 func TestCreateUserWithClientKeyError(t *testing.T) {
 	b := New(badHostname, username)
-	_, err := b.CreateUserWithClientKey("github.com/amimof/huego#go test")
+	_, err := b.CreateUserWithClientKey("github.com/yunginnanet/huego#go test")
 	if err == nil {
 		t.Fatal("Expected error not to be nil")
 	}
